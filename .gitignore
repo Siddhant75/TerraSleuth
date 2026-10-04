@@ -1,0 +1,96 @@
+# ==============================================================================
+# VCSentry — Git Ignore Rules
+# ==============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.venv
+env/
+venv/
+ENV/
+*.pytest_cache/
+.pytest_cache/
+
+# Node & Frontend (if applicable)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+frontend/dist/
+frontend/node_modules/
+*.local
+
+# Environment & Secrets (STRICT - NEVER COMMIT)
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+*.key
+*.pem
+*.cert
+api_keys/
+secrets.json
+credentials.json
+token.json
+
+# Databases & Cache State (Local Only)
+*.db
+*.sqlite
+*.sqlite3
+vcsentry.db
+cache/
+.cache/
+
+# Testing, Artifacts & Media
+.coverage
+htmlcov/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+artifacts/
+
+# Scraped Temporary Hackathon HTML (Local Reference)
+hackathon_site.html
+hackathon_rules.html
+builtwithserpapi.html
+submit.html
+hackathon-config.js
+submission-app.js
+
+# Demo Videos & Screen Recordings (Strictly Ignored)
+demo-video/
+demo_video/
+videos/
+recordings/
+*.webm
+*.mp4
+*.m4v
+*.mov
+*.mkv
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
