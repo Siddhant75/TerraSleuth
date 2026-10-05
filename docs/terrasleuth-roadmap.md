@@ -1,8 +1,8 @@
 # TerraSleuth — Master Subagent Implementation & Review Roadmap
 
-> **Status:** Active Working Branch: `v0.2-dev` (Release v0.2: LangGraph Multi-Agent OSINT Engine)  
+> **Status:** Release v0.3 Certified (`v0.3.0`) — All 3 Sprints 100% Completed  
 > **Methodology:** Subagent-Driven Development (SDD) via `.agents/skills/hackathon-sdd-workflow/SKILL.md`  
-> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Active) → `v0.3-dev` (Sprint 3) → `main`  
+> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Certified `v0.2.0`) → `v0.3-dev` (Sprint 3: Certified `v0.3.0`) → `main`  
 > **Single Source of Truth:** Tracks task blueprints, developer commits, adversarial code reviews, and verification gates.
 
 ---
@@ -40,6 +40,6 @@
 | **Task 2.3** | **Lens Hunter & Geo Triangulator Nodes**<br>• Reverse-image provenance matching<br>• Spatial coordinate triangulation | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `90e606c` |
 | **Task 2.4** | **Chrono Auditor & Case Synthesizer**<br>• Timeline conflict resolution (max 2 hops)<br>• Case File dossier compilation | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `fdac237` |
 | **Task 2.5** | **Graph Integration Tests**<br>• Full dialectical OSINT execution<br>• Multi-candidate tie-breaking tests | `architect` (Test Plan) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `927f356` |
-| **Task 3.1** | **Interactive Streamlit Dashboard**<br>• Image upload & live node streaming<br>• Live vs. Golden Mystery mode toggle | `architect` (UI Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
-| **Task 3.2** | **Visual Evidence Board & Leaflet Map**<br>• Bounding-box clue overlays<br>• Interactive Leaflet map coordinate pinning | `architect` (UI Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
-| **Task 3.3** | **Regression Audit & Demo Video Walkthrough**<br>• 100% health scorecard verification<br>• <3 min screen recording walkthrough | `architect` (Audit) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
+| **Task 3.1** | **Interactive Streamlit Dashboard**<br>• Image upload & live node streaming<br>• Live vs. Golden Mystery mode toggle | `architect` (UI Plan) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e7ef44a` |
+| **Task 3.2** | **Visual Evidence Board & Leaflet Map**<br>• Bounding-box clue overlays<br>• Interactive Leaflet map coordinate pinning | `architect` (UI Plan) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e7ef44a` |
+| **Task 3.3** | **Regression Audit & Demo Video Walkthrough**<br>• 100% health scorecard verification<br>• <3 min screen recording walkthrough | `architect` (Audit) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `c20eea4` |

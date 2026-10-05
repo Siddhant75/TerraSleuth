@@ -57,3 +57,15 @@ def init_db(db_path: Optional[str] = None) -> None:
             conn.executescript(CREATE_GOLDEN_CASES_TABLE_SQL)
     finally:
         conn.close()
+
+
+def get_golden_cases(db_path: Optional[str] = None) -> list:
+    """Retrieve all seeded golden mystery cases from SQLite."""
+    conn = get_db_connection(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM golden_cases ORDER BY case_id ASC")
+        return [dict(row) for row in cursor.fetchall()]
+    finally:
+        conn.close()
+
