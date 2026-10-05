@@ -19,27 +19,27 @@ def run_ui_audit():
         )
         page = context.new_page()
 
-        # Step 1: Initial Dashboard State
+        # Step 1: Initial War Room 2.0 State with Mission Briefing
         print("Navigating to http://localhost:8501...")
         page.goto("http://localhost:8501", wait_until="networkidle", timeout=45000)
         time.sleep(3)
 
         p1 = os.path.join(SCREENSHOT_DIR, "01_initial_dashboard.png")
         page.screenshot(path=p1, full_page=True)
-        print("Captured: 01_initial_dashboard.png")
+        print("Captured: 01_initial_dashboard.png (War Room 2.0 HUD & Mission Briefing)")
 
         # Step 2: Target Selected State
         p2 = os.path.join(SCREENSHOT_DIR, "02_target_selected.png")
         page.screenshot(path=p2, full_page=True)
         print("Captured: 02_target_selected.png")
 
-        # Step 3: Trigger Autonomous Investigation
+        # Step 3: Trigger Autonomous Investigation on Landmark Target
         print("Clicking 'Launch Autonomous Investigation'...")
         page.locator("button:has-text('Launch Autonomous Investigation')").click()
 
-        # Wait for investigation streaming and completion alert
+        # Wait for investigation streaming and rerun hydration
         print("Waiting for LangGraph OSINT Swarm to complete...")
-        page.wait_for_selector("text=Investigation Concluded", timeout=45000)
+        page.wait_for_selector("text=Forensic Visual Inspector", timeout=45000)
         time.sleep(3)  # Hydrate Folium map and charts
 
         p3 = os.path.join(SCREENSHOT_DIR, "03_command_deck_overview.png")
@@ -70,13 +70,40 @@ def run_ui_audit():
         page.screenshot(path=p6, full_page=True)
         print("Captured: 06_deck_citation_ledger.png")
 
-        # Step 7: Click Executive Dossier Tab
+        # Step 7: Click OSINT Dorks Tab
+        print("Switching to OSINT Dorks tab...")
+        page.get_by_role("tab", name="OSINT Dorks").click()
+        time.sleep(2)
+        p7 = os.path.join(SCREENSHOT_DIR, "07_deck_osint_dorks.png")
+        page.screenshot(path=p7, full_page=True)
+        print("Captured: 07_deck_osint_dorks.png")
+
+        # Step 8: Click Executive Dossier Tab
         print("Switching to Executive Dossier tab...")
         page.get_by_role("tab", name="Executive Dossier").click()
         time.sleep(2)
-        p7 = os.path.join(SCREENSHOT_DIR, "07_deck_executive_dossier.png")
-        page.screenshot(path=p7, full_page=True)
-        print("Captured: 07_deck_executive_dossier.png")
+        p8 = os.path.join(SCREENSHOT_DIR, "08_deck_executive_dossier.png")
+        page.screenshot(path=p8, full_page=True)
+        print("Captured: 08_deck_executive_dossier.png")
+
+        # Step 9: Select Rental Scam Target and Demonstrate Fraud Unmasking
+        print("Selecting Vacation Rental Fraud scenario in sidebar...")
+        sidebar_sb = page.locator("section[data-testid='stSidebar'] div[data-testid='stSelectbox']").first
+        inp = sidebar_sb.locator("input").first
+        inp.click()
+        time.sleep(1)
+        inp.fill("Marketplace")
+        time.sleep(1)
+        page.keyboard.press("Enter")
+        time.sleep(2)
+        print(f"Selected target: {inp.input_value()}")
+        print("Launching Fraud Investigation...")
+        page.locator("button:has-text('Launch Autonomous Investigation')").click()
+        page.wait_for_selector("text=Forensic Visual Inspector", timeout=45000)
+        time.sleep(3)
+        p9 = os.path.join(SCREENSHOT_DIR, "09_fraud_anomaly_unmasking.png")
+        page.screenshot(path=p9, full_page=True)
+        print("Captured: 09_fraud_anomaly_unmasking.png ([FRAUD ALERT])")
 
         print("\nPlaywright UI automation audit completed successfully!")
         browser.close()

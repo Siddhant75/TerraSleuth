@@ -5,6 +5,8 @@ import uuid
 
 from backend.app.agent.state import OsintGraphState
 from backend.app.models.case import CaseFile, GeoCandidate
+from backend.app.services.anomaly_service import AnomalyService
+from backend.app.services.dork_service import DorkService
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +43,8 @@ def generate_case_summary_markdown(
     confidence_score: float,
     resolved_location: Optional[GeoCandidate],
     state: OsintGraphState,
+    anomalies: Optional[List[Dict[str, Any]]] = None,
+    dorks: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     """Generate structured forensic investigation summary in Markdown format."""
     lines: List[str] = [
@@ -50,10 +54,32 @@ def generate_case_summary_markdown(
         f"**Confidence Rating:** `{int(confidence_score * 100)}%` ({'High Verifiability' if confidence_score >= 0.8 else 'Moderate Confidence' if confidence_score >= 0.5 else 'Low / Tentative'})  ",
         f"**Refinement Cycles:** {state.get('refinement_hops', 0)}  ",
         "",
+    ]
+
+    # Insert prominent anomaly & fraud warnings if detected
+    if anomalies:
+        lines.extend([
+            "---",
+            "",
+            "## 🚨 Detected Forensic Contradictions & Fraud Alerts",
+            "",
+        ])
+        for a in anomalies:
+            lines.append(f"### {a.get('title', 'Anomaly Detected')}")
+            lines.append(f"> **Severity:** `{a.get('severity', 'warning').upper()}` | **Confidence:** `{int(a.get('confidence', 0.9) * 100)}%`")
+            lines.append(f"> {a.get('description', '')}")
+            if a.get("claimed_context"):
+                lines.append(f"- **Claimed Context:** *{a['claimed_context']}*")
+            lines.append(f"- **Authoritative SerpApi Finding:** **{a.get('authoritative_truth', '')}**")
+            if a.get("evidence_url"):
+                lines.append(f"- **Verification Evidence:** [Direct Source Link]({a['evidence_url']})")
+            lines.append("")
+
+    lines.extend([
         "---",
         "",
         "## 📍 Primary Ground Truth & Triangulation",
-    ]
+    ])
 
     if resolved_location:
         lines.extend([
@@ -118,6 +144,14 @@ def generate_case_summary_markdown(
     else:
         lines.append("- *Zero external citations.*")
 
+    if dorks:
+        lines.extend([
+            "",
+            "## 🕵️ Targeted OSINT Google Search Dorks",
+        ])
+        for d in dorks:
+            lines.append(f"- **{d.get('category')}:** `{d.get('query')}` — [Execute Query ↗]({d.get('search_url')})")
+
     return "\n".join(lines)
 
 
@@ -157,7 +191,23 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
     else:
         case_title = "Mystery Visual Target"
 
-    # 3. Calculate holistic confidence score
+    # 3. Detect anomalies, contradictions, and fraud
+    anomalies_objs = AnomalyService.detect_anomalies(
+        context_hint=state.get("context_hint"),
+        image_path=state.get("image_path"),
+        resolved_location=resolved_location,
+        lens_matches=lens_matches,
+        timeline_events=timeline_events,
+    )
+    anomalies_dicts = [a.model_dump() for a in anomalies_objs]
+
+    # 4. Generate targeted OSINT Google search dorks
+    entity_name = resolved_location.name if resolved_location else (top_lens_title or case_title)
+    location_addr = resolved_location.address if resolved_location else ""
+    dorks_objs = DorkService.generate_dorks(entity_name, location_addr)
+    dorks_dicts = [d.model_dump() for d in dorks_objs]
+
+    # 5. Calculate holistic confidence score
     confidence_score = calculate_confidence_score(
         resolved_location=resolved_location,
         visual_clues_count=len(visual_clues),
@@ -165,15 +215,17 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         timeline_events_count=len(timeline_events),
     )
 
-    # 4. Generate structured summary Markdown
+    # 6. Generate structured summary Markdown
     summary_markdown = generate_case_summary_markdown(
         case_title=case_title,
         confidence_score=confidence_score,
         resolved_location=resolved_location,
         state=state,
+        anomalies=anomalies_dicts,
+        dorks=dorks_dicts,
     )
 
-    # 5. Compile final CaseFile
+    # 7. Compile final CaseFile
     initial_budget = state.get("initial_budget", 8)
     remaining_budget = state.get("budget_remaining", initial_budget)
     queries_executed = max(0, initial_budget - remaining_budget)
@@ -188,14 +240,18 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         lens_matches=lens_matches,
         timeline=timeline_events,
         citations=citations,
+        anomalies=anomalies_dicts,
+        dorks=dorks_dicts,
         refinement_hops=refinement_hops,
         serp_queries_executed=queries_executed,
     )
 
     logger.info(
-        "case_synthesizer_node finalized CaseFile '%s' with confidence=%.2f",
+        "case_synthesizer_node finalized CaseFile '%s' with confidence=%.2f, anomalies=%d, dorks=%d",
         case_file.case_id,
         case_file.confidence_score,
+        len(anomalies_dicts),
+        len(dorks_dicts),
     )
 
     return {

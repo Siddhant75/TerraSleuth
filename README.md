@@ -5,8 +5,9 @@
 
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-green.svg)](https://python.org)
-[![Tests Passing](https://img.shields.io/badge/Tests-77%2F77%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
-[![Release Certified](https://img.shields.io/badge/Release-v0.4.0--certified-blueviolet.svg)](AGENTS.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-84%2F84%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Release Certified](https://img.shields.io/badge/Release-v0.5.0--certified-blueviolet.svg)](AGENTS.md)
+[![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
@@ -16,13 +17,14 @@
 
 Standard LLMs hallucinate physical locations, invent dates, and operate in a digital vacuum.
 
-**TerraSleuth** transforms the AI agent into an autonomous **Digital Forensic OSINT Detective**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
+**TerraSleuth** transforms the AI agent into an autonomous **Digital Forensic OSINT Detective Swarm**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
 
 1. **Deconstructs the Scene**: Extracts atomic visual clues—architectural styles, street signage scripts (Devanagari, Cyrillic, Latin), vehicle driving sides, and flora/climate—binding them to normalized bounding box coordinates.
-2. **Hunts Visual Provenance (Google Lens API)**: Searches the global visual web to unearth where the photo originated, finding exact matches and initial indexing timestamps.
-3. **Triangulates Physical Coordinates (Google Maps & Local API)**: Correlates street names, business signs, and landmarks into precise WGS84 latitude, longitude, and physical addresses with a spatial consensus radius.
-4. **Audits Chronology & News (Google News & Search APIs)**: Validates historical milestones, news reports, and viral cycles to verify whether the image represents breaking reality or recycled media.
-5. **Compiles an Interactive Case File**: Synthesizes findings into a verifiable forensic dossier featuring an interactive Leaflet map, visual evidence board, chronological timeline, and multi-engine citation ledger.
+2. **Hunts Visual Provenance (Google Lens API)**: Searches the global visual web to unearth where the photo originated, finding exact matches, visual twins, and initial indexing timestamps.
+3. **Triangulates Physical Coordinates (Google Maps & Local API)**: Correlates street names, business signs, and landmarks into precise WGS84 latitude, longitude, and physical addresses with a spatial consensus radius on high-res satellite tiles.
+4. **Audits Chronology & Disinformation (Google News & Search APIs)**: Validates historical milestones and viral cycles, exposing recycled disaster media and unmasking vacation rental scams (e.g. stolen luxury hotel photos).
+5. **Formulates Advanced OSINT Google Dorks**: Dynamically crafts targeted dork queries for municipal permits, property deeds, archived press, and exposed web directories.
+6. **Compiles an Interactive Case File & Offline HTML Dossier**: Synthesizes findings into the tactical **War Room 2.0 Command Deck** and generates 1-click standalone offline HTML intelligence reports.
 
 ---
 

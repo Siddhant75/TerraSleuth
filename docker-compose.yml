@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  terrasleuth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terrasleuth:v0.5.0
+    container_name: terrasleuth-warroom
+    ports:
+      - "8501:8501"
+    environment:
+      - SERPAPI_API_KEY=${SERPAPI_API_KEY:-}
+      - CACHE_ENABLED=true
+      - CACHE_DB_PATH=/app/terrasleuth.db
+    volumes:
+      - terrasleuth-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  terrasleuth-data:

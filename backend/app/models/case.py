@@ -84,5 +84,7 @@ class CaseFile(BaseModel):
     lens_matches: List[dict] = Field(default_factory=list, description="Top visual twin matches from Google Lens")
     timeline: List[TimelineEvent] = Field(default_factory=list, description="Chronological publication timeline")
     citations: List[Citation] = Field(default_factory=list, description="Verifiable proof citations")
+    anomalies: List[dict] = Field(default_factory=list, description="Detected fraud or disinformation anomalies")
+    dorks: List[dict] = Field(default_factory=list, description="Targeted OSINT Google Search dorks")
     refinement_hops: int = Field(default=0, description="Number of iterative disambiguation cycles performed")
     serp_queries_executed: int = Field(default=0, description="Total SerpApi search queries executed")

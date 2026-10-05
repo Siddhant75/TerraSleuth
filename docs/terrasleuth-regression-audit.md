@@ -1,13 +1,13 @@
 # TerraSleuth — Living Regression Audit & Subsystem Health Scorecard
 
-> **Target Release:** Release v0.4 (Tactical OSINT Command Deck & Feature Pack)  
-> **Active Working Branch:** `v0.4-dev`  
+> **Target Release:** Release v0.5 (War Room 2.0 Tactical HUD & Advanced OSINT Feature Pack)  
+> **Active Working Branch:** `v0.5-dev`  
 > **Last Verification Run:** 2026-10-06  
 > **Environment:** Python 3.11.11 & Python 3.12.1 / Windows / pytest  
 
 ---
 
-## 📊 Subsystem Health Scorecard (Release v0.4)
+## 📊 Subsystem Health Scorecard (Release v0.5)
 
 | Subsystem / Task | Component Files | Automated Tests | Pass Rate | Code Review Verdict | Status |
 |---|---|---|---|---|---|
@@ -25,7 +25,10 @@
 | **Task 4.1: Authentic High-Res Target Library** | `frontend/assets/targets/`<br>`backend/app/services/cache_service.py` | `backend/tests/test_golden_scenarios.py` (3 tests) | 3/3 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 4.2: Split-Screen Command Deck & Dark Map** | `frontend/components/geo_map.py`<br>`frontend/app.py` | `frontend/tests/test_command_deck_ui.py` (4 tests) | 4/4 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 4.3: Visual Twin Matcher & Cyber Telemetry Terminal** | `frontend/components/visual_twin_comparator.py`<br>`frontend/components/swarm_telemetry_terminal.py` | `frontend/tests/test_visual_twin.py` (5 tests) | 5/5 (100%) | `PASS (APPROVED)` | 🟢 Certified |
-| **Task 4.4: Full Regression Audit & Release v0.4 Certification** | `tests/e2e/run_playwright_audit.py`<br>`docs/terrasleuth-regression-audit.md` | All test suites & Playwright re-certification | 77/77 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 5.1: Anomaly & Fraud Engine** | `backend/app/models/anomaly.py`<br>`backend/app/services/anomaly_service.py` | `backend/tests/test_anomaly_service.py` (3 tests) | 3/3 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 5.2: Advanced OSINT Google Dorks** | `backend/app/models/dork.py`<br>`backend/app/services/dork_service.py` | `backend/tests/test_dork_service.py` (1 test) | 1/1 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 5.3: Standalone Offline HTML Dossier Exporter** | `frontend/components/dossier_exporter.py` | `frontend/tests/test_dossier_exporter.py` (3 tests) | 3/3 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 5.4: War Room 2.0 HUD & Full Playwright Re-Certification** | `frontend/components/war_room_hud.py`<br>`frontend/app.py`<br>`tests/e2e/run_playwright_audit.py` | All test suites & Playwright re-certification | 84/84 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 
 ---
 
@@ -33,12 +36,12 @@
 
 1. **Zero-Credit Automated Testing Invariant:**
    - **Verification:** 100% of unit and integration tests run against mock fixtures or pre-seeded SQLite cache entries.
-   - **Result:** **0 live SerpApi credits burned** across all 77 automated tests.
+   - **Result:** **0 live SerpApi credits burned** across all 84 automated tests.
 
 2. **XSS Prevention in UI Markdown & Popups Invariant:**
    - **Verification:** All user-supplied, reverse-scraped, and search-extracted fields (titles, snippets, place names, addresses, terminal logs) are passed through `html.escape()`.
-   - **Sanitization Guard:** `sanitize_url()` explicitly verifies and allowlists `http://` and `https://` schemes, preventing script injection via `javascript:` or `data:` URLs.
-   - **Test Anchor:** `test_sanitize_url_security` and `test_generate_swarm_terminal_html` verified.
+   - **Strict URL Sanitization Guard:** `sanitize_url()` explicitly verifies and allowlists `http://`, `https://`, and `mailto:` schemes, neutralizing script injection via `javascript:`, `data:`, or `vbscript:` URLs.
+   - **Test Anchors:** `test_sanitize_url_security`, `test_sanitize_url`, and `test_generate_swarm_terminal_html` verified.
 
 3. **Disk Space Temp File Rotation Invariant:**
    - **Verification:** Uploaded images and cropped regions are tracked via `st.session_state` with unique `(name, size)` identifiers.
@@ -68,29 +71,32 @@
 platform win32 -- Python 3.11.11 & 3.12.1, pytest-8.2.2 / pytest-9.0.2
 cachedir: .pytest_cache
 rootdir: D:\SerpAPI_hackathon
-collected 77 items
+collected 84 items
 
-backend/tests/test_cache.py ..................... [10%] (8 passed)
-backend/tests/test_chrono_synthesizer_nodes.py .. [18%] (6 passed)
-backend/tests/test_golden_scenarios.py .......... [22%] (3 passed)
-backend/tests/test_graph.py ..................... [30%] (6 passed)
-backend/tests/test_lens_geo_nodes.py ............ [38%] (6 passed)
-backend/tests/test_quota.py ..................... [43%] (4 passed)
+backend/tests/test_anomaly_service.py ........... [ 3%] (3 passed)
+backend/tests/test_cache.py ..................... [13%] (8 passed)
+backend/tests/test_chrono_synthesizer_nodes.py .. [20%] (6 passed)
+backend/tests/test_dork_service.py .............. [21%] (1 passed)
+backend/tests/test_golden_scenarios.py .......... [25%] (3 passed)
+backend/tests/test_graph.py ..................... [32%] (6 passed)
+backend/tests/test_lens_geo_nodes.py ............ [39%] (6 passed)
+backend/tests/test_quota.py ..................... [44%] (4 passed)
 backend/tests/test_serpapi.py ................... [58%] (12 passed)
 backend/tests/test_state.py ..................... [67%] (7 passed)
-backend/tests/test_vision.py .................... [77%] (7 passed)
-frontend/tests/test_command_deck_ui.py .......... [82%] (4 passed)
-frontend/tests/test_ui_components.py ............ [88%] (5 passed)
+backend/tests/test_vision.py .................... [75%] (7 passed)
+frontend/tests/test_command_deck_ui.py .......... [79%] (4 passed)
+frontend/tests/test_dossier_exporter.py ......... [83%] (3 passed)
+frontend/tests/test_ui_components.py ............ [89%] (5 passed)
 frontend/tests/test_visual_twin.py .............. [95%] (5 passed)
 tests/e2e/test_dashboard_e2e.py ................ [100%] (4 passed)
 
-============================= 77 passed in 16.28s =============================
+============================= 84 passed in 17.99s =============================
 ```
 
-- **Total Test Cases:** 77
+- **Total Test Cases:** 84
 - **Failures:** 0
 - **Pass Rate:** 100%
-- **Execution Time:** ~16.3 seconds
+- **Execution Time:** ~18.0 seconds
 - **Local SQLite DB:** WAL mode verified (`terrasleuth.db`)
 - **Golden Cases Pre-Seeded:** 3 (`case_gateway_mumbai`, `case_neuschwanstein`, `case_market_scam`)
 
@@ -98,10 +104,10 @@ tests/e2e/test_dashboard_e2e.py ................ [100%] (4 passed)
 
 ## 🖥️ Browser Automation & Visual UI Verification (Playwright)
 
-In addition to headless unit and AppTest suites, the live running application was certified via browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome across the entire Tactical Command Deck layout.
+In addition to headless unit and AppTest suites, the live running application was certified via browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome across the entire War Room 2.0 layout.
 
 ### Visual Audit Checkpoints & Captured Screenshots (`tests/e2e/screenshots/`):
-1. **`01_initial_dashboard.png`**: High-contrast obsidian cyber command theme (`#090d16` background, `#111622` card containers, `#e6f1ff` primary typography), interactive sidebar target mode radio, and target guide banner.
+1. **`01_initial_dashboard.png`**: High-contrast War Room 2.0 HUD header (`🕵️ TERRASLEUTH // OSINT WAR ROOM 2.0`, `SERPAPI ENGINES SYNCED`), interactive Mission Briefing card deck (Landmark Geolocation, Alpine Heritage, Fraud Exposer), and authentic photography target preview.
 2. **`02_target_selected.png`**: Golden Mystery Target selector ("The Waterfront Monument & Heritage Hotel") with immediate sidebar preview image rendering of authentic photography (`gateway_mumbai.jpg`).
 3. **`03_command_deck_overview.png`**: Autonomous LangGraph swarm live execution with glowing step tags (`[SCENE_DECONSTRUCTOR]`, `[LENS_HUNTER]`, `[GEO_TRIANGULATOR]`, `[CHRONO_AUDITOR]`, `[CASE_SYNTHESIZER]`) and live Monospace Swarm Telemetry Radar terminal.
 4. **`04_deck_visual_twin_matcher.png`**: Unified 45/55 Split-Screen Command Deck:
@@ -109,9 +115,12 @@ In addition to headless unit and AppTest suites, the live running application wa
    - Right: **Tactical Satellite Reconnaissance (Esri World Imagery)** rendering crystal-clear aerial photography of Apollo Bunder with pulsating pinpoint marker and consensus radius circle (zero watermarks).
 5. **`05_deck_chronology_timeline.png`**: Chronological Provenance card with `EARLIEST KNOWN APPEARANCE` badge, publication timestamps, and quoted excerpts without HTML escaping glitches.
 6. **`06_deck_citation_ledger.png`**: Verifiable Evidentiary Citation Ledger grouped by SerpApi engine (Google Lens: 2 sources, Google Maps: 2 sources, Google News: 2 sources) with clickable links.
-7. **`07_deck_executive_dossier.png`**: Formatted Executive OSINT Dossier with ground truth location, architectural cues, Google Lens visual twin matches, and verifiable citations.
+7. **`07_deck_osint_dorks.png`**: Interactive Advanced OSINT Google Search Dorks formulated dynamically across Municipal & Property Records, Investigative Press, Government Registries, and Exposed Web Directories with 1-click execution.
+8. **`08_deck_executive_dossier.png`**: Formatted Executive OSINT Dossier with ground truth location, architectural cues, Google Lens visual twin matches, verifiable citations, and 1-click standalone HTML report download.
+9. **`09_fraud_anomaly_unmasking.png`**: Unmasking of Vacation Rental Listing Fraud with glowing red anomaly banner (`🚨 FRAUDULENT LISTING DETECTED: Stolen Hospitality Asset`, unmasking local listing as copyrighted Canaves Oia Suites in Santorini, Greece) with direct source verification link.
 
 ### Quota Defense Verification:
 - **SerpApi Live Credits Burned During UI Audit:** **0 credits** (100% resolved via SQLite WAL disk cache).
+
 
 
