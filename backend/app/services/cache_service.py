@@ -243,24 +243,63 @@ class CacheService:
             ttl_seconds=0,  # Never expires
         )
 
+        gateway_maps_data = {
+            "local_results": [
+                {
+                    "title": "Gateway of India",
+                    "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
+                    "place_id": "ChIJbU60Q_bQ5zsRz797rU461QQ",
+                    "data_cid": "321654987",
+                    "gps_coordinates": {"latitude": 18.9220, "longitude": 72.8347},
+                    "rating": 4.6,
+                    "reviews": 125430,
+                    "type": "Historical landmark",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/gateway.jpg",
+                }
+            ]
+        }
+
         self.set_cached_response(
             engine="google_maps",
             params={"q": "Gateway of India Colaba Mumbai", "type": "search", "hl": "en"},
-            response_data={
-                "local_results": [
-                    {
-                        "title": "Gateway of India",
-                        "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
-                        "place_id": "ChIJbU60Q_bQ5zsRz797rU461QQ",
-                        "data_cid": "321654987",
-                        "gps_coordinates": {"latitude": 18.9220, "longitude": 72.8347},
-                        "rating": 4.6,
-                        "reviews": 125430,
-                        "type": "Historical landmark",
-                        "thumbnail": "https://lh5.googleusercontent.com/p/gateway.jpg",
-                    }
-                ]
-            },
+            response_data=gateway_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Gateway of India", "type": "search", "hl": "en"},
+            response_data=gateway_maps_data,
+            ttl_seconds=0,
+        )
+
+        taj_maps_data = {
+            "local_results": [
+                {
+                    "title": "The Taj Mahal Palace, Mumbai",
+                    "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
+                    "place_id": "ChIJu_TajMahalPalaceMumbai",
+                    "data_cid": "987654321",
+                    "gps_coordinates": {"latitude": 18.9217, "longitude": 72.8332},
+                    "rating": 4.7,
+                    "reviews": 48200,
+                    "type": "5-star hotel",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/taj.jpg",
+                }
+            ]
+        }
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "The Taj Mahal Palace, Mumbai", "type": "search", "hl": "en"},
+            response_data=taj_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "The Taj Mahal Palace", "type": "search", "hl": "en"},
+            response_data=taj_maps_data,
             ttl_seconds=0,
         )
 
@@ -303,24 +342,33 @@ class CacheService:
             ttl_seconds=0,
         )
 
+        neuschwanstein_maps_data = {
+            "local_results": [
+                {
+                    "title": "Neuschwanstein Castle",
+                    "address": "Neuschwansteinstraße 20, 87645 Schwangau, Germany",
+                    "place_id": "ChIJy-gZqLqom0cR_g62RjK12x4",
+                    "data_cid": "456789123",
+                    "gps_coordinates": {"latitude": 47.5576, "longitude": 10.7498},
+                    "rating": 4.8,
+                    "reviews": 89450,
+                    "type": "Castle",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/neuschwanstein.jpg",
+                }
+            ]
+        }
+
         self.set_cached_response(
             engine="google_maps",
             params={"q": "Neuschwanstein Castle Schwangau Bavaria", "type": "search", "hl": "en"},
-            response_data={
-                "local_results": [
-                    {
-                        "title": "Neuschwanstein Castle",
-                        "address": "Neuschwansteinstraße 20, 87645 Schwangau, Germany",
-                        "place_id": "ChIJy-gZqLqom0cR_g62RjK12x4",
-                        "data_cid": "456789123",
-                        "gps_coordinates": {"latitude": 47.5576, "longitude": 10.7498},
-                        "rating": 4.8,
-                        "reviews": 89450,
-                        "type": "Castle",
-                        "thumbnail": "https://lh5.googleusercontent.com/p/neuschwanstein.jpg",
-                    }
-                ]
-            },
+            response_data=neuschwanstein_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Neuschwanstein Castle", "type": "search", "hl": "en"},
+            response_data=neuschwanstein_maps_data,
             ttl_seconds=0,
         )
 
