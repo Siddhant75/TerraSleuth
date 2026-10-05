@@ -1,12 +1,13 @@
 # TerraSleuth — Master Subagent Implementation & Review Roadmap
 
-> **Status:** Release v0.4 Certified (`v0.4.0`) — Sprints 1 to 4 Complete; Sprint 5 (Submission Packaging) Queued  
+> **Status:** Release v0.5 Certified (`v0.5.0`) — All Sprints (1 to 5) Complete; Ready for Submission  
 > **Methodology:** Subagent-Driven Development (SDD) via `.agents/skills/hackathon-sdd-workflow/SKILL.md`  
-> **Release Milestones:** `v0.1-dev` (Sprint 1: `v0.1.0`) → `v0.2-dev` (Sprint 2: `v0.2.0`) → `v0.3-dev` (Sprint 3: `v0.3.0`) → `v0.4-dev` (Sprint 4: `v0.4.0`) → `v0.5-dev` (Sprint 5: Hackathon Submission) → `main`  
+> **Release Milestones:** `v0.1-dev` (Sprint 1: `v0.1.0`) → `v0.2-dev` (Sprint 2: `v0.2.0`) → `v0.3-dev` (Sprint 3: `v0.3.0`) → `v0.4-dev` (Sprint 4: `v0.4.0`) → `v0.5-dev` (Sprint 5: `v0.5.0`) → `main`  
 > **Single Sources of Truth:**
+> - [docs/hackathon-submission.md](file:///d:/SerpAPI_hackathon/docs/hackathon-submission.md) — Official hackathon submission document and judging writeup.
 > - [docs/ui-ux-blueprint-and-feature-matrix.md](file:///d:/SerpAPI_hackathon/docs/ui-ux-blueprint-and-feature-matrix.md) — Screenshot audit critique, design ADRs, SerpApi engine comparison matrix.
 > - [docs/interactive-redesign-blueprint.html](file:///d:/SerpAPI_hackathon/docs/interactive-redesign-blueprint.html) — Interactive HTML War Room prototype and feature matrix.
-> - [docs/terrasleuth-regression-audit.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-regression-audit.md) — 77/77 test scorecard and verification invariants.
+> - [docs/terrasleuth-regression-audit.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-regression-audit.md) — 84/84 test scorecard and verification invariants.
 > - [docs/golden-demo-script.md](file:///d:/SerpAPI_hackathon/docs/golden-demo-script.md) — <3 min video recording walkthrough.
 
 ---
@@ -36,11 +37,11 @@
 - **Task 4.3:** Side-by-Side Visual Twin Comparator & Live Monospace Swarm Telemetry Terminal.
 - **Task 4.4:** Full Regression Audit, Playwright Browser Re-Certification & Release v0.4 Certification.
 
-### Sprint 5: Hackathon Packaging, Standalone Dossier & Final Submission (`v0.5-dev`)
-- **Task 5.1:** Standalone Self-Contained HTML Forensic Dossier Exporter (`frontend/components/dossier_exporter.py`) with embedded base64 photography, satellite coordinates, timeline, and multi-engine citation ledger.
-- **Task 5.2:** Fraud & Anomaly Alert Banners in Command Deck UI (visual highlights for rental fraud and temporal disinformation).
-- **Task 5.3:** Production Docker Containerization & Compose Configuration (`Dockerfile`, `docker-compose.yml`, `.dockerignore`).
-- **Task 5.4:** Official Hackathon Submission Document & Judging Writeup (`docs/hackathon-submission.md`).
+### Sprint 5: War Room 2.0 HUD, Advanced OSINT Features & Submission Packaging (`v0.5-dev`)
+- **Task 5.1:** Anomaly & Fraud Engine (`backend/app/models/anomaly.py`, `backend/app/services/anomaly_service.py`) detecting rental scams and temporal disinformation.
+- **Task 5.2:** Advanced OSINT Google Dorks (`backend/app/models/dork.py`, `backend/app/services/dork_service.py`) across municipal records, archives, and directories.
+- **Task 5.3:** Standalone Self-Contained HTML Forensic Dossier Exporter (`frontend/components/dossier_exporter.py`) with Base64 embedded imagery and strict URL sanitization.
+- **Task 5.4:** War Room 2.0 HUD Overhaul (`war_room_hud.py`, `app.py`), Docker suite (`Dockerfile`, `docker-compose.yml`), submission documentation (`docs/hackathon-submission.md`), and Release v0.5 Certification.
 
 ---
 
@@ -65,7 +66,8 @@
 | **Task 4.2** | **Split-Screen Command Deck & Dark Map**<br>• 45/55 Command Deck (Visual Inspector + Tactical Map)<br>• Esri Satellite tiles & neon crosshair<br>• Zero-truncation flexbox telemetry cards | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `06195b1` |
 | **Task 4.3** | **Visual Twin Matcher & Cyber Telemetry Terminal**<br>• Side-by-Side suspect image vs Google Lens match<br>• Live monospace terminal streaming agent logs | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `24c59a5` |
 | **Task 4.4** | **Full Regression Audit & Release v0.4 Certification**<br>• Pytest 100% pass (77/77) & Playwright re-certification<br>• Golden demo recording script update<br>• Tag `v0.4.0` | `architect` (Audit) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `0b481a6` |
-| **Task 5.1** | **Standalone HTML Forensic Dossier Exporter**<br>• Self-contained offline report with base64 imagery<br>• Satellite coordinates, clues, timeline, and citations | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Queued | Branch `v0.5-dev` |
-| **Task 5.2** | **Fraud & Disinformation Anomaly Banners**<br>• Distinct visual callout banner for rental scams & recycled news<br>• Discrepancy indicator between claim and reality | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Queued | Branch `v0.5-dev` |
-| **Task 5.3** | **Docker Containerization & Compose Suite**<br>• Production Dockerfile, compose, health checks<br>• 1-command startup for judges & cloud deployment | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Queued | Branch `v0.5-dev` |
-| **Task 5.4** | **Official Hackathon Submission Document**<br>• Deep-dive judge document detailing SerpApi engines<br>• LangGraph agent design, safety scorecard, demo links | `architect` (Authoring) | Parent Agent Verification | ⏳ Queued | Branch `v0.5-dev` |
+| **Task 5.1** | **Anomaly & Fraud Detection Engine**<br>• Pydantic AnomalyReport schema<br>• Rental scam unmasking & recycled media detector | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5-dev` |
+| **Task 5.2** | **Advanced OSINT Google Dorking Assistant**<br>• Targeted Google search queries<br>• Municipal permits, news archives, open directories | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5-dev` |
+| **Task 5.3** | **Standalone HTML Forensic Dossier Exporter**<br>• Self-contained offline report with base64 imagery<br>• Strict URL sanitization neutralizing javascript: XSS | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5-dev` |
+| **Task 5.4** | **War Room 2.0 HUD & Release v0.5 Certification**<br>• 1:1 War Room HUD alignment, Docker containerization<br>• 84/84 tests (100% pass) & 9 verified Playwright screenshots | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5.0` |
+

@@ -16,6 +16,7 @@ from backend.app.models.case import CaseFile
 from backend.app.services.cache_service import CacheService
 from frontend.components.chronology_timeline import render_chronology_timeline
 from frontend.components.citation_ledger import render_citation_ledger
+from frontend.components.dossier_exporter import generate_standalone_html_dossier
 from frontend.components.geo_map import render_geo_map, render_telemetry_bar_html
 from frontend.components.swarm_telemetry_terminal import (
     format_terminal_log_entry,
@@ -24,6 +25,12 @@ from frontend.components.swarm_telemetry_terminal import (
 )
 from frontend.components.visual_evidence_board import render_visual_evidence_board
 from frontend.components.visual_twin_comparator import render_visual_twin_comparator
+from frontend.components.war_room_hud import (
+    render_anomaly_alert,
+    render_mission_briefing,
+    render_osint_dorks,
+    render_war_room_header,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,57 +41,67 @@ cache_service.seed_golden_cases()
 
 # Streamlit Page Setup
 st.set_page_config(
-    page_title="TerraSleuth | Autonomous Visual & Geo OSINT Detective",
+    page_title="TerraSleuth // OSINT War Room 2.0",
     page_icon="🕵️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom High-Contrast Forensic OSINT Theme CSS
+# Custom High-Contrast Tactical Cyber Theme CSS
 st.markdown(
     """
     <style>
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-        background-color: #0b0e14 !important;
-        color: #e6f1ff !important;
+        background-color: #07090e !important;
+        color: #e2e8f0 !important;
     }
     [data-testid="stSidebar"] {
-        background-color: #111622 !important;
+        background-color: #0d121d !important;
+        border-right: 1px solid rgba(0, 242, 254, 0.2) !important;
     }
     h1, h2, h3, h4, h5, h6 {
         color: #f8fafc !important;
     }
-    .hero-badge {
-        background-color: #1e3a8a;
-        color: #93c5fd !important;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 12px;
-        display: inline-block;
-        margin-bottom: 8px;
+    /* Button Cyber Overrides */
+    .stButton button[kind="primary"] {
+        background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        box-shadow: 0 0 15px rgba(2, 132, 199, 0.35) !important;
+        transition: all 0.2s ease-in-out !important;
     }
-    .stMetric {
-        background-color: #141923 !important;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #1f2937;
-    }
-    .agent-step-box {
-        background-color: #111622;
-        border-left: 4px solid #3b82f6;
-        padding: 12px 16px;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        font-family: monospace;
+    .stButton button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #0369a1 0%, #1d4ed8 100%) !important;
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.6) !important;
+        border-color: #38bdf8 !important;
     }
     [data-testid="stTabs"] button {
         color: #94a3b8 !important;
-        font-weight: 600;
+        font-weight: 600 !important;
+        font-size: 13px !important;
     }
     [data-testid="stTabs"] button[aria-selected="true"] {
-        color: #60a5fa !important;
-        border-bottom-color: #3b82f6 !important;
+        color: #38bdf8 !important;
+        border-bottom-color: #0284c7 !important;
+    }
+    .radar-node-badge {
+        background: #111726;
+        border: 1px solid #1e293b;
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+    }
+    .radar-node-active {
+        border-color: #38bdf8;
+        background: rgba(14, 165, 233, 0.1);
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
     }
     </style>
     """,
@@ -96,11 +113,11 @@ def render_sidebar():
     """Render interactive sidebar for target configuration and telemetry."""
     st.sidebar.markdown(
         """
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 26px;">🕵️</span>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span style="font-size: 28px;">🕵️</span>
             <div>
-                <b style="font-size: 18px; color: #60a5fa;">TerraSleuth</b><br>
-                <span style="font-size: 11px; color: #94a3b8;">OSINT Detective Swarm</span>
+                <b style="font-size: 18px; color: #38bdf8; letter-spacing: 0.5px;">TERRASLEUTH</b><br>
+                <span style="font-size: 11px; color: #94a3b8; font-family: ui-monospace, monospace;">OSINT DETECTIVE SWARM</span>
             </div>
         </div>
         """,
@@ -134,6 +151,7 @@ def render_sidebar():
         if chosen:
             image_path = chosen["sample_image_path"]
             image_url = chosen["sample_image_url"]
+            context_hint = chosen.get("context_hint", "")
             st.sidebar.caption(chosen["description"])
 
             if os.path.exists(image_path):
@@ -172,26 +190,26 @@ def render_sidebar():
             st.sidebar.image(image_url, caption="Target URL Preview", use_container_width=True)
 
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### ⚙️ Investigation Parameters")
+    st.sidebar.markdown("### ⚙️ Mission Parameters")
     max_budget = st.sidebar.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
     max_hops = st.sidebar.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
-    context_hint = st.sidebar.text_input("Optional Context Hint / Metadata:", "", placeholder="e.g. Historic waterfront monument")
+    context_hint_input = st.sidebar.text_input("Claimed Context Hint / Metadata:", value=context_hint or "", placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 🛡️ Quota & Telemetry")
     st.sidebar.markdown(
         """
-        - **Engine:** LangGraph OSINT Swarm
+        - **Multi-Agent Engine:** LangGraph Swarm
         - **SerpApi APIs:** Lens, Maps, News, Search
-        - **Cache Layer:** SQLite WAL (`terrasleuth.db`)
-        - **Quota Defense:** Active (Zero-Credit Replay)
+        - **Cache Defense:** SQLite WAL (`terrasleuth.db`)
+        - **Replay Cost:** ⚡ Zero Live Credits Burned
         """
     )
 
     return {
         "image_path": image_path,
         "image_url": image_url,
-        "context_hint": context_hint,
+        "context_hint": context_hint_input,
         "max_budget": max_budget,
         "max_hops": max_hops,
         "active_image": active_image,
@@ -201,28 +219,29 @@ def render_sidebar():
 def main():
     config = render_sidebar()
 
-    # Main Canvas Header
-    st.markdown(
-        """
-        <span class="hero-badge">SerpApi India Hackathon 2026 | AI Agents Track</span>
-        <h1 style="margin-top: 0px; color: #f8fafc;">TerraSleuth: Autonomous Multi-Modal OSINT Detective</h1>
-        <p style="color: #94a3b8; font-size: 15px; margin-top: -8px;">
-            Autonomous visual deconstruction, reverse-image provenance, geospatial consensus triangulation, and chronological timeline auditing.
-        </p>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Launch Trigger
-    col_btn, col_info = st.columns([1, 3])
-    with col_btn:
-        start_investigation = st.button("🚀 Launch Autonomous Investigation", type="primary", use_container_width=True)
+    # Render War Room 2.0 HUD Header Banner
+    render_war_room_header()
 
     # Session State Persistence
     if "case_file" not in st.session_state:
         st.session_state["case_file"] = None
     if "last_state" not in st.session_state:
         st.session_state["last_state"] = None
+    if "swarm_telemetry_logs" not in st.session_state:
+        st.session_state["swarm_telemetry_logs"] = []
+
+    # If no case is active, display the Interactive Mission Briefing
+    if not st.session_state.get("case_file"):
+        render_mission_briefing()
+
+    # Tactical Full-Width Launch Trigger
+    launch_col1, launch_col2, launch_col3 = st.columns([1, 4, 1])
+    with launch_col2:
+        start_investigation = st.button(
+            "⚡ Launch Autonomous Investigation (Execute Swarm)",
+            type="primary",
+            use_container_width=True,
+        )
 
     if start_investigation:
         if not config["image_path"] and not config["image_url"]:
@@ -230,29 +249,35 @@ def main():
             return
 
         st.markdown("---")
-        st.markdown("### 🕵️ Live OSINT Agent Execution Swarm")
+        st.markdown("### 📡 Live Multi-Agent Swarm Radar")
 
-        progress_container = st.container()
+        radar_col, terminal_col = st.columns([1, 1])
         step_placeholders = {}
 
         node_descriptions = {
-            "scene_deconstructor": ("🔍 Scene Deconstructor", "Extracting visual clues: architecture, signage, and vegetation..."),
-            "lens_hunter": ("🌐 Lens Hunter", "Reverse-searching Google Lens for exact visual twin matches and citations..."),
-            "geo_triangulator": ("📍 Geo Triangulator", "Querying Google Maps to resolve WGS84 coordinates and addresses..."),
-            "chrono_auditor": ("⏱️ Chrono Auditor", "Auditing Google News archives for timeline milestones and publication dates..."),
-            "refinement_router": ("🔄 Disambiguation Refiner", "Resolving spatial ambiguity with a targeted search hop..."),
-            "case_synthesizer": ("📜 Lead Detective Synthesizer", "Compiling forensic dossier and calculating confidence score..."),
+            "scene_deconstructor": ("🔍 SCENE_DECONSTRUCTOR", "Extracting visual clues: architecture, signage, and vegetation"),
+            "lens_hunter": ("🌐 LENS_HUNTER", "Reverse-searching Google Lens for exact visual twins and domain provenance"),
+            "geo_triangulator": ("📍 GEO_TRIANGULATOR", "Querying Google Maps to resolve WGS84 coordinates and addresses"),
+            "chrono_auditor": ("⏱️ CHRONO_AUDITOR", "Auditing Google News archives for timeline milestones and publication dates"),
+            "refinement_router": ("🔄 REFINE_ROUTER", "Resolving spatial ambiguity with a targeted search hop"),
+            "case_synthesizer": ("📜 CASE_SYNTHESIZER", "Resolving fraud contradictions, compiling dossier, and scoring confidence"),
         }
 
-        with progress_container:
+        with radar_col:
             for node_name, (title, desc) in node_descriptions.items():
                 step_placeholders[node_name] = st.empty()
+                step_placeholders[node_name].markdown(
+                    f'<div class="radar-node-badge"><span>{title}</span><span style="color: #64748b;">STANDBY</span></div>',
+                    unsafe_allow_html=True,
+                )
+
+        with terminal_col:
+            terminal_placeholder = st.empty()
 
         # Run Live Streaming State Machine
         final_case_file: Optional[CaseFile] = None
         accumulated_state = None
         swarm_logs = []
-        terminal_placeholder = st.empty()
 
         with st.spinner("Autonomous OSINT Swarm active across SerpApi engines..."):
             for event in stream_osint_investigation_sync(
@@ -265,11 +290,11 @@ def main():
                 node_name = list(event.keys())[0]
                 node_output = event[node_name]
 
-                title, _ = node_descriptions.get(node_name, (node_name.title(), "Processing..."))
+                title, desc = node_descriptions.get(node_name, (node_name.upper(), "Processing..."))
                 status_text = node_output.get("status", "complete")
 
                 step_placeholders[node_name].markdown(
-                    f'<div class="agent-step-box"><b>✅ {title}</b> — <i>Status: <code>{status_text}</code></i></div>',
+                    f'<div class="radar-node-badge radar-node-active"><span>{title}</span><span style="color: #38bdf8; font-weight: 700;">● {status_text.upper()}</span></div>',
                     unsafe_allow_html=True,
                 )
 
@@ -296,13 +321,14 @@ def main():
                 elif node_name == "case_synthesizer":
                     cf = node_output.get("final_case_file")
                     conf = int(cf.confidence_score * 100) if cf else 95
-                    log_msg = f"Synthesizer resolved final ground truth with {conf}% confidence. Dossier compiled."
+                    anom_count = len(cf.anomalies) if cf else 0
+                    log_msg = f"Synthesizer resolved ground truth with {conf}% confidence ({anom_count} anomalies flagged)."
                 else:
                     log_msg = f"Executed node transition: {node_name}."
 
                 swarm_logs.append(format_terminal_log_entry(node_name, log_msg))
                 terminal_placeholder.markdown(
-                    generate_swarm_terminal_html(swarm_logs, max_height_px=180),
+                    generate_swarm_terminal_html(swarm_logs, max_height_px=220),
                     unsafe_allow_html=True,
                 )
 
@@ -313,14 +339,18 @@ def main():
         st.session_state["case_file"] = final_case_file
         st.session_state["last_state"] = accumulated_state
         st.session_state["swarm_telemetry_logs"] = swarm_logs
-        st.success("Investigation Concluded: Digital Forensic Dossier compiled successfully!")
+        st.rerun()
 
     # Render Results if Case File exists
     case_file: Optional[CaseFile] = st.session_state.get("case_file")
     if case_file:
         st.markdown("---")
 
-        # Top Executive Telemetry Bar (Zero-truncation responsive badges)
+        # 1. Render Anomaly & Fraud Warnings if detected!
+        if case_file.anomalies:
+            render_anomaly_alert(case_file.anomalies)
+
+        # 2. Top Executive Telemetry Bar (Zero-truncation responsive badges)
         target_name = (
             case_file.resolved_location.name
             if case_file.resolved_location and case_file.resolved_location.name
@@ -340,7 +370,7 @@ def main():
         )
         st.markdown(telemetry_html, unsafe_allow_html=True)
 
-        # Unified Split-Screen Command Deck (45% Visual Inspector / 55% Tactical Map & Intelligence)
+        # 3. Unified Split-Screen Command Deck (45% Visual Inspector / 55% Tactical Map & Intelligence)
         deck_left, deck_right = st.columns([9, 11])
 
         with deck_left:
@@ -376,7 +406,7 @@ def main():
         with deck_right:
             render_geo_map(case_file.resolved_location)
 
-            # Live Monospace Swarm Telemetry Terminal
+            # Prominent Monospace Swarm Telemetry Terminal (Directly Visible!)
             terminal_logs = st.session_state.get("swarm_telemetry_logs", [])
             if not terminal_logs and case_file:
                 terminal_logs = [
@@ -384,16 +414,17 @@ def main():
                     format_terminal_log_entry("LENS_HUNTER", f"SerpApi Google Lens identified {len(case_file.lens_matches)} visual twins."),
                     format_terminal_log_entry("GEO_TRIANGULATOR", f"Google Maps pinpointed {target_name} ({coords_str})."),
                     format_terminal_log_entry("CHRONO_AUDITOR", f"Google News archived {len(case_file.timeline)} chronological milestones."),
-                    format_terminal_log_entry("CASE_SYNTHESIZER", f"Synthesized case dossier with {conf_pct}% confidence."),
+                    format_terminal_log_entry("CASE_SYNTHESIZER", f"Synthesized case dossier with {conf_pct}% confidence ({len(case_file.anomalies)} anomalies)."),
                 ]
                 st.session_state["swarm_telemetry_logs"] = terminal_logs
 
-            with st.expander("📡 Swarm Telemetry & Monospace Radar Log", expanded=False):
-                render_swarm_telemetry_terminal(terminal_logs, max_height_px=180)
+            st.markdown("##### 📡 Live Swarm Telemetry & Monospace Radar Log")
+            render_swarm_telemetry_terminal(terminal_logs, max_height_px=160)
 
-            subtab_chrono, subtab_citations, subtab_dossier = st.tabs([
+            subtab_chrono, subtab_citations, subtab_dorks, subtab_dossier = st.tabs([
                 "⏱️ Chronological Provenance",
                 "🔗 Verifiable Citations",
+                "🕵️ OSINT Dorks",
                 "📄 Executive Dossier",
             ])
 
@@ -403,45 +434,45 @@ def main():
             with subtab_citations:
                 render_citation_ledger(case_file.citations)
 
+            with subtab_dorks:
+                render_osint_dorks(case_file.dorks)
+
             with subtab_dossier:
                 st.markdown(case_file.case_summary)
 
-            # Export & Download Buttons
-            st.markdown("---")
-            st.markdown("#### 📥 Export Case Dossier")
-            col_d1, col_d2 = st.columns(2)
-            with col_d1:
-                st.download_button(
-                    label="Download Case File (JSON)",
-                    data=case_file.model_dump_json(indent=2),
-                    file_name=f"{case_file.case_id}_dossier.json",
-                    mime="application/json",
-                    use_container_width=True,
-                )
-            with col_d2:
-                st.download_button(
-                    label="Download Summary (Markdown)",
-                    data=case_file.case_summary,
-                    file_name=f"{case_file.case_id}_summary.md",
-                    mime="text/markdown",
-                    use_container_width=True,
-                )
-    else:
-        # Default Welcome Guide
+        # 4. Standalone HTML Dossier & Export Suite
         st.markdown("---")
-        st.markdown(
-            """
-            ### 🌐 How TerraSleuth Solves Mystery Images
-            
-            1. **Multi-Modal Scene Deconstruction:** Parses uncaptioned imagery into atomic forensic observations (architectural styles, foreign scripts, indigenous flora, distinctive infrastructure).
-            2. **Google Lens Provenance:** Searches for exact visual twin matches and historical publications via SerpApi Google Lens.
-            3. **Google Maps Geospatial Triangulation:** Pinpoints verified latitude, longitude coordinates, place IDs, and street addresses via SerpApi Google Maps.
-            4. **Google News Chrono-Auditing:** Establishes the publication chronology, identifying earliest origins and flagging recycled viral images.
-            5. **Lead Detective Synthesis:** Resolves conflicting hypotheses, verifies evidence citations, and compiles a tamper-proof digital case file.
-            
-            👉 *Select a **Golden Mystery Target** from the sidebar and click **Launch Autonomous Investigation** for an instant, zero-credit walkthrough!*
-            """
-        )
+        st.markdown("#### 📥 Export Forensic Intelligence Dossier")
+        col_d1, col_d2, col_d3 = st.columns([2, 1, 1])
+
+        with col_d1:
+            html_dossier_data = generate_standalone_html_dossier(case_file, target_image=img_to_display)
+            st.download_button(
+                label="📥 Download Standalone HTML Intelligence Dossier",
+                data=html_dossier_data,
+                file_name=f"{case_file.case_id}_intelligence_dossier.html",
+                mime="text/html",
+                type="primary",
+                use_container_width=True,
+            )
+
+        with col_d2:
+            st.download_button(
+                label="Download Case File (JSON)",
+                data=case_file.model_dump_json(indent=2),
+                file_name=f"{case_file.case_id}_dossier.json",
+                mime="application/json",
+                use_container_width=True,
+            )
+
+        with col_d3:
+            st.download_button(
+                label="Download Summary (Markdown)",
+                data=case_file.case_summary,
+                file_name=f"{case_file.case_id}_summary.md",
+                mime="text/markdown",
+                use_container_width=True,
+            )
 
 
 if __name__ == "__main__":
