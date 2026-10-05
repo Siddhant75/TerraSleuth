@@ -14,6 +14,7 @@ from backend.app.models.serp import (
     OrganicResult,
 )
 from backend.app.services.cache_service import CacheService
+from backend.app.services.quota_service import QuotaBudgetManager, QuotaExhaustedError
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,7 @@ class SerpApiService:
         client: Optional[httpx.Client] = None,
         cache_service: Optional[CacheService] = None,
         use_cache: bool = True,
+        budget_manager: Optional[QuotaBudgetManager] = None,
     ):
         self._api_key = api_key or settings.SERPAPI_API_KEY
         self.base_url = settings.SERPAPI_BASE_URL
@@ -59,6 +61,7 @@ class SerpApiService:
             if cache_service is not None
             else (CacheService() if (use_cache and settings.CACHE_ENABLED) else None)
         )
+        self._budget_manager = budget_manager
 
     def close(self) -> None:
         """Close the underlying HTTP client session."""
@@ -99,7 +102,11 @@ class SerpApiService:
                 logger.info("SerpApi disk cache HIT for engine=%s", engine)
                 return cached_data
 
-        # 2. Cache miss: Validate API key and dispatch network request
+        # 2. Quota Circuit Breaker: Consume budget for live external query
+        if self._budget_manager:
+            self._budget_manager.consume()
+
+        # 3. Cache miss: Validate API key and dispatch network request
         api_key = self._get_api_key()
         query_params = {**params, "api_key": api_key}
 
