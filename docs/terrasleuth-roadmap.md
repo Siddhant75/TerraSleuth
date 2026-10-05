@@ -52,7 +52,7 @@
 | **Post-v0.3** | **Browser E2E Automation & Visual Audit**<br>• Playwright multi-tab browser automation<br>• High-contrast dark theme verification<br>• Timeline HTML rendering patch (0 live credits burned) | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `f01ee91` |
 | **Task 4.1** | **Authentic High-Res OSINT Target Library**<br>• Real photography assets (Gateway, Neuschwanstein, Rental Scam)<br>• Golden cache seeding in SQLite | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `fb61583` |
 | **Task 4.2** | **Split-Screen Command Deck & Dark Map**<br>• 45/55 Command Deck (Visual Inspector + Tactical Map)<br>• CartoDB Dark Matter tiles & neon crosshair<br>• Zero-truncation flexbox telemetry cards | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `06195b1` |
-| **Task 4.3** | **Visual Twin Matcher & Cyber Telemetry Terminal**<br>• Side-by-side suspect image vs Google Lens match<br>• Live monospace terminal streaming agent logs | `architect` (Blueprint) | `code-reviewer` (Adversarial) | 🟡 In Progress | Pending |
-| **Task 4.4** | **Full Regression Audit & Release v0.4 Certification**<br>• Pytest 100% pass & Playwright re-certification<br>• Golden demo recording script update<br>• Tag `v0.4.0` | `architect` (Audit) | `code-reviewer` (Adversarial) | ⚪ Queued | Pending |
+| **Task 4.3** | **Visual Twin Matcher & Cyber Telemetry Terminal**<br>• Side-by-side suspect image vs Google Lens match<br>• Live monospace terminal streaming agent logs | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `24c59a5` |
+| **Task 4.4** | **Full Regression Audit & Release v0.4 Certification**<br>• Pytest 100% pass & Playwright re-certification<br>• Golden demo recording script update<br>• Tag `v0.4.0` | `architect` (Audit) | `code-reviewer` (Adversarial) | 🟡 In Progress | Pending |
 
 
