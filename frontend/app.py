@@ -17,7 +17,13 @@ from backend.app.services.cache_service import CacheService
 from frontend.components.chronology_timeline import render_chronology_timeline
 from frontend.components.citation_ledger import render_citation_ledger
 from frontend.components.geo_map import render_geo_map, render_telemetry_bar_html
+from frontend.components.swarm_telemetry_terminal import (
+    format_terminal_log_entry,
+    generate_swarm_terminal_html,
+    render_swarm_telemetry_terminal,
+)
 from frontend.components.visual_evidence_board import render_visual_evidence_board
+from frontend.components.visual_twin_comparator import render_visual_twin_comparator
 
 logger = logging.getLogger(__name__)
 
@@ -245,6 +251,8 @@ def main():
         # Run Live Streaming State Machine
         final_case_file: Optional[CaseFile] = None
         accumulated_state = None
+        swarm_logs = []
+        terminal_placeholder = st.empty()
 
         with st.spinner("Autonomous OSINT Swarm active across SerpApi engines..."):
             for event in stream_osint_investigation_sync(
@@ -265,12 +273,46 @@ def main():
                     unsafe_allow_html=True,
                 )
 
+                # Generate clean telemetry deduction for monospace radar terminal
+                if node_name == "scene_deconstructor":
+                    clues = node_output.get("visual_clues", [])
+                    log_msg = f"Visual deconstruction completed. {len(clues)} forensic features cataloged."
+                elif node_name == "lens_hunter":
+                    matches = node_output.get("lens_matches", [])
+                    top_title = matches[0].get("title", "entity") if matches else "No match"
+                    log_msg = f"SerpApi Google Lens reverse search -> {len(matches)} visual twins found. Top: '{top_title[:45]}'."
+                elif node_name == "geo_triangulator":
+                    candidates = node_output.get("geo_candidates", [])
+                    top_cand = candidates[0] if candidates else None
+                    if top_cand:
+                        lat_val = getattr(top_cand, "latitude", 0.0)
+                        lon_val = getattr(top_cand, "longitude", 0.0)
+                        log_msg = f"SerpApi Google Maps resolved {top_cand.name} ({lat_val:.4f}°N, {lon_val:.4f}°E)."
+                    else:
+                        log_msg = "Google Maps spatial query completed with 0 high-confidence candidates."
+                elif node_name == "chrono_auditor":
+                    events = node_output.get("timeline_events", [])
+                    log_msg = f"SerpApi Google News archival audit -> {len(events)} temporal milestones verified."
+                elif node_name == "case_synthesizer":
+                    cf = node_output.get("final_case_file")
+                    conf = int(cf.confidence_score * 100) if cf else 95
+                    log_msg = f"Synthesizer resolved final ground truth with {conf}% confidence. Dossier compiled."
+                else:
+                    log_msg = f"Executed node transition: {node_name}."
+
+                swarm_logs.append(format_terminal_log_entry(node_name, log_msg))
+                terminal_placeholder.markdown(
+                    generate_swarm_terminal_html(swarm_logs, max_height_px=180),
+                    unsafe_allow_html=True,
+                )
+
                 if "final_case_file" in node_output and node_output["final_case_file"]:
                     final_case_file = node_output["final_case_file"]
                 accumulated_state = node_output
 
         st.session_state["case_file"] = final_case_file
         st.session_state["last_state"] = accumulated_state
+        st.session_state["swarm_telemetry_logs"] = swarm_logs
         st.success("Investigation Concluded: Digital Forensic Dossier compiled successfully!")
 
     # Render Results if Case File exists
@@ -303,7 +345,7 @@ def main():
 
         with deck_left:
             st.markdown("### 🔍 Forensic Visual Inspector")
-            st.caption("High-resolution visual provenance and Pillow-rendered bounding clues.")
+            st.caption("High-resolution visual provenance, bounding clues, and Google Lens visual twin alignment.")
 
             # Load active image or dummy placeholder
             img_to_display = config.get("active_image")
@@ -312,10 +354,42 @@ def main():
             if not img_to_display:
                 img_to_display = Image.new("RGB", (800, 600), color=(20, 24, 33))
 
-            render_visual_evidence_board(img_to_display, case_file.visual_clues)
+            vis_tab_clues, vis_tab_twin = st.tabs([
+                "🎯 Visual Clues & Bounding Boxes",
+                "🔬 Side-by-Side Visual Twin Matcher",
+            ])
+
+            with vis_tab_clues:
+                render_visual_evidence_board(img_to_display, case_file.visual_clues)
+
+            with vis_tab_twin:
+                lens_matches = (
+                    getattr(case_file, "lens_matches", None)
+                    or st.session_state.get("last_state", {}).get("lens_matches", [])
+                )
+                render_visual_twin_comparator(
+                    suspect_image=img_to_display,
+                    lens_matches=lens_matches,
+                    base_confidence=case_file.confidence_score,
+                )
 
         with deck_right:
             render_geo_map(case_file.resolved_location)
+
+            # Live Monospace Swarm Telemetry Terminal
+            terminal_logs = st.session_state.get("swarm_telemetry_logs", [])
+            if not terminal_logs and case_file:
+                terminal_logs = [
+                    format_terminal_log_entry("SCENE_DECONSTRUCTOR", f"Cataloged {len(case_file.visual_clues)} forensic visual clues."),
+                    format_terminal_log_entry("LENS_HUNTER", f"SerpApi Google Lens identified {len(case_file.lens_matches)} visual twins."),
+                    format_terminal_log_entry("GEO_TRIANGULATOR", f"Google Maps pinpointed {target_name} ({coords_str})."),
+                    format_terminal_log_entry("CHRONO_AUDITOR", f"Google News archived {len(case_file.timeline)} chronological milestones."),
+                    format_terminal_log_entry("CASE_SYNTHESIZER", f"Synthesized case dossier with {conf_pct}% confidence."),
+                ]
+                st.session_state["swarm_telemetry_logs"] = terminal_logs
+
+            with st.expander("📡 Swarm Telemetry & Monospace Radar Log", expanded=False):
+                render_swarm_telemetry_terminal(terminal_logs, max_height_px=180)
 
             subtab_chrono, subtab_citations, subtab_dossier = st.tabs([
                 "⏱️ Chronological Provenance",

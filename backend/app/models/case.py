@@ -81,6 +81,7 @@ class CaseFile(BaseModel):
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall investigation confidence score")
     resolved_location: Optional[GeoCandidate] = Field(default=None, description="Final triangulated geographic coordinates")
     visual_clues: List[VisualClue] = Field(default_factory=list, description="Forensic visual clues identified")
+    lens_matches: List[dict] = Field(default_factory=list, description="Top visual twin matches from Google Lens")
     timeline: List[TimelineEvent] = Field(default_factory=list, description="Chronological publication timeline")
     citations: List[Citation] = Field(default_factory=list, description="Verifiable proof citations")
     refinement_hops: int = Field(default=0, description="Number of iterative disambiguation cycles performed")
