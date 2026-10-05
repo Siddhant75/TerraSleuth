@@ -4,16 +4,16 @@
 
 ---
 
-## 🚀 Active Project Status: Release v0.2 (LangGraph Multi-Agent OSINT Engine)
+## 🚀 Active Project Status: Release v0.3 (Interactive Visual OSINT Dashboard & Golden Demo)
 
 - **Project Name:** **TerraSleuth** (Autonomous Multi-Modal Visual & Geospatial OSINT Detective)
 - **Hackathon:** SerpApi India Hackathon 2026 (AI Agents Track)
-- **Active Working Branch:** `v0.2-dev` *(Branched from `main` @ `v0.1.0`; NEVER commit unverified code directly to `main`!)*
+- **Active Working Branch:** `v0.3-dev` *(Branched from `main` @ `v0.2.0`; NEVER commit unverified code directly to `main`!)*
 - **Milestone Branching Hierarchy:**
-  - `main` — Certified release branch (`v0.1.0` certified).
+  - `main` — Certified release branch (`v0.1.0` and `v0.2.0` certified).
   - `v0.1-dev` — **Sprint 1 (Complete):** Foundation, SQLite Disk Cache & SerpApi Visual/Spatial Service.
-  - `v0.2-dev` — **Sprint 2 (Active):** LangGraph Multi-Agent OSINT Engine (Scene Deconstructor, Lens Hunter, Geo Triangulator, Chrono Auditor).
-  - `v0.3-dev` — **Sprint 3:** Interactive Visual OSINT Dashboard (Bounding box visualizer, Leaflet Map Pinpoint, Evidence Chain & Golden Demo Walkthrough).
+  - `v0.2-dev` — **Sprint 2 (Complete):** LangGraph Multi-Agent OSINT Engine (Scene Deconstructor, Lens Hunter, Geo Triangulator, Chrono Auditor, Case Synthesizer).
+  - `v0.3-dev` — **Sprint 3 (Active):** Interactive Visual OSINT Dashboard (Bounding box visualizer, Leaflet Map Pinpoint, Evidence Chain & Golden Demo Walkthrough).
 - **Commit Policy:** Strict commit per task on the active development branch using `<type>(<scope>): <description> (Task <X.Y>)`.
 - **Active Single Source of Truth:**
   - **[docs/terrasleuth-roadmap.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-roadmap.md)** — Master subagent blueprint, task execution matrix, review verdicts, and commit log.

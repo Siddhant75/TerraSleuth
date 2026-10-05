@@ -1,8 +1,8 @@
 # TerraSleuth — Master Subagent Implementation & Review Roadmap
 
-> **Status:** Active Working Branch: `v0.2-dev` (Release v0.2: LangGraph Multi-Agent OSINT Engine)  
+> **Status:** Active Working Branch: `v0.3-dev` (Release v0.3: Interactive Visual OSINT Dashboard & Golden Demo)  
 > **Methodology:** Subagent-Driven Development (SDD) via `.agents/skills/hackathon-sdd-workflow/SKILL.md`  
-> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Active) → `v0.3-dev` (Sprint 3) → `main`  
+> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Certified `v0.2.0`) → `v0.3-dev` (Sprint 3: Active) → `main`  
 > **Single Source of Truth:** Tracks task blueprints, developer commits, adversarial code reviews, and verification gates.
 
 ---
