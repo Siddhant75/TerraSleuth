@@ -33,7 +33,7 @@
 | Task ID | Feature & Scope | Lead Architect Subagent | Lead Reviewer Subagent | Status | Commit Hash |
 |---|---|---|---|---|---|
 | **Task 1.1** | **SerpApi Visual & Spatial Client**<br>• Google Lens (reverse search & visual matches)<br>• Google Maps/Local (coordinates, place details)<br>• Google News & Search (timeline & context) | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `2a4db89` |
-| **Task 1.2** | **SQLite Disk Cache & Quota Defense**<br>• Transparent `@cached_serp` decorator<br>• Pre-seeded Golden Mystery profiles (`terrasleuth.db`) | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | Pending Commit |
+| **Task 1.2** | **SQLite Disk Cache & Quota Defense**<br>• Transparent `@cached_serp` decorator<br>• Pre-seeded Golden Mystery profiles (`terrasleuth.db`) | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `8532915` |
 | **Task 1.3** | **Foundation Unit Tests**<br>• Mock SerpApi fixtures (Lens, Maps, News)<br>• Quota circuit breaker & cache contract tests | `architect` (Test Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
 | **Task 2.1** | **LangGraph OSINT State Schema**<br>• `OsintState`, `VisualClue`, `GeoCandidate`<br>• Budget decrementing counters | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
 | **Task 2.2** | **Scene Deconstructor & Vision Service**<br>• Multi-modal clue extraction<br>• Architectural, signage, and flora parsing | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
