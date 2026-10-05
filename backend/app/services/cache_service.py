@@ -303,20 +303,36 @@ class CacheService:
             ttl_seconds=0,
         )
 
+        gateway_news_data = {
+            "news_results": [
+                {
+                    "title": "Archaeological Survey undertakes structural restoration of Gateway of India",
+                    "link": "https://timesofindia.indiatimes.com/city/mumbai/gateway-restoration",
+                    "source": {"name": "The Times of India"},
+                    "date": "2 weeks ago",
+                    "snippet": "Conservation architects begin detailed laser cleaning of basalt surfaces at Apollo Bunder.",
+                },
+                {
+                    "title": "Centenary celebrations planned for Mumbai's historic Gateway of India",
+                    "link": "https://indianexpress.com/article/cities/mumbai/gateway-centenary",
+                    "source": {"name": "The Indian Express"},
+                    "date": "1 month ago",
+                    "snippet": "Foundation stone laid in March 1911 commemorated with special archival exhibitions.",
+                },
+            ]
+        }
+
         self.set_cached_response(
             engine="google_news",
             params={"q": "Gateway of India restoration Colaba", "gl": "us", "hl": "en"},
-            response_data={
-                "news_results": [
-                    {
-                        "title": "Archaeological Survey undertakes structural restoration of Gateway of India",
-                        "link": "https://timesofindia.indiatimes.com/city/mumbai/gateway-restoration",
-                        "source": {"name": "The Times of India"},
-                        "date": "2 weeks ago",
-                        "snippet": "Conservation architects begin detailed laser cleaning of basalt surfaces at Apollo Bunder.",
-                    }
-                ]
-            },
+            response_data=gateway_news_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_news",
+            params={"q": "Gateway of India", "gl": "us", "hl": "en"},
+            response_data=gateway_news_data,
             ttl_seconds=0,
         )
 
@@ -369,6 +385,23 @@ class CacheService:
             engine="google_maps",
             params={"q": "Neuschwanstein Castle", "type": "search", "hl": "en"},
             response_data=neuschwanstein_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_news",
+            params={"q": "Neuschwanstein Castle", "gl": "us", "hl": "en"},
+            response_data={
+                "news_results": [
+                    {
+                        "title": "Bavarian Palace Department announces restoration of historic Neuschwanstein throne room",
+                        "link": "https://dw.com/en/neuschwanstein-restoration",
+                        "source": {"name": "Deutsche Welle"},
+                        "date": "3 months ago",
+                        "snippet": "Conservators complete specialized acoustic and fresco restoration work at King Ludwig II's iconic retreat.",
+                    }
+                ]
+            },
             ttl_seconds=0,
         )
 

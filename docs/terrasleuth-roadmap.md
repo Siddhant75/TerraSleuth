@@ -38,7 +38,7 @@
 | **Task 2.1** | **LangGraph OSINT State Schema**<br>• `OsintState`, `VisualClue`, `GeoCandidate`<br>• Budget decrementing counters | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `49e91f3` |
 | **Task 2.2** | **Scene Deconstructor & Vision Service**<br>• Multi-modal clue extraction<br>• Architectural, signage, and flora parsing | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `bf886ac` |
 | **Task 2.3** | **Lens Hunter & Geo Triangulator Nodes**<br>• Reverse-image provenance matching<br>• Spatial coordinate triangulation | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `90e606c` |
-| **Task 2.4** | **Chrono Auditor & Case Synthesizer**<br>• Timeline conflict resolution (max 2 hops)<br>• Case File dossier compilation | `architect` (Blueprint) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
+| **Task 2.4** | **Chrono Auditor & Case Synthesizer**<br>• Timeline conflict resolution (max 2 hops)<br>• Case File dossier compilation | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `pending` |
 | **Task 2.5** | **Graph Integration Tests**<br>• Full dialectical OSINT execution<br>• Multi-candidate tie-breaking tests | `architect` (Test Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
 | **Task 3.1** | **Interactive Streamlit Dashboard**<br>• Image upload & live node streaming<br>• Live vs. Golden Mystery mode toggle | `architect` (UI Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |
 | **Task 3.2** | **Visual Evidence Board & Leaflet Map**<br>• Bounding-box clue overlays<br>• Interactive Leaflet map coordinate pinning | `architect` (UI Plan) | `code-reviewer` (Adversarial) | ⏳ Pending | — |

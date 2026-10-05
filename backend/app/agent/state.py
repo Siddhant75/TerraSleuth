@@ -42,6 +42,7 @@ class OsintGraphState(TypedDict):
     citations: Annotated[List[Citation], operator.add]
 
     # Deterministic Circuit Breakers & Query Budgets
+    initial_budget: int
     budget_remaining: int
     refinement_hops: int
     max_refinement_hops: int
@@ -71,6 +72,7 @@ def create_initial_osint_state(
         "timeline_events": [],
         "lens_matches": [],
         "citations": [],
+        "initial_budget": max(0, max_budget),
         "budget_remaining": max(0, max_budget),
         "refinement_hops": 0,
         "max_refinement_hops": max(0, max_refinement_hops),

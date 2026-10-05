@@ -17,6 +17,7 @@
 | **Task 2.1: LangGraph OSINT State Schema** | `backend/app/models/case.py`<br>`backend/app/agent/state.py` | `backend/tests/test_state.py` (7 tests) | 7/7 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 2.2: Scene Deconstructor & Vision Service** | `backend/app/services/vision_service.py`<br>`backend/app/agent/nodes/scene_deconstructor.py` | `backend/tests/test_vision.py` (7 tests) | 7/7 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 2.3: Lens Hunter & Geo Triangulator Nodes** | `backend/app/agent/nodes/lens_hunter.py`<br>`backend/app/agent/nodes/geo_triangulator.py` | `backend/tests/test_lens_geo_nodes.py` (6 tests) | 6/6 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 2.4: Chrono Auditor & Case Synthesizer Nodes** | `backend/app/agent/nodes/chrono_auditor.py`<br>`backend/app/agent/nodes/case_synthesizer.py` | `backend/tests/test_chrono_synthesizer_nodes.py` (6 tests) | 6/6 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 
 ---
 
@@ -24,7 +25,7 @@
 
 1. **Zero-Credit Automated Testing Invariant:**
    - **Verification:** 100% of unit tests in `backend/tests/` run against mock fixtures or temporary SQLite cache databases.
-   - **Result:** **0 live SerpApi credits burned** across all 44 automated tests.
+   - **Result:** **0 live SerpApi credits burned** across all 50 automated tests.
 
 2. **Secret Masking & Sanitization Invariant:**
    - **Verification:** `_sanitize_message()` intercepts all exception strings, error payloads, and URLs, masking API keys with `***`.
@@ -51,20 +52,21 @@
 platform win32 -- Python 3.11.11, pytest-8.2.2, pluggy-1.5.0
 cachedir: .pytest_cache
 rootdir: D:\SerpAPI_hackathon
-collected 44 items
+collected 50 items
 
-backend/tests/test_cache.py ................ [18%] (8 passed)
-backend/tests/test_lens_geo_nodes.py ....... [31%] (6 passed)
-backend/tests/test_quota.py ................ [40%] (4 passed)
-backend/tests/test_serpapi.py .............. [68%] (12 passed)
-backend/tests/test_state.py ................ [84%] (7 passed)
-backend/tests/test_vision.py ............... [100%] (7 passed)
+backend/tests/test_cache.py ..................... [16%] (8 passed)
+backend/tests/test_chrono_synthesizer_nodes.py .. [28%] (6 passed)
+backend/tests/test_lens_geo_nodes.py ............ [40%] (6 passed)
+backend/tests/test_quota.py ..................... [48%] (4 passed)
+backend/tests/test_serpapi.py ................... [72%] (12 passed)
+backend/tests/test_state.py ..................... [86%] (7 passed)
+backend/tests/test_vision.py .................... [100%] (7 passed)
 
-============================= 44 passed in 9.34s ==============================
+============================= 50 passed in 11.42s =============================
 ```
 
-- **Total Test Cases:** 44
+- **Total Test Cases:** 50
 - **Failures:** 0
-- **Execution Time:** < 9.5 seconds
+- **Execution Time:** < 12.0 seconds
 - **Local SQLite DB:** WAL mode verified
 - **Golden Cases Pre-Seeded:** 3 (`case_gateway_mumbai`, `case_neuschwanstein`, `case_market_scam`)
