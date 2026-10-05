@@ -91,15 +91,13 @@ def render_visual_evidence_board(
             safe_desc = html.escape(str(desc))
 
             with col:
-                st.markdown(
-                    f"""
-                    <div style="background-color: #1a1e24; padding: 10px; border-radius: 8px; border-left: 4px solid #3498db; margin-bottom: 8px;">
-                        <span style="font-size: 11px; color: #8892b0; text-transform: uppercase;">{safe_cat}</span>
-                        <div style="font-size: 13px; font-weight: 600; color: #e6f1ff; margin-top: 4px;">{safe_desc}</div>
-                        <div style="font-size: 12px; color: #64ffda; margin-top: 4px;">Confidence: {int(conf * 100)}%</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
+                clue_html = (
+                    f'<div style="background-color: #1a1e24; padding: 10px; border-radius: 8px; border-left: 4px solid #3498db; margin-bottom: 8px;">'
+                    f'<span style="font-size: 11px; color: #8892b0; text-transform: uppercase;">{safe_cat}</span>'
+                    f'<div style="font-size: 13px; font-weight: 600; color: #e6f1ff; margin-top: 4px;">{safe_desc}</div>'
+                    f'<div style="font-size: 12px; color: #64ffda; margin-top: 4px;">Confidence: {int(conf * 100)}%</div>'
+                    f'</div>'
                 )
+                col.markdown(clue_html, unsafe_allow_html=True)
     else:
         ctx.info("No visual forensic clues deconstructed.")

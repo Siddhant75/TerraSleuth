@@ -64,18 +64,16 @@ def render_citation_ledger(
                 safe_snippet = html.escape(str(raw_snippet))
                 safe_url = sanitize_url(raw_url)
 
-                st.markdown(
-                    f"""
-                    <div style="background-color: #14171d; padding: 10px 14px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid {color};">
-                        <div style="font-size: 14px; font-weight: 600;">
-                            <a href="{safe_url}" target="_blank" style="color: #64ffda; text-decoration: none;">
-                                {i}. {safe_title} ↗
-                            </a>
-                        </div>
-                        <div style="font-size: 12px; color: #a8b2d1; margin-top: 4px;">
-                            <i>"{safe_snippet}"</i>
-                        </div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
+                card_html = (
+                    f'<div style="background-color: #14171d; padding: 10px 14px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid {color};">'
+                    f'<div style="font-size: 14px; font-weight: 600;">'
+                    f'<a href="{safe_url}" target="_blank" style="color: #64ffda; text-decoration: none;">'
+                    f'{i}. {safe_title} ↗'
+                    f'</a>'
+                    f'</div>'
+                    f'<div style="font-size: 12px; color: #a8b2d1; margin-top: 4px;">'
+                    f'<i>"{safe_snippet}"</i>'
+                    f'</div>'
+                    f'</div>'
                 )
+                ctx.markdown(card_html, unsafe_allow_html=True)

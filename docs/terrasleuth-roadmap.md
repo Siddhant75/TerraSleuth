@@ -43,3 +43,5 @@
 | **Task 3.1** | **Interactive Streamlit Dashboard**<br>• Image upload & live node streaming<br>• Live vs. Golden Mystery mode toggle | `architect` (UI Plan) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e7ef44a` |
 | **Task 3.2** | **Visual Evidence Board & Leaflet Map**<br>• Bounding-box clue overlays<br>• Interactive Leaflet map coordinate pinning | `architect` (UI Plan) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e7ef44a` |
 | **Task 3.3** | **Regression Audit & Demo Video Walkthrough**<br>• 100% health scorecard verification<br>• <3 min screen recording walkthrough | `architect` (Audit) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `c20eea4` |
+| **Post-v0.3** | **Browser E2E Automation & Visual Audit**<br>• Playwright multi-tab browser automation<br>• High-contrast dark theme verification<br>• Timeline HTML rendering patch (0 live credits burned) | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | Pending |
+

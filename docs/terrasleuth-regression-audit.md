@@ -86,3 +86,23 @@ tests/e2e/test_dashboard_e2e.py ................ [100%] (4 passed)
 - **Execution Time:** ~14.0 seconds
 - **Local SQLite DB:** WAL mode verified (`terrasleuth.db`)
 - **Golden Cases Pre-Seeded:** 3 (`case_gateway_mumbai`, `case_neuschwanstein`, `case_market_scam`)
+
+---
+
+## 🖥️ Browser Automation & Visual UI Verification (Playwright)
+
+In addition to headless unit and AppTest suites, the live running application was verified via real browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome.
+
+### Visual Audit Checkpoints & Captured Screenshots (`tests/e2e/screenshots/`):
+1. **`01_initial_dashboard.png`**: High-contrast forensic dark theme (`#0b0e14` background, `#111622` card containers, `#e6f1ff` primary typography), interactive sidebar target mode radio, and target guide banner.
+2. **`02_target_selected.png`**: Golden Mystery Target selector ("The Waterfront Monument & Heritage Hotel") with immediate sidebar preview image rendering.
+3. **`03_investigation_complete.png`**: Autonomous LangGraph swarm live progress cards showing checkmarks and completed status across all 5 nodes (`Scene Deconstructor`, `Lens Hunter`, `Geo Triangulator`, `Chrono Auditor`, `Lead Detective Synthesizer`).
+4. **`04_tab_1_geospatial_map.png`**: Leaflet / Folium interactive map centered on Apollo Bunder (`18.9220, 72.8347`) with high-precision red coordinate marker, consensus accuracy radius, and direct Google Maps link.
+5. **`04_tab_2_visual_evidence.png`**: Visual Evidence Board with Pillow-rendered bounding boxes (`ARCHITECTURE 96%`, `LANDMARK 94%`) and category breakdown cards.
+6. **`04_tab_3_chronology_timeline.png`**: Chronological Provenance card with `EARLIEST KNOWN APPEARANCE` badge, publication timestamps, and quoted excerpts without HTML escaping glitches.
+7. **`04_tab_4_citation_chain.png`**: Verifiable Evidentiary Citation Ledger grouped by SerpApi engine (Google Lens: 2 sources, Google Maps: 2 sources, Google News: 2 sources) with clickable links.
+8. **`04_tab_5_markdown_dossier.png`**: Formatted Executive OSINT Dossier with ground truth location, architectural cues, and verifiable citations.
+
+### Quota Defense Verification:
+- **SerpApi Live Credits Burned During UI Audit:** **0 credits** (100% resolved via SQLite WAL disk cache).
+

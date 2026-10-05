@@ -38,12 +38,28 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .main {
-        background-color: #0b0e14;
-        color: #e6f1ff;
+    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        background-color: #0b0e14 !important;
+        color: #e6f1ff !important;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #111622 !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #f8fafc !important;
+    }
+    .hero-badge {
+        background-color: #1e3a8a;
+        color: #93c5fd !important;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+        margin-bottom: 8px;
     }
     .stMetric {
-        background-color: #141923;
+        background-color: #141923 !important;
         padding: 12px;
         border-radius: 8px;
         border: 1px solid #1f2937;
@@ -56,15 +72,13 @@ st.markdown(
         margin-bottom: 10px;
         font-family: monospace;
     }
-    .hero-badge {
-        background-color: #1e3a8a;
-        color: #93c5fd;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 12px;
-        display: inline-block;
-        margin-bottom: 8px;
+    [data-testid="stTabs"] button {
+        color: #94a3b8 !important;
+        font-weight: 600;
+    }
+    [data-testid="stTabs"] button[aria-selected="true"] {
+        color: #60a5fa !important;
+        border-bottom-color: #3b82f6 !important;
     }
     </style>
     """,
@@ -247,11 +261,7 @@ def main():
                 status_text = node_output.get("status", "complete")
 
                 step_placeholders[node_name].markdown(
-                    f"""
-                    <div class="agent-step-box">
-                        <b>✅ {title}</b> — <i>Status: <code>{status_text}</code></i>
-                    </div>
-                    """,
+                    f'<div class="agent-step-box"><b>✅ {title}</b> — <i>Status: <code>{status_text}</code></i></div>',
                     unsafe_allow_html=True,
                 )
 
