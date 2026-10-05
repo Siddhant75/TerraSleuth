@@ -6,8 +6,8 @@ from streamlit_folium import st_folium
 
 logger = logging.getLogger(__name__)
 
-CARTODB_DARK_TILES = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-CARTODB_ATTR = "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/attributions'>CARTO</a>"
+ESRI_SATELLITE_TILES = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+ESRI_ATTR = "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics"
 
 
 def render_telemetry_bar_html(
@@ -71,9 +71,10 @@ def create_folium_map(
 
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=15 if getattr(candidate, "latitude", None) is not None else 2,
-        tiles=CARTODB_DARK_TILES,
-        attr=CARTODB_ATTR,
+        zoom_start=16 if getattr(candidate, "latitude", None) is not None else 2,
+        tiles=ESRI_SATELLITE_TILES,
+        attr=ESRI_ATTR,
+        name="Tactical Dark Satellite (Esri)",
         control_scale=True,
     )
 
@@ -121,7 +122,7 @@ def render_geo_map(
 
     ctx = streamlit_context or st
 
-    ctx.markdown("### 📍 Tactical Geospatial Pinpoint (CartoDB Dark Matter)")
+    ctx.markdown("### 📍 Tactical Geospatial Pinpoint (Satellite Recon)")
     ctx.caption("Physical coordinate resolution via Google Maps and Local places consensus.")
 
     if not candidate or getattr(candidate, "latitude", None) is None:

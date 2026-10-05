@@ -1,4 +1,5 @@
 import html
+import os
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 import streamlit as st
@@ -124,18 +125,26 @@ def render_visual_twin_comparator(
             unsafe_allow_html=True,
         )
         if meta["has_thumbnail"]:
-            try:
-                st.image(meta["thumbnail_url"], use_container_width=True)
-            except Exception:
-                st.markdown(
-                    """
-                    <div style="background: #090d16; border: 1px dashed #334155; border-radius: 6px; padding: 30px; text-align: center; color: #94a3b8;">
-                        <div style="font-size: 24px;">🌐</div>
-                        <div style="font-size: 12px; margin-top: 8px;">Remote thumbnail protected or unreachable</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+            thumb_url = meta["thumbnail_url"]
+            if isinstance(thumb_url, str) and os.path.exists(thumb_url):
+                try:
+                    loaded_img = Image.open(thumb_url)
+                    st.image(loaded_img, use_container_width=True)
+                except Exception:
+                    st.image(thumb_url, use_container_width=True)
+            else:
+                try:
+                    st.image(thumb_url, use_container_width=True)
+                except Exception:
+                    st.markdown(
+                        """
+                        <div style="background: #090d16; border: 1px dashed #334155; border-radius: 6px; padding: 30px; text-align: center; color: #94a3b8;">
+                            <div style="font-size: 24px;">🌐</div>
+                            <div style="font-size: 12px; margin-top: 8px;">Remote thumbnail protected or unreachable</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
         else:
             st.markdown(
                 """

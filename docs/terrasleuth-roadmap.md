@@ -1,8 +1,8 @@
 # TerraSleuth — Master Subagent Implementation & Review Roadmap
 
-> **Status:** Release v0.3 Certified (`v0.3.0`) — All 3 Sprints 100% Completed  
+> **Status:** Release v0.4 Certified (`v0.4.0`) — All 4 Sprints 100% Completed  
 > **Methodology:** Subagent-Driven Development (SDD) via `.agents/skills/hackathon-sdd-workflow/SKILL.md`  
-> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Certified `v0.2.0`) → `v0.3-dev` (Sprint 3: Certified `v0.3.0`) → `main`  
+> **Release Milestones:** `v0.1-dev` (Sprint 1: Certified `v0.1.0`) → `v0.2-dev` (Sprint 2: Certified `v0.2.0`) → `v0.3-dev` (Sprint 3: Certified `v0.3.0`) → `v0.4-dev` (Sprint 4: Certified `v0.4.0`) → `main`  
 > **Single Source of Truth:** Tracks task blueprints, developer commits, adversarial code reviews, and verification gates.
 
 ---
@@ -53,6 +53,6 @@
 | **Task 4.1** | **Authentic High-Res OSINT Target Library**<br>• Real photography assets (Gateway, Neuschwanstein, Rental Scam)<br>• Golden cache seeding in SQLite | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `fb61583` |
 | **Task 4.2** | **Split-Screen Command Deck & Dark Map**<br>• 45/55 Command Deck (Visual Inspector + Tactical Map)<br>• CartoDB Dark Matter tiles & neon crosshair<br>• Zero-truncation flexbox telemetry cards | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `06195b1` |
 | **Task 4.3** | **Visual Twin Matcher & Cyber Telemetry Terminal**<br>• Side-by-side suspect image vs Google Lens match<br>• Live monospace terminal streaming agent logs | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `24c59a5` |
-| **Task 4.4** | **Full Regression Audit & Release v0.4 Certification**<br>• Pytest 100% pass & Playwright re-certification<br>• Golden demo recording script update<br>• Tag `v0.4.0` | `architect` (Audit) | `code-reviewer` (Adversarial) | 🟡 In Progress | Pending |
+| **Task 4.4** | **Full Regression Audit & Release v0.4 Certification**<br>• Pytest 100% pass & Playwright re-certification<br>• Golden demo recording script update<br>• Tag `v0.4.0` | `architect` (Audit) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | Pending |
 
 

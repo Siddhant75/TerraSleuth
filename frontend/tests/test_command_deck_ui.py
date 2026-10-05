@@ -15,8 +15,8 @@ def test_create_folium_map_tiles():
     assert len(tile_layers) > 0, "No TileLayer found in Folium map"
     tile_name = tile_layers[0].tile_name.lower() if hasattr(tile_layers[0], "tile_name") and tile_layers[0].tile_name else ""
     tile_url = str(tile_layers[0].tiles).lower() if hasattr(tile_layers[0], "tiles") else ""
-    assert "cartodb" in tile_name or "dark" in tile_name or "cartodb" in tile_url or "dark" in tile_url, \
-        f"Tile layer does not appear to be CartoDB Dark Matter: name={tile_name}, url={tile_url}"
+    assert any(k in tile_name or k in tile_url for k in ["cartodb", "dark", "satellite", "esri", "arcgis"]), \
+        f"Tile layer does not appear to be tactical or satellite: name={tile_name}, url={tile_url}"
 
 
 def test_create_folium_map_with_candidate():
