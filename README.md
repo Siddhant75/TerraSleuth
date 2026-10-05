@@ -1,60 +1,102 @@
 # 🌍 TerraSleuth — Autonomous Multi-Modal Visual & Geospatial OSINT Detective
 
 > **SerpApi India Hackathon 2026** — *AI Agents Track*  
-> Powered by **SerpApi (Google Lens, Google Maps, Google News, Google Search)** & **LangGraph**
+> Powered by **SerpApi (Google Lens, Google Maps, Google News, Google Search)** & **LangGraph Multi-Agent Swarm**
 
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
-[![Python Version](https://img.shields.io/badge/Python-3.11-green.svg)](https://python.org)
+[![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-green.svg)](https://python.org)
+[![Tests Passing](https://img.shields.io/badge/Tests-65%2F65%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Release Certified](https://img.shields.io/badge/Release-v0.3.0--certified-blueviolet.svg)](AGENTS.md)
+[![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Release-v0.1--dev-orange.svg)](AGENTS.md)
 
 ---
 
 ## 🔍 What is TerraSleuth?
 
-Standard AI agents operate in a digital vacuum—they hallucinate coordinates, invent facts, and are blind to the open visual web. 
+Standard LLMs hallucinate physical locations, invent dates, and operate in a digital vacuum.
 
-**TerraSleuth** transforms the AI Agent into an autonomous **Digital Forensic Detective (OSINT)**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
-1. **Deconstructs the Scene**: Extracts atomic visual clues—architectural styles, street signage scripts (Devanagari, Cyrillic, Latin), vehicle driving sides, and flora/climate.
+**TerraSleuth** transforms the AI agent into an autonomous **Digital Forensic OSINT Detective**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
+
+1. **Deconstructs the Scene**: Extracts atomic visual clues—architectural styles, street signage scripts (Devanagari, Cyrillic, Latin), vehicle driving sides, and flora/climate—binding them to normalized bounding box coordinates.
 2. **Hunts Visual Provenance (Google Lens API)**: Searches the global visual web to unearth where the photo originated, finding exact matches and initial indexing timestamps.
-3. **Triangulates Physical Coordinates (Google Maps & Local API)**: Correlates street names, business signs, and landmarks into precise latitude, longitude, and physical addresses.
-4. **Audits Chronology & News (Google News & Search APIs)**: Validates historical events, weather reports, and local news to verify whether the image represents breaking reality or recycled media.
-5. **Compiles an Interactive Case File**: Delivers an annotated visual evidence board, live interactive Leaflet map coordinate pinpoint, and a verifiable citation ledger.
+3. **Triangulates Physical Coordinates (Google Maps & Local API)**: Correlates street names, business signs, and landmarks into precise WGS84 latitude, longitude, and physical addresses with a spatial consensus radius.
+4. **Audits Chronology & News (Google News & Search APIs)**: Validates historical milestones, news reports, and viral cycles to verify whether the image represents breaking reality or recycled media.
+5. **Compiles an Interactive Case File**: Synthesizes findings into a verifiable forensic dossier featuring an interactive Leaflet map, visual evidence board, chronological timeline, and multi-engine citation ledger.
 
 ---
 
 ## 🗺️ System Architecture
 
 ```
-  Input Mystery Image
-          │
-          ▼
-  Visual Scene Deconstructor
-  (Multi-Modal Clue Extraction)
-          │
-   ┌──────┴───────────────────────────┬───────────────────────────┐
-   ▼                                  ▼                           ▼
-Lens Hunter                   Geo Triangulator             Chrono Auditor
-(SerpApi Google Lens)        (SerpApi Google Maps)        (SerpApi News & Search)
-   │                                  │                           │
-   └──────┬───────────────────────────┴───────────────────────────┘
-          ▼
-  Lead Detective (LangGraph Dialectical Case Resolver)
-          │
-          ▼
-  Interactive OSINT Case Dossier:
-  • Visual Evidence Board (with Bounding Clues)
-  • Interactive Map Pinpoint (Lat/Lon Coordinates)
-  • Chronological Provenance Timeline
-  • Clickable SERP Citation Ledger
+                                Input Mystery Image
+                                        │
+                                        ▼
+                           ┌──────────────────────────┐
+                           │   Scene Deconstructor    │
+                           │ (Pillow / Vision Clues)  │
+                           └────────────┬─────────────┘
+                                        │
+                                        ▼
+                           ┌──────────────────────────┐
+                           │       Lens Hunter        │
+                           │   (SerpApi Google Lens)  │
+                           └────────────┬─────────────┘
+                                        │
+                                        ▼
+                           ┌──────────────────────────┐
+                           │     Geo Triangulator     │
+                           │   (SerpApi Google Maps)  │
+                           └────────────┬─────────────┘
+                                        │
+                         [Budget & Ambiguity Routing]
+                                        ├── (Refine if ambiguous) ──┐
+                                        │                           │
+                                        ▼                           │
+                           ┌──────────────────────────┐             │
+                           │      Chrono Auditor      │             │
+                           │   (SerpApi Google News)  │             │
+                           └────────────┬─────────────┘             │
+                                        │                           │
+                                        └─────────────┬─────────────┘
+                                                      │
+                                                      ▼
+                                       ┌─────────────────────────────┐
+                                       │   Lead Detective Synthesizer│
+                                       │ (LangGraph Consensus Engine)│
+                                       └──────────────┬──────────────┘
+                                                      │
+                                                      ▼
+                       ┌──────────────────────────────────────────────────────────┐
+                       │            Interactive Forensic OSINT Dossier            │
+                       │  • 🗺️ Geospatial Pinpoint (Leaflet / Folium Coordinates) │
+                       │  • 🔍 Visual Evidence Board (Pillow Bounding Boxes)      │
+                       │  • ⏱️ Chronological Provenance & Viral Milestones         │
+                       │  • 🔗 Verifiable Multi-Engine SERP Citation Ledger       │
+                       └──────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🖥️ Interactive Web Dashboard
+
+TerraSleuth features a Streamlit forensic dashboard:
+
+- **1-Click Golden Mystery Targets**: Test instantly with pre-seeded, zero-credit mystery images (*Gateway of India waterfront monument*, *Neuschwanstein Castle*, *Marketplace rental scam*).
+- **Target Uploader & Remote URL**: Ingest any mystery JPG/PNG or direct web URL.
+- **Live Swarm Telemetry**: Watch the LangGraph OSINT swarm stream execution step-by-step with real-time progress cards.
+- **Tab 1: 🗺️ Triangulated Geospatial Pinpoint**: Interactive Leaflet map with pinpoint marker, consensus accuracy circle, and one-click Google Maps verification.
+- **Tab 2: 🔍 Forensic Visual Evidence Board**: High-contrast bounding box overlays color-coded by category (Architecture, Signage, Vegetation, Landmark).
+- **Tab 3: ⏱️ Chronological Provenance & Media Timeline**: Earliest publication date detection (`[EARLIEST KNOWN APPEARANCE]`) and historical news milestones.
+- **Tab 4: 🔗 Verifiable Citation Ledger**: Clickable evidence trails grouped by SerpApi engine (Google Lens, Maps, News, Search) with strict URL sanitization.
+- **Export Dossier**: One-click download of the completed `CaseFile` in JSON or Markdown format.
 
 ---
 
 ## 🚀 Quickstart
 
 ### 1. Prerequisites
-- Python 3.11+
+- Python 3.11 or 3.12
 - SerpApi API Key ([Sign up for free 250 credits/mo](https://serpapi.com/users/sign_up?plan=free))
 
 ### 2. Installation
@@ -62,27 +104,50 @@ Lens Hunter                   Geo Triangulator             Chrono Auditor
 git clone https://github.com/Siddhant75/TerraSleuth.git
 cd TerraSleuth
 pip install -r backend/requirements.txt
+pip install -r frontend/requirements.txt
 ```
 
-### 3. Configure Environment
+### 3. Environment Configuration
 ```bash
 cp .env.example .env
-# Add your SERPAPI_API_KEY and LLM API Key (OpenAI / Gemini / Anthropic)
+# Edit .env and enter your SERPAPI_API_KEY
 ```
 
-### 4. Run Interactive Dashboard
+*(Note: Golden Mystery Targets and automated test suites run completely offline against the local SQLite cache without consuming API credits).*
+
+### 4. Run the Interactive Dashboard
 ```bash
 streamlit run frontend/app.py
 ```
+Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+### 5. Run the Full Automated Test Suite (65/65 Passing)
+```bash
+# Run all unit, integration, and end-to-end tests
+pytest -v
+```
 
 ---
 
-## 🔑 Key Engineering Rules
-- **Subagent-Driven Development (SDD)**: Architect blueprinting, developer execution, adversarial code review (`code-reviewer`), and multi-gate verification.
-- **Quota Defense**: SQLite disk-cache layer (`terrasleuth.db`) wrapping all SerpApi requests so development and tests burn zero unnecessary credits.
-- **Golden Mystery Demo Mode**: Pre-cached targets for instant, lag-free <3 minute video recording.
+## 🛡️ Hackathon Engineering Disciplines
+
+1. **Subagent-Driven Development (SDD):** Built strictly following the SDD engineering protocol (`architect` blueprinting $\to$ surgical development $\to$ adversarial review via `code-reviewer` $\to$ multi-gate verification).
+2. **Strict Quota Defense:** Wrapped in a SQLite WAL disk cache (`terrasleuth.db`) with SHA-256 parameter hashing (stripping API keys and transient flags). Zero live credits are consumed during test suites or offline golden demos.
+3. **Zero Hallucination Guarantee:** Every geographical coordinate and timeline event is strictly anchored to an authoritative SerpApi result in the citation ledger.
+4. **XSS & Security Hardening:** Comprehensive HTML escaping on all scraped/external strings and strict URL scheme allowlisting (`http://` / `https://` only) preventing script execution in Markdown or Folium popups.
+5. **Memory & Disk Hygiene:** Session-state-managed file upload rotation unlinks orphan temporary files upon subsequent reruns.
 
 ---
 
-## 📜 Governance
-Read [AGENTS.md](file:///d:/SerpAPI_hackathon/AGENTS.md) for master architecture and [docs/terrasleuth-roadmap.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-roadmap.md) for active task execution status.
+## 🎬 Golden Demo Walkthrough
+
+Review our step-by-step 3-minute video presentation script in [docs/golden-demo-script.md](docs/golden-demo-script.md).
+
+---
+
+## 📜 Repository Governance
+
+- **[AGENTS.md](AGENTS.md):** Master architecture and subagent navigation guide.
+- **[docs/terrasleuth-roadmap.md](docs/terrasleuth-roadmap.md):** Living roadmap and subagent execution matrix.
+- **[docs/terrasleuth-regression-audit.md](docs/terrasleuth-regression-audit.md):** Living regression audit and 65-test health scorecard.
+- **[docs/terrasleuth-plan.md](docs/terrasleuth-plan.md):** Multi-engine SerpApi integration plan and LangGraph state machine design.
