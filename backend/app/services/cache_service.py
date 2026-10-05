@@ -243,41 +243,96 @@ class CacheService:
             ttl_seconds=0,  # Never expires
         )
 
+        gateway_maps_data = {
+            "local_results": [
+                {
+                    "title": "Gateway of India",
+                    "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
+                    "place_id": "ChIJbU60Q_bQ5zsRz797rU461QQ",
+                    "data_cid": "321654987",
+                    "gps_coordinates": {"latitude": 18.9220, "longitude": 72.8347},
+                    "rating": 4.6,
+                    "reviews": 125430,
+                    "type": "Historical landmark",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/gateway.jpg",
+                }
+            ]
+        }
+
         self.set_cached_response(
             engine="google_maps",
             params={"q": "Gateway of India Colaba Mumbai", "type": "search", "hl": "en"},
-            response_data={
-                "local_results": [
-                    {
-                        "title": "Gateway of India",
-                        "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
-                        "place_id": "ChIJbU60Q_bQ5zsRz797rU461QQ",
-                        "data_cid": "321654987",
-                        "gps_coordinates": {"latitude": 18.9220, "longitude": 72.8347},
-                        "rating": 4.6,
-                        "reviews": 125430,
-                        "type": "Historical landmark",
-                        "thumbnail": "https://lh5.googleusercontent.com/p/gateway.jpg",
-                    }
-                ]
-            },
+            response_data=gateway_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Gateway of India", "type": "search", "hl": "en"},
+            response_data=gateway_maps_data,
+            ttl_seconds=0,
+        )
+
+        taj_maps_data = {
+            "local_results": [
+                {
+                    "title": "The Taj Mahal Palace, Mumbai",
+                    "address": "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001",
+                    "place_id": "ChIJu_TajMahalPalaceMumbai",
+                    "data_cid": "987654321",
+                    "gps_coordinates": {"latitude": 18.9217, "longitude": 72.8332},
+                    "rating": 4.7,
+                    "reviews": 48200,
+                    "type": "5-star hotel",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/taj.jpg",
+                }
+            ]
+        }
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "The Taj Mahal Palace, Mumbai", "type": "search", "hl": "en"},
+            response_data=taj_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "The Taj Mahal Palace", "type": "search", "hl": "en"},
+            response_data=taj_maps_data,
+            ttl_seconds=0,
+        )
+
+        gateway_news_data = {
+            "news_results": [
+                {
+                    "title": "Archaeological Survey undertakes structural restoration of Gateway of India",
+                    "link": "https://timesofindia.indiatimes.com/city/mumbai/gateway-restoration",
+                    "source": {"name": "The Times of India"},
+                    "date": "2 weeks ago",
+                    "snippet": "Conservation architects begin detailed laser cleaning of basalt surfaces at Apollo Bunder.",
+                },
+                {
+                    "title": "Centenary celebrations planned for Mumbai's historic Gateway of India",
+                    "link": "https://indianexpress.com/article/cities/mumbai/gateway-centenary",
+                    "source": {"name": "The Indian Express"},
+                    "date": "1 month ago",
+                    "snippet": "Foundation stone laid in March 1911 commemorated with special archival exhibitions.",
+                },
+            ]
+        }
+
+        self.set_cached_response(
+            engine="google_news",
+            params={"q": "Gateway of India restoration Colaba", "gl": "us", "hl": "en"},
+            response_data=gateway_news_data,
             ttl_seconds=0,
         )
 
         self.set_cached_response(
             engine="google_news",
-            params={"q": "Gateway of India restoration Colaba", "gl": "us", "hl": "en"},
-            response_data={
-                "news_results": [
-                    {
-                        "title": "Archaeological Survey undertakes structural restoration of Gateway of India",
-                        "link": "https://timesofindia.indiatimes.com/city/mumbai/gateway-restoration",
-                        "source": {"name": "The Times of India"},
-                        "date": "2 weeks ago",
-                        "snippet": "Conservation architects begin detailed laser cleaning of basalt surfaces at Apollo Bunder.",
-                    }
-                ]
-            },
+            params={"q": "Gateway of India", "gl": "us", "hl": "en"},
+            response_data=gateway_news_data,
             ttl_seconds=0,
         )
 
@@ -303,21 +358,47 @@ class CacheService:
             ttl_seconds=0,
         )
 
+        neuschwanstein_maps_data = {
+            "local_results": [
+                {
+                    "title": "Neuschwanstein Castle",
+                    "address": "Neuschwansteinstraße 20, 87645 Schwangau, Germany",
+                    "place_id": "ChIJy-gZqLqom0cR_g62RjK12x4",
+                    "data_cid": "456789123",
+                    "gps_coordinates": {"latitude": 47.5576, "longitude": 10.7498},
+                    "rating": 4.8,
+                    "reviews": 89450,
+                    "type": "Castle",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/neuschwanstein.jpg",
+                }
+            ]
+        }
+
         self.set_cached_response(
             engine="google_maps",
             params={"q": "Neuschwanstein Castle Schwangau Bavaria", "type": "search", "hl": "en"},
+            response_data=neuschwanstein_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Neuschwanstein Castle", "type": "search", "hl": "en"},
+            response_data=neuschwanstein_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_news",
+            params={"q": "Neuschwanstein Castle", "gl": "us", "hl": "en"},
             response_data={
-                "local_results": [
+                "news_results": [
                     {
-                        "title": "Neuschwanstein Castle",
-                        "address": "Neuschwansteinstraße 20, 87645 Schwangau, Germany",
-                        "place_id": "ChIJy-gZqLqom0cR_g62RjK12x4",
-                        "data_cid": "456789123",
-                        "gps_coordinates": {"latitude": 47.5576, "longitude": 10.7498},
-                        "rating": 4.8,
-                        "reviews": 89450,
-                        "type": "Castle",
-                        "thumbnail": "https://lh5.googleusercontent.com/p/neuschwanstein.jpg",
+                        "title": "Bavarian Palace Department announces restoration of historic Neuschwanstein throne room",
+                        "link": "https://dw.com/en/neuschwanstein-restoration",
+                        "source": {"name": "Deutsche Welle"},
+                        "date": "3 months ago",
+                        "snippet": "Conservators complete specialized acoustic and fresco restoration work at King Ludwig II's iconic retreat.",
                     }
                 ]
             },
