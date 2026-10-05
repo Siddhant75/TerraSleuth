@@ -4,11 +4,17 @@
 
 ---
 
-## 🚀 Active Project Status: Foundation & Architecture (Sprint 1)
+## 🚀 Active Project Status: Release v0.1 (Foundation & Multi-Engine Setup)
 
 - **Project Name:** **VCSentry** (Autonomous Startup & Founder Due Diligence Agent)
 - **Hackathon:** SerpApi India Hackathon 2026 (AI Agents Track)
-- **Active Working Branch:** `main` (feature work moves to task branches / `v1.0-dev`)
+- **Active Working Branch:** `v0.1-dev` *(Branched from `main`; NEVER commit unverified code directly to `main`!)*
+- **Milestone Branching Hierarchy:**
+  - `main` — Certified release branch (Production-ready).
+  - `v0.1-dev` — **Sprint 1:** Foundation, SQLite Disk Cache & SerpApi Multi-Engine Service.
+  - `v0.2-dev` — **Sprint 2:** LangGraph Dialectical State Machine & Adversarial Red-Team Engine.
+  - `v0.3-dev` — **Sprint 3:** Interactive Streamlit Dashboard, Citations UI & Golden Video Walkthrough.
+- **Commit Policy:** Strict commit per task on the active development branch using `<type>(<scope>): <description> (Task <X.Y>)`.
 - **Active Single Source of Truth:**
   - **[docs/vcsentry-roadmap.md](file:///d:/SerpAPI_hackathon/docs/vcsentry-roadmap.md)** — Master subagent blueprint, task execution matrix, review verdicts, and commit log.
   - **[docs/vcsentry-plan.md](file:///d:/SerpAPI_hackathon/docs/vcsentry-plan.md)** — Core architecture, LangGraph state machine design, and SerpApi multi-engine research.

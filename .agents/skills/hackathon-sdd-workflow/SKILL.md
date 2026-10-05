@@ -115,3 +115,42 @@ The project must always maintain 3 core living documents in `docs/`:
 - **`docs/*-plan.md`**: Master architecture, competitive analysis, and tech decisions.
 - **`docs/*-roadmap.md`**: Task matrix, subagent log, and commit history.
 - **`docs/*-regression-audit.md`**: 100% health scorecard verifying all previously shipped features.
+
+---
+
+## 🌿 Milestone Branching & Versioning Strategy
+
+To guarantee zero regressions and clean, reviewable history, feature work is strictly partitioned across milestone release branches:
+
+```
+main (Production certified releases)
+  │
+  ├── v0.1-dev (Sprint 1: Foundation, SQLite Disk Cache & SerpApi Service)
+  │     ├── commit Task 1.1 (feat: SerpApi multi-engine client)
+  │     ├── commit Task 1.2 (feat: SQLite disk cache decorator)
+  │     └── commit Task 1.3 (test: foundation unit tests)
+  │     └── [Merge to main -> Tag v0.1.0]
+  │
+  ├── v0.2-dev (Sprint 2: LangGraph Dialectical State Machine & Red-Team Engine)
+  │     ├── commit Task 2.1 (feat: DueDiligenceState schema)
+  │     ├── commit Task 2.2 (feat: Multi-node LangGraph execution)
+  │     ├── commit Task 2.3 (feat: Adversarial Red-Team auditor)
+  │     ├── commit Task 2.4 (feat: Dossier compiler)
+  │     └── commit Task 2.5 (test: graph tests)
+  │     └── [Merge to main -> Tag v0.2.0]
+  │
+  └── v0.3-dev (Sprint 3: Interactive Streamlit UI, Citations & Golden Walkthrough)
+        ├── commit Task 3.1 (feat: Streamlit UI with live event streaming)
+        ├── commit Task 3.2 (feat: Risk radar, timeline & citation components)
+        ├── commit Task 3.3 (docs: regression audit scorecard & demo script)
+        └── [Merge to main -> Tag v0.3.0 / v1.0.0]
+```
+
+### Commit-Per-Task Policy (Strict)
+1. **One Commit Per Task:** Every completed task must have its own dedicated conventional commit:
+   `<type>(<scope>): <subject> (Task <X.Y>)`
+2. **Pre-Commit Verification:** A task commit is only permitted AFTER:
+   - Developer implementation is complete.
+   - `code-reviewer` subagent has certified `PASS (APPROVED)`.
+   - Relevant unit tests pass.
+3. **Roadmap Sync:** Immediately record the commit hash in `docs/*-roadmap.md` alongside the reviewer's verdict.

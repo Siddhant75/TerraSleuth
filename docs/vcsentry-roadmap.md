@@ -1,7 +1,8 @@
 # VCSentry — Master Subagent Implementation & Review Roadmap
 
-> **Status:** Active Working Branch: `main` (Sprint 1: Core Engine & Multi-Engine Setup)  
+> **Status:** Active Working Branch: `v0.1-dev` (Release v0.1: Foundation, Caching & Multi-Engine Setup)  
 > **Methodology:** Subagent-Driven Development (SDD) via `.agents/skills/hackathon-sdd-workflow/SKILL.md`  
+> **Release Milestones:** `v0.1-dev` (Sprint 1) → `v0.2-dev` (Sprint 2) → `v0.3-dev` (Sprint 3) → `main`  
 > **Single Source of Truth:** Tracks task blueprints, developer commits, adversarial code reviews, and verification gates.
 
 ---
