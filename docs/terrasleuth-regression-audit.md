@@ -15,6 +15,7 @@
 | **Task 1.2: SQLite Disk Cache & Quota Defense** | `backend/app/db.py`<br>`backend/app/services/cache_service.py` | `backend/tests/test_cache.py` (8 tests) | 8/8 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 1.3: Quota Circuit Breakers** | `backend/app/services/quota_service.py`<br>`backend/app/services/serpapi_service.py` | `backend/tests/test_quota.py` (4 tests) | 4/4 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 2.1: LangGraph OSINT State Schema** | `backend/app/models/case.py`<br>`backend/app/agent/state.py` | `backend/tests/test_state.py` (7 tests) | 7/7 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 2.2: Scene Deconstructor & Vision Service** | `backend/app/services/vision_service.py`<br>`backend/app/agent/nodes/scene_deconstructor.py` | `backend/tests/test_vision.py` (7 tests) | 7/7 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 
 ---
 
@@ -49,18 +50,19 @@
 platform win32 -- Python 3.11.11, pytest-8.2.2, pluggy-1.5.0
 cachedir: .pytest_cache
 rootdir: D:\SerpAPI_hackathon
-collected 31 items
+collected 38 items
 
-backend/tests/test_cache.py ................ [25%] (8 passed)
-backend/tests/test_quota.py ................ [38%] (4 passed)
-backend/tests/test_serpapi.py .............. [77%] (12 passed)
-backend/tests/test_state.py ................ [100%] (7 passed)
+backend/tests/test_cache.py ................ [21%] (8 passed)
+backend/tests/test_quota.py ................ [31%] (4 passed)
+backend/tests/test_serpapi.py .............. [63%] (12 passed)
+backend/tests/test_state.py ................ [81%] (7 passed)
+backend/tests/test_vision.py ............... [100%] (7 passed)
 
-============================= 31 passed in 7.42s ==============================
+============================= 38 passed in 7.55s ==============================
 ```
 
-- **Total Test Cases:** 31
+- **Total Test Cases:** 38
 - **Failures:** 0
-- **Execution Time:** < 7.5 seconds
+- **Execution Time:** < 8.0 seconds
 - **Local SQLite DB:** WAL mode verified
 - **Golden Cases Pre-Seeded:** 3 (`case_gateway_mumbai`, `case_neuschwanstein`, `case_market_scam`)
