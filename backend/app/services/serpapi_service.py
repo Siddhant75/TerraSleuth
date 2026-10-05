@@ -13,6 +13,7 @@ from backend.app.models.serp import (
     NewsSearchResult,
     OrganicResult,
 )
+from backend.app.services.cache_service import CacheService
 
 logger = logging.getLogger(__name__)
 
@@ -45,12 +46,19 @@ class SerpApiService:
         api_key: Optional[str] = None,
         timeout_seconds: Optional[int] = None,
         client: Optional[httpx.Client] = None,
+        cache_service: Optional[CacheService] = None,
+        use_cache: bool = True,
     ):
         self._api_key = api_key or settings.SERPAPI_API_KEY
         self.base_url = settings.SERPAPI_BASE_URL
         self.timeout = timeout_seconds or settings.SERPAPI_TIMEOUT_SECONDS
         self._client = client or httpx.Client(timeout=self.timeout)
         self._owns_client = client is None
+        self._cache = (
+            cache_service
+            if cache_service is not None
+            else (CacheService() if (use_cache and settings.CACHE_ENABLED) else None)
+        )
 
     def close(self) -> None:
         """Close the underlying HTTP client session."""
@@ -80,8 +88,18 @@ class SerpApiService:
             sanitized = sanitized.replace(self._api_key, "***")
         return sanitized
 
-    def _execute_query(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Dispatch a query to SerpApi with error handling and sanitized parameters."""
+    def _execute_query(self, params: Dict[str, Any], force_refresh: bool = False) -> Dict[str, Any]:
+        """Dispatch a query to SerpApi with cache check, error handling, and sanitized parameters."""
+        engine = str(params.get("engine", "google"))
+
+        # 1. Quota Defense: Check persistent disk cache first
+        if self._cache and not force_refresh:
+            cached_data = self._cache.get_cached_response(engine, params)
+            if cached_data is not None:
+                logger.info("SerpApi disk cache HIT for engine=%s", engine)
+                return cached_data
+
+        # 2. Cache miss: Validate API key and dispatch network request
         api_key = self._get_api_key()
         query_params = {**params, "api_key": api_key}
 
@@ -104,6 +122,10 @@ class SerpApiService:
                     raise SerpApiRateLimitError(f"SerpApi quota limit: {err_msg}")
                 raise SerpApiError(f"SerpApi query error: {err_msg}")
 
+            # 3. Store valid response in cache
+            if self._cache:
+                self._cache.set_cached_response(engine, params, data)
+
             return data
 
         except httpx.TimeoutException as exc:
@@ -116,7 +138,9 @@ class SerpApiService:
             logger.error(f"Unexpected error communicating with SerpApi: {sanitized_err}")
             raise SerpApiError(f"Failed to query SerpApi: {sanitized_err}") from exc
 
-    def search_lens(self, image_url: str, hl: str = "en") -> LensVisualMatchesResult:
+    def search_lens(
+        self, image_url: str, hl: str = "en", force_refresh: bool = False
+    ) -> LensVisualMatchesResult:
         """Execute a visual reverse-image search using Google Lens API."""
         if not image_url or not image_url.strip():
             raise ValueError("image_url must be provided for Google Lens visual search.")
@@ -126,11 +150,15 @@ class SerpApiService:
             "url": image_url.strip(),
             "hl": hl,
         }
-        raw_data = self._execute_query(params)
+        raw_data = self._execute_query(params, force_refresh=True) if force_refresh else self._execute_query(params)
         return self._parse_lens_response(raw_data)
 
     def search_maps(
-        self, query: str, ll: Optional[str] = None, hl: str = "en"
+        self,
+        query: str,
+        ll: Optional[str] = None,
+        hl: str = "en",
+        force_refresh: bool = False,
     ) -> MapsSearchResult:
         """Execute a spatial places and coordinate search using Google Maps API."""
         if not query or not query.strip():
@@ -145,7 +173,7 @@ class SerpApiService:
         if ll:
             params["ll"] = ll.strip()
 
-        raw_data = self._execute_query(params)
+        raw_data = self._execute_query(params, force_refresh=True) if force_refresh else self._execute_query(params)
         return self._parse_maps_response(raw_data, query=query)
 
     def search_news(
@@ -154,6 +182,7 @@ class SerpApiService:
         time_range: Optional[str] = None,
         gl: str = "us",
         hl: str = "en",
+        force_refresh: bool = False,
     ) -> NewsSearchResult:
         """Search chronological breaking news and historical events via Google News API."""
         if not query or not query.strip():
@@ -168,11 +197,15 @@ class SerpApiService:
         if time_range:
             params["tbs"] = time_range.strip()
 
-        raw_data = self._execute_query(params)
+        raw_data = self._execute_query(params, force_refresh=True) if force_refresh else self._execute_query(params)
         return self._parse_news_response(raw_data, query=query)
 
     def search_google(
-        self, query: str, gl: str = "us", hl: str = "en"
+        self,
+        query: str,
+        gl: str = "us",
+        hl: str = "en",
+        force_refresh: bool = False,
     ) -> GoogleSearchResult:
         """Perform contextual organic search and knowledge graph retrieval via Google Search API."""
         if not query or not query.strip():
@@ -184,7 +217,7 @@ class SerpApiService:
             "gl": gl,
             "hl": hl,
         }
-        raw_data = self._execute_query(params)
+        raw_data = self._execute_query(params, force_refresh=True) if force_refresh else self._execute_query(params)
         return self._parse_google_response(raw_data, query=query)
 
     # -------------------------------------------------------------------------
