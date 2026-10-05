@@ -1,5 +1,6 @@
 """Data models for TerraSleuth."""
 from backend.app.models.serp import (
+    GoogleSearchResult,
     LensMatch,
     LensVisualMatchesResult,
     MapsCandidate,
@@ -7,10 +8,18 @@ from backend.app.models.serp import (
     NewsItem,
     NewsSearchResult,
     OrganicResult,
-    GoogleSearchResult,
+)
+from backend.app.models.case import (
+    CaseFile,
+    Citation,
+    ClueCategory,
+    GeoCandidate,
+    TimelineEvent,
+    VisualClue,
 )
 
 __all__ = [
+    # Serp models
     "LensMatch",
     "LensVisualMatchesResult",
     "MapsCandidate",
@@ -19,4 +28,11 @@ __all__ = [
     "NewsSearchResult",
     "OrganicResult",
     "GoogleSearchResult",
+    # OSINT Case models
+    "CaseFile",
+    "Citation",
+    "ClueCategory",
+    "GeoCandidate",
+    "TimelineEvent",
+    "VisualClue",
 ]
