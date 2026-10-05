@@ -166,7 +166,7 @@ class CacheService:
                         "The Waterfront Monument & Heritage Dome",
                         "An uncaptioned mystery image featuring an imposing Indo-Saracenic basalt arch and an iconic red-domed hotel facing a sea promenade.",
                         "https://images.unsplash.com/photo-1570168007204-dfb528c6958f",
-                        "frontend/assets/cases/case_gateway_mumbai.jpg",
+                        "frontend/assets/targets/gateway_mumbai.jpg",
                         "Apollo Bandar, Colaba, Mumbai, Maharashtra 400001, India",
                         18.9220,
                         72.8347,
@@ -185,7 +185,7 @@ class CacheService:
                         "Alpine Cliff Palace in the Mist",
                         "A dramatic aerial angle of a multi-turreted 19th-century Romanesque Revival palace on a rugged foothill surrounded by alpine conifers.",
                         "https://images.unsplash.com/photo-1534447677768-be436bb09401",
-                        "frontend/assets/cases/case_neuschwanstein.jpg",
+                        "frontend/assets/targets/neuschwanstein.jpg",
                         "Neuschwansteinstraße 20, 87645 Schwangau, Bavaria, Germany",
                         47.5576,
                         10.7498,
@@ -201,13 +201,13 @@ class CacheService:
                     """,
                     (
                         "case_market_scam",
-                        "Sublet Scam Geolocation Mismatch",
-                        "A rental listing photo claimed to be in Vancouver BC, but containing distinctive tropical palm trees and South Beach architectural deco motifs.",
+                        "Marketplace & Rental Listing Fraud Exposer",
+                        "An uncaptioned vacation rental listing photo advertised as a local luxury apartment, unmasked by Google Lens as a stolen photo of a luxury cliffside resort in Oia, Santorini, Greece.",
                         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
-                        "frontend/assets/cases/case_market_scam.jpg",
-                        "Ocean Drive, Miami Beach, Florida 33139, United States",
-                        25.7825,
-                        -80.1310,
+                        "frontend/assets/targets/rental_scam_santorini.jpg",
+                        "Oia 847 02, Santorini, Cyclades, Greece",
+                        36.4618,
+                        25.3753,
                     ),
                 )
                 count = 3
@@ -224,14 +224,14 @@ class CacheService:
                         "title": "Gateway of India - Historic Waterfront Arch",
                         "link": "https://en.wikipedia.org/wiki/Gateway_of_India",
                         "source": "Wikipedia",
-                        "thumbnail": "https://serpapi.com/sample_lens_thumb_gateway.jpg",
+                        "thumbnail": "frontend/assets/targets/gateway_mumbai.jpg",
                         "position": 1,
                     },
                     {
                         "title": "The Taj Mahal Palace, Mumbai - Luxury Heritage Hotel",
                         "link": "https://www.tajhotels.com/en-in/taj/taj-mahal-palace-mumbai/",
                         "source": "Taj Hotels",
-                        "thumbnail": "https://serpapi.com/sample_lens_thumb_taj.jpg",
+                        "thumbnail": "frontend/assets/targets/gateway_mumbai.jpg",
                         "position": 2,
                     },
                 ],
@@ -346,7 +346,7 @@ class CacheService:
                         "title": "Neuschwanstein Castle - 19th-Century Historic Palace",
                         "link": "https://en.wikipedia.org/wiki/Neuschwanstein_Castle",
                         "source": "Wikipedia",
-                        "thumbnail": "https://serpapi.com/sample_lens_thumb_castle.jpg",
+                        "thumbnail": "frontend/assets/targets/neuschwanstein.jpg",
                         "position": 1,
                     }
                 ],
@@ -405,5 +405,86 @@ class CacheService:
             ttl_seconds=0,
         )
 
+        # Pre-seed SerpApi query responses for Santorini Rental Scam Case
+        self.set_cached_response(
+            engine="google_lens",
+            params={"url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750", "hl": "en"},
+            response_data={
+                "visual_matches": [
+                    {
+                        "title": "Canaves Oia Suites - Luxury Cliffside Resort",
+                        "link": "https://canaves.com/canaves-oia-suites/",
+                        "source": "Canaves Oia Official",
+                        "thumbnail": "frontend/assets/targets/rental_scam_santorini.jpg",
+                        "position": 1,
+                    },
+                    {
+                        "title": "Santorini Luxury Cave Suite with Caldera View",
+                        "link": "https://en.wikipedia.org/wiki/Oia,_Greece",
+                        "source": "Wikipedia",
+                        "thumbnail": "frontend/assets/targets/rental_scam_santorini.jpg",
+                        "position": 2,
+                    },
+                ],
+                "knowledge_graph": {
+                    "title": "Canaves Oia Suites",
+                    "subtitle": "5-star luxury hotel in Oia, Santorini, Greece",
+                },
+            },
+            ttl_seconds=0,
+        )
+
+        santorini_maps_data = {
+            "local_results": [
+                {
+                    "title": "Canaves Oia Suites",
+                    "address": "Oia 847 02, Santorini, Cyclades, Greece",
+                    "place_id": "ChIJ_SantoriniCanavesSuites",
+                    "data_cid": "741852963",
+                    "gps_coordinates": {"latitude": 36.4618, "longitude": 25.3753},
+                    "rating": 4.9,
+                    "reviews": 1820,
+                    "type": "Luxury resort hotel",
+                    "thumbnail": "https://lh5.googleusercontent.com/p/canaves.jpg",
+                }
+            ]
+        }
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Canaves Oia Suites Santorini Greece", "type": "search", "hl": "en"},
+            response_data=santorini_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_maps",
+            params={"q": "Canaves Oia Suites", "type": "search", "hl": "en"},
+            response_data=santorini_maps_data,
+            ttl_seconds=0,
+        )
+
+        self.set_cached_response(
+            engine="google_news",
+            params={"q": "Oia Santorini luxury villa rental fraud investigation", "gl": "us", "hl": "en"},
+            response_data={
+                "news_results": [
+                    {
+                        "title": "Cybercrime Division warns travelers of phantom vacation rental listings cloning luxury Santorini resorts",
+                        "link": "https://reuters.com/investigates/rental-fraud-santorini",
+                        "source": {"name": "Reuters Travel Intelligence"},
+                        "date": "5 days ago",
+                        "snippet": "Fraudulent hosts scraped cliffside pool imagery from five-star Greek hotels to harvest upfront deposits for nonexistent apartments.",
+                    }
+                ]
+            },
+            ttl_seconds=0,
+        )
+
         logger.info("Successfully seeded %d golden mystery cases and mock search payloads", count)
         return count
+
+
+def seed_golden_cases(db_path: Optional[str] = None) -> int:
+    """Convenience helper to seed golden cases and SerpApi responses into SQLite disk cache."""
+    return CacheService(db_path=db_path).seed_golden_cases()

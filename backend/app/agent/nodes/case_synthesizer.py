@@ -83,6 +83,20 @@ def generate_case_summary_markdown(
 
     lines.extend([
         "",
+        "## 🔬 Google Lens Visual Twin Matches",
+    ])
+    lens_matches = state.get("lens_matches", [])
+    if lens_matches:
+        for idx, m in enumerate(lens_matches[:3], 1):
+            title = m.get("title", "Visual Match")
+            source = m.get("source", "Web")
+            link = m.get("link", "#")
+            lines.append(f"{idx}. **[{title}]({link})** (Source: `{source}`)")
+    else:
+        lines.append("- *Zero visual twin matches detected.*")
+
+    lines.extend([
+        "",
         "## ⏱️ Chronological Provenance & Media Timeline",
     ])
     timeline = state.get("timeline_events", [])
@@ -171,6 +185,7 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         confidence_score=confidence_score,
         resolved_location=resolved_location,
         visual_clues=visual_clues,
+        lens_matches=lens_matches,
         timeline=timeline_events,
         citations=citations,
         refinement_hops=refinement_hops,

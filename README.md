@@ -5,8 +5,8 @@
 
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-green.svg)](https://python.org)
-[![Tests Passing](https://img.shields.io/badge/Tests-65%2F65%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
-[![Release Certified](https://img.shields.io/badge/Release-v0.3.0--certified-blueviolet.svg)](AGENTS.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-77%2F77%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Release Certified](https://img.shields.io/badge/Release-v0.4.0--certified-blueviolet.svg)](AGENTS.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
@@ -68,27 +68,29 @@ Standard LLMs hallucinate physical locations, invent dates, and operate in a dig
                                                       │
                                                       ▼
                        ┌──────────────────────────────────────────────────────────┐
-                       │            Interactive Forensic OSINT Dossier            │
-                       │  • 🗺️ Geospatial Pinpoint (Leaflet / Folium Coordinates) │
-                       │  • 🔍 Visual Evidence Board (Pillow Bounding Boxes)      │
-                       │  • ⏱️ Chronological Provenance & Viral Milestones         │
+                       │          Tactical OSINT Command Deck (v0.4.0)            │
+                       │  • 🎯 Visual Forensic Inspector & Bounding Clues         │
+                       │  • 🔬 Side-by-Side Visual Twin Matcher (Google Lens)     │
+                       │  • 📡 Live Monospace Swarm Telemetry Terminal (Cyber HUD)│
+                       │  • 🗺️ Satellite Recon Pinpoint (Esri World Imagery)       │
+                       │  • ⏱️ Chronological Provenance & Media Timeline          │
                        │  • 🔗 Verifiable Multi-Engine SERP Citation Ledger       │
                        └──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🖥️ Interactive Web Dashboard
+## 🕹️ Tactical OSINT Command Deck (v0.4.0)
 
-TerraSleuth features a Streamlit forensic dashboard:
+TerraSleuth features a Bellingcat/Palantir-grade Command Deck:
 
-- **1-Click Golden Mystery Targets**: Test instantly with pre-seeded, zero-credit mystery images (*Gateway of India waterfront monument*, *Neuschwanstein Castle*, *Marketplace rental scam*).
-- **Target Uploader & Remote URL**: Ingest any mystery JPG/PNG or direct web URL.
-- **Live Swarm Telemetry**: Watch the LangGraph OSINT swarm stream execution step-by-step with real-time progress cards.
-- **Tab 1: 🗺️ Triangulated Geospatial Pinpoint**: Interactive Leaflet map with pinpoint marker, consensus accuracy circle, and one-click Google Maps verification.
-- **Tab 2: 🔍 Forensic Visual Evidence Board**: High-contrast bounding box overlays color-coded by category (Architecture, Signage, Vegetation, Landmark).
-- **Tab 3: ⏱️ Chronological Provenance & Media Timeline**: Earliest publication date detection (`[EARLIEST KNOWN APPEARANCE]`) and historical news milestones.
-- **Tab 4: 🔗 Verifiable Citation Ledger**: Clickable evidence trails grouped by SerpApi engine (Google Lens, Maps, News, Search) with strict URL sanitization.
+- **Authentic Photographic Target Library**: Pre-seeded with real high-resolution surveillance and OSINT challenge images (*Waterfront Monument at Apollo Bunder*, *Neuschwanstein Alpine Palace*, *Santorini Rental Scam Fraud Exposer*).
+- **Split-Screen Command Deck (45/55 Layout)**: Left deck inspects visual evidence; right deck provides tactical geospatial maps, telemetry, and intelligence.
+- **Side-by-Side Visual Twin Matcher**: Directly aligns the suspect photo against the top Google Lens authoritative thumbnail with an explainable `Visual Correspondence %` score.
+- **Live Monospace Swarm Telemetry Terminal**: High-contrast obsidian cyber terminal (`#090d16`) streaming real-time agent deductions and SerpApi engine queries.
+- **Tactical Satellite Reconnaissance (Esri World Imagery)**: Crystal-clear aerial satellite imagery with pulsating crosshair pin and consensus accuracy circle (zero watermarks).
+- **Non-Truncating Flexbox Telemetry Bar**: Real-time WGS84 coordinates, verifiability rating, and query budget counter with responsive layouts.
+- **Verifiable Citation Ledger**: Clickable evidence trails grouped by SerpApi engine (Google Lens, Maps, News, Search) with strict URL sanitization.
 - **Export Dossier**: One-click download of the completed `CaseFile` in JSON or Markdown format.
 
 ---
@@ -121,7 +123,7 @@ streamlit run frontend/app.py
 ```
 Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-### 5. Run the Full Automated Test Suite (65/65 Passing)
+### 5. Run the Full Automated Test Suite (77/77 Passing)
 ```bash
 # Run all unit, integration, and end-to-end tests
 pytest -v

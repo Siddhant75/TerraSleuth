@@ -39,35 +39,44 @@ def run_ui_audit():
 
         # Wait for investigation streaming and completion alert
         print("Waiting for LangGraph OSINT Swarm to complete...")
-        page.wait_for_selector("text=Investigation Concluded", timeout=35000)
+        page.wait_for_selector("text=Investigation Concluded", timeout=45000)
         time.sleep(3)  # Hydrate Folium map and charts
 
-        p3 = os.path.join(SCREENSHOT_DIR, "03_investigation_complete.png")
+        p3 = os.path.join(SCREENSHOT_DIR, "03_command_deck_overview.png")
         page.screenshot(path=p3, full_page=True)
-        print("Captured: 03_investigation_complete.png")
+        print("Captured: 03_command_deck_overview.png")
 
-        # Step 4: Click each evidence tab via get_by_role('tab')
-        tab_filenames = [
-            "04_tab_1_geospatial_map.png",
-            "04_tab_2_visual_evidence.png",
-            "04_tab_3_chronology_timeline.png",
-            "04_tab_4_citation_chain.png",
-            "04_tab_5_markdown_dossier.png",
-        ]
+        # Step 4: Click Visual Twin Matcher Tab on Left Deck
+        print("Switching to Side-by-Side Visual Twin Matcher...")
+        page.get_by_role("tab", name="Side-by-Side Visual Twin Matcher").click()
+        time.sleep(2)
+        p4 = os.path.join(SCREENSHOT_DIR, "04_deck_visual_twin_matcher.png")
+        page.screenshot(path=p4, full_page=True)
+        print("Captured: 04_deck_visual_twin_matcher.png")
 
-        tabs = page.get_by_role("tab").all()
-        print(f"Detected {len(tabs)} tabs via get_by_role('tab').")
+        # Step 5: Click Chronological Provenance Tab on Right Deck
+        print("Switching to Chronological Provenance tab...")
+        page.get_by_role("tab", name="Chronological Provenance").click()
+        time.sleep(2)
+        p5 = os.path.join(SCREENSHOT_DIR, "05_deck_chronology_timeline.png")
+        page.screenshot(path=p5, full_page=True)
+        print("Captured: 05_deck_chronology_timeline.png")
 
-        for idx, tab in enumerate(tabs):
-            filename = tab_filenames[idx] if idx < len(tab_filenames) else f"04_tab_{idx+1}.png"
-            clean_label = tab.inner_text().encode("ascii", "ignore").decode("ascii").strip()
-            print(f"Switching to Tab {idx+1}: '{clean_label}'...")
-            tab.click()
-            time.sleep(3)  # Allow Folium / Pillow / Markdown widgets to re-render
+        # Step 6: Click Verifiable Citations Tab
+        print("Switching to Verifiable Citations tab...")
+        page.get_by_role("tab", name="Verifiable Citations").click()
+        time.sleep(2)
+        p6 = os.path.join(SCREENSHOT_DIR, "06_deck_citation_ledger.png")
+        page.screenshot(path=p6, full_page=True)
+        print("Captured: 06_deck_citation_ledger.png")
 
-            target_path = os.path.join(SCREENSHOT_DIR, filename)
-            page.screenshot(path=target_path, full_page=True)
-            print(f"Captured: {filename}")
+        # Step 7: Click Executive Dossier Tab
+        print("Switching to Executive Dossier tab...")
+        page.get_by_role("tab", name="Executive Dossier").click()
+        time.sleep(2)
+        p7 = os.path.join(SCREENSHOT_DIR, "07_deck_executive_dossier.png")
+        page.screenshot(path=p7, full_page=True)
+        print("Captured: 07_deck_executive_dossier.png")
 
         print("\nPlaywright UI automation audit completed successfully!")
         browser.close()
