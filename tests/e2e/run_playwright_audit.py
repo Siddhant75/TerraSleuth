@@ -28,18 +28,12 @@ def run_ui_audit():
         page.screenshot(path=p1, full_page=True)
         print("Captured: 01_initial_hero_command_deck.png (Pure Product Heroic Landing)")
 
-        # Step 2: Expand Technical Architecture in Sidebar for Judges
-        print("Expanding Technical Architecture & SerpApi Coverage drawer...")
-        try:
-            expander = page.locator("text=Technical Architecture & SerpApi Coverage").first
-            expander.click()
-            time.sleep(1)
-        except Exception as e:
-            print(f"Expander click note: {e}")
-
-        p2 = os.path.join(SCREENSHOT_DIR, "02_sidebar_target_and_tech_expander.png")
+        # Step 2: Sidebar Target Selection View
+        print("Capturing sidebar target selection view...")
+        time.sleep(1)
+        p2 = os.path.join(SCREENSHOT_DIR, "02_sidebar_target_selection.png")
         page.screenshot(path=p2, full_page=True)
-        print("Captured: 02_sidebar_target_and_tech_expander.png (Judge Tech Drawer)")
+        print("Captured: 02_sidebar_target_selection.png (Target Selection & Parameters)")
 
         # Step 3: Trigger Autonomous Investigation on Landmark Target
         print("Clicking 'Launch Autonomous Investigation'...")

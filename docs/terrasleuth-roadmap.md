@@ -51,7 +51,7 @@
 - **Task 6.5:** Full Regression Audit (91/91 tests), 9-Tab Playwright Browser Re-Certification & Release v0.6 Certification (`v0.6.0`).
 
 ### Sprint 7: Pure Product Immersion & Streamlined Investigative Workflow (`v0.7-dev`)
-- **Task 7.1:** Pure Product Immersion — Elimination of outer meta-tabs, Heroic Tactical Command Deck landing, Centered primary launch trigger, Quick-Export action bar, and Collapsible Judge Tech Drawer (`app.py`, `tactical_command_deck.py`).
+- **Task 7.1:** Pure Product Immersion — Complete elimination of meta-tabs, roadmaps, and quota telemetry from web app; Heroic Tactical Command Deck landing, Centered primary launch trigger, Quick-Export action bar, and streamlined operational sidebar (`app.py`, `tactical_command_deck.py`).
 - **Task 7.2:** Playwright 9-Point Pure Product Browser Audit & Certification (`run_playwright_audit.py`).
 - **Task 7.3:** Full Regression Audit (91/91 tests, 100% pass) & Release v0.7 Certification (`v0.7.0`).
 

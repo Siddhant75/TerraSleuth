@@ -14,11 +14,6 @@ from backend.app.agent.graph import stream_osint_investigation_sync
 from backend.app.db import get_golden_cases, init_db
 from backend.app.models.case import CaseFile
 from backend.app.services.cache_service import CacheService
-from frontend.components.blueprint_views import (
-    render_implementation_roadmap_view,
-    render_screenshot_critique_view,
-    render_serpapi_features_view,
-)
 from frontend.components.swarm_telemetry_terminal import (
     format_terminal_log_entry,
     generate_swarm_terminal_html,
@@ -198,42 +193,10 @@ def render_sidebar():
             st.sidebar.image(image_url, caption="Target URL Preview", use_container_width=True)
 
     st.sidebar.markdown("---")
-    with st.sidebar.expander("⚙️ Swarm Parameters", expanded=False):
-        max_budget = st.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
-        max_hops = st.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
-        context_hint_input = st.text_input("Claimed Context Hint / Metadata:", value=context_hint or "", placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
-
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🛡️ Quota & Telemetry")
-    st.sidebar.markdown(
-        """
-        - **Multi-Agent Engine:** LangGraph Swarm
-        - **SerpApi APIs:** Lens, Maps, News, Search
-        - **Cache Defense:** SQLite WAL (`terrasleuth.db`)
-        - **Replay Cost:** ⚡ Zero Live Credits Burned
-        """
-    )
-
-    with st.sidebar.expander("ℹ️ Technical Architecture & SerpApi Coverage", expanded=False):
-        st.markdown(
-            """
-            **Autonomous Multi-Agent Swarm (LangGraph):**
-            - `Scene Deconstructor`: Visual feature extraction & bounding boxes
-            - `Lens Hunter`: Google Lens API reverse visual twins
-            - `Geo Triangulator`: Google Maps & Local API place consensus
-            - `Chrono Auditor`: Google News API temporal verification
-            - `Case Synthesizer`: Hypothesis resolution & fraud unmasking
-            
-            **SerpApi Engine Portfolio:**
-            - `google_lens`: Full image & regional visual matches
-            - `google_maps`: WGS84 coordinates & street address
-            - `google_news`: Temporal provenance & earliest indexing
-            - `google`: Targeted OSINT dorking
-            """
-        )
-
-    with st.sidebar.expander("🗺️ Development Roadmap & Milestones", expanded=False):
-        render_implementation_roadmap_view()
+    st.sidebar.markdown("### ⚙️ Swarm Parameters")
+    max_budget = st.sidebar.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
+    max_hops = st.sidebar.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
+    context_hint_input = st.sidebar.text_input("Claimed Context Hint / Metadata:", value=context_hint or "", placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
 
     return {
         "image_path": image_path,
