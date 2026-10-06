@@ -79,10 +79,57 @@ def render_tactical_command_deck(
                     <span style="color: #34d399; font-size: 13px; font-weight: 700; font-family: ui-monospace, monospace; display: block;">⚡ ZERO CREDIT BURN</span>
                 </div>
             </div>
+            <!-- Quick Action Bar: 1-Click Export Dossier -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid rgba(30, 41, 59, 0.8);">
+                <span style="color: #94a3b8; font-size: 12px; font-family: ui-monospace, monospace;">
+                    ● INVESTIGATION COMPLETE — ALL SERPAPI EVIDENCE VERIFIED & TRIANGULATED
+                </span>
+                <span style="color: #38bdf8; font-size: 12px; font-family: ui-monospace, monospace; font-weight: 600;">
+                    STANDALONE DOSSIER READY
+                </span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
+
+    # 1-Click Quick Action Bar: Reset & Offline HTML Dossier Quick-Export
+    quick_bar_col1, quick_bar_col2 = st.columns([1, 1])
+    with quick_bar_col1:
+        if st.button(
+            "🔄 New Investigation",
+            key="deck_reset_btn",
+            use_container_width=True,
+            help="Clear this investigation and return to Mission Briefing to choose a new target.",
+        ):
+            st.session_state["case_file"] = None
+            st.session_state["last_state"] = None
+            st.session_state["swarm_telemetry_logs"] = []
+            st.rerun()
+
+    with quick_bar_col2:
+        # Resolve target image for base64 embedding in dossier
+        sample_path = config.get("image_path")
+        img_for_export = None
+        if sample_path and os.path.exists(sample_path):
+            try:
+                img_for_export = Image.open(sample_path)
+            except Exception:
+                img_for_export = None
+        elif config.get("active_image"):
+            img_for_export = config["active_image"]
+
+        quick_html_data = generate_standalone_html_dossier(case_file, target_image=img_for_export)
+        st.download_button(
+            label="📥 Export HTML Dossier",
+            data=quick_html_data,
+            file_name=f"{case_file.case_id}_intelligence_dossier.html",
+            mime="text/html",
+            type="primary",
+            use_container_width=True,
+            key="quick_export_html_btn",
+            help="Download complete, self-contained offline intelligence dossier with embedded evidence imagery.",
+        )
 
     # 45/55 Split Screen Layout
     deck_left, deck_right = st.columns([9, 11])

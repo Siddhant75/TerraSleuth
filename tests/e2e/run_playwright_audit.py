@@ -19,77 +19,86 @@ def run_ui_audit():
         )
         page = context.new_page()
 
-        # Step 1: Initial load on http://localhost:8501 (Tab 1: Screenshot Audit & Critique)
+        # Step 1: Initial load on http://localhost:8501 (Direct War Room HUD & Mission Briefings)
         print("Navigating to http://localhost:8501...")
         page.goto("http://localhost:8501", wait_until="networkidle", timeout=45000)
         time.sleep(3)
 
-        p1 = os.path.join(SCREENSHOT_DIR, "01_tab1_screenshot_critique.png")
+        p1 = os.path.join(SCREENSHOT_DIR, "01_initial_hero_command_deck.png")
         page.screenshot(path=p1, full_page=True)
-        print("Captured: 01_tab1_screenshot_critique.png (Playwright Visual Critique)")
+        print("Captured: 01_initial_hero_command_deck.png (Pure Product Heroic Landing)")
 
-        # Step 2: Tab 2: SerpApi Features & Add-ons
-        print("Switching to Tab 2: SerpApi Features & Add-ons...")
-        page.get_by_role("tab", name="2. ⚡ SerpApi Features & Add-ons").click()
-        time.sleep(2)
-        p2 = os.path.join(SCREENSHOT_DIR, "02_tab2_serpapi_features.png")
+        # Step 2: Expand Technical Architecture in Sidebar for Judges
+        print("Expanding Technical Architecture & SerpApi Coverage drawer...")
+        try:
+            expander = page.locator("text=Technical Architecture & SerpApi Coverage").first
+            expander.click()
+            time.sleep(1)
+        except Exception as e:
+            print(f"Expander click note: {e}")
+
+        p2 = os.path.join(SCREENSHOT_DIR, "02_sidebar_target_and_tech_expander.png")
         page.screenshot(path=p2, full_page=True)
-        print("Captured: 02_tab2_serpapi_features.png")
+        print("Captured: 02_sidebar_target_and_tech_expander.png (Judge Tech Drawer)")
 
-        # Step 3: Tab 4: Implementation Roadmap
-        print("Switching to Tab 4: Implementation Roadmap...")
-        page.get_by_role("tab", name="4. 🗺️ Implementation Roadmap").click()
-        time.sleep(2)
-        p3 = os.path.join(SCREENSHOT_DIR, "03_tab4_roadmap.png")
-        page.screenshot(path=p3, full_page=True)
-        print("Captured: 03_tab4_roadmap.png")
-
-        # Step 4: Tab 3: Tactical Command Deck (Initial War Room State)
-        print("Switching to Tab 3: Tactical Command Deck...")
-        page.get_by_role("tab", name="3. 🕵️ Tactical Command Deck").click()
-        time.sleep(2)
-        p4 = os.path.join(SCREENSHOT_DIR, "04_tab3_command_deck_initial.png")
-        page.screenshot(path=p4, full_page=True)
-        print("Captured: 04_tab3_command_deck_initial.png")
-
-        # Step 5: Trigger Autonomous Investigation on Landmark Target
+        # Step 3: Trigger Autonomous Investigation on Landmark Target
         print("Clicking 'Launch Autonomous Investigation'...")
-        page.locator("button:has-text('Launch Autonomous Investigation')").click()
+        page.locator("button:has-text('Launch Autonomous Investigation')").first.click()
 
         # Wait for investigation streaming and rerun hydration
         print("Waiting for LangGraph OSINT Swarm to complete...")
         page.get_by_role("tab", name="🎯 Autonomous Geoguessr Mode").wait_for(state="visible", timeout=45000)
         time.sleep(3)  # Hydrate Folium map and charts
 
-        p5 = os.path.join(SCREENSHOT_DIR, "05_deck_overview_with_twin.png")
-        page.screenshot(path=p5, full_page=True)
-        print("Captured: 05_deck_overview_with_twin.png (Overview with twin matcher beneath image)")
+        p3 = os.path.join(SCREENSHOT_DIR, "03_command_deck_overview_with_twin.png")
+        page.screenshot(path=p3, full_page=True)
+        print("Captured: 03_command_deck_overview_with_twin.png (Overview with twin matcher & quick export)")
 
-        # Step 6: Click Autonomous Geoguessr Mode Sub-Tab
+        # Step 4: Click Autonomous Geoguessr Mode Sub-Tab
         print("Switching to Autonomous Geoguessr Mode sub-tab...")
         page.get_by_role("tab", name="🎯 Autonomous Geoguessr Mode").click()
         time.sleep(2)
-        p6 = os.path.join(SCREENSHOT_DIR, "06_deck_geoguessr_mode.png")
-        page.screenshot(path=p6, full_page=True)
-        print("Captured: 06_deck_geoguessr_mode.png (5000 pts scorecard & 4-stage tightening)")
+        p4 = os.path.join(SCREENSHOT_DIR, "04_deck_geoguessr_mode.png")
+        page.screenshot(path=p4, full_page=True)
+        print("Captured: 04_deck_geoguessr_mode.png (5000 pts scorecard & 4-stage tightening)")
 
-        # Step 7: Click Chronological Provenance Sub-Tab
+        # Step 5: Click Chronological Provenance Sub-Tab
         print("Switching to Chronological Provenance sub-tab...")
         page.get_by_role("tab", name="⏱️ Chronological Provenance").click()
         time.sleep(2)
-        p7 = os.path.join(SCREENSHOT_DIR, "07_deck_chronology_timeline.png")
-        page.screenshot(path=p7, full_page=True)
-        print("Captured: 07_deck_chronology_timeline.png")
+        p5 = os.path.join(SCREENSHOT_DIR, "05_deck_chronology_timeline.png")
+        page.screenshot(path=p5, full_page=True)
+        print("Captured: 05_deck_chronology_timeline.png")
 
-        # Step 8: Click OSINT Dorks Sub-Tab
+        # Step 6: Click Citation Ledger Sub-Tab
+        print("Switching to Verifiable Citations sub-tab...")
+        page.get_by_role("tab", name="🔗 Verifiable Citations").click()
+        time.sleep(2)
+        p6 = os.path.join(SCREENSHOT_DIR, "06_deck_citation_ledger.png")
+        page.screenshot(path=p6, full_page=True)
+        print("Captured: 06_deck_citation_ledger.png")
+
+        # Step 7: Click OSINT Dorks Sub-Tab
         print("Switching to OSINT Dorks sub-tab...")
         page.get_by_role("tab", name="🕵️ OSINT Dorks").click()
         time.sleep(2)
-        p8 = os.path.join(SCREENSHOT_DIR, "08_deck_osint_dorks.png")
-        page.screenshot(path=p8, full_page=True)
-        print("Captured: 08_deck_osint_dorks.png")
+        p7 = os.path.join(SCREENSHOT_DIR, "07_deck_osint_dorks.png")
+        page.screenshot(path=p7, full_page=True)
+        print("Captured: 07_deck_osint_dorks.png")
 
-        # Step 9: Select Rental Scam Target and Demonstrate Fraud Unmasking
+        # Step 8: Click Executive Dossier Sub-Tab
+        print("Switching to Executive Dossier sub-tab...")
+        page.get_by_role("tab", name="📄 Executive Dossier").click()
+        time.sleep(2)
+        p8 = os.path.join(SCREENSHOT_DIR, "08_deck_executive_dossier.png")
+        page.screenshot(path=p8, full_page=True)
+        print("Captured: 08_deck_executive_dossier.png")
+
+        # Step 9: Reset and Select Rental Scam Target for Fraud Unmasking
+        print("Resetting investigation for Rental Scam fraud demo...")
+        page.locator("button:has-text('New Investigation')").first.click()
+        time.sleep(2)
+
         print("Selecting Vacation Rental Fraud scenario in sidebar...")
         sidebar_sb = page.locator("section[data-testid='stSidebar'] div[data-testid='stSelectbox']").first
         inp = sidebar_sb.locator("input").first
@@ -101,12 +110,8 @@ def run_ui_audit():
         time.sleep(2)
         print(f"Selected target: {inp.input_value()}")
 
-        # Ensure we are on Tab 3
-        page.get_by_role("tab", name="3. 🕵️ Tactical Command Deck").click()
-        time.sleep(1)
-
         print("Launching Fraud Investigation...")
-        page.locator("button:has-text('Launch Autonomous Investigation')").click()
+        page.locator("button:has-text('Launch Autonomous Investigation')").first.click()
         page.locator("text=HIGH CONFIDENCE FRAUD DETECTION").wait_for(state="visible", timeout=45000)
         time.sleep(3)
         p9 = os.path.join(SCREENSHOT_DIR, "09_fraud_anomaly_unmasking.png")

@@ -1,13 +1,13 @@
 # TerraSleuth — Living Regression Audit & Subsystem Health Scorecard
 
-> **Target Release:** Release v0.6 (1:1 Blueprint Alignment, 4-Tab Navigation, Autonomous Geoguessr Mode, Pre-Commit & Quota Hooks)  
-> **Active Working Branch:** `v0.6-dev`  
+> **Target Release:** Release v0.7 (Pure Product Immersion & Streamlined Investigative Workflow)  
+> **Active Working Branch:** `v0.7-dev`  
 > **Last Verification Run:** 2026-10-06  
 > **Environment:** Python 3.11.11 & Python 3.12.1 / Windows / pytest  
 
 ---
 
-## 📊 Subsystem Health Scorecard (Release v0.6)
+## 📊 Subsystem Health Scorecard (Release v0.7)
 
 | Subsystem / Task | Component Files | Automated Tests | Pass Rate | Code Review Verdict | Status |
 |---|---|---|---|---|---|
@@ -34,6 +34,9 @@
 | **Task 6.3: Autonomous Geoguessr Mode** | `backend/app/models/geoguessr.py`<br>`backend/app/services/geoguessr_service.py`<br>`frontend/components/geoguessr_view.py` | `backend/tests/test_geoguessr_service.py` (4 tests)<br>`frontend/tests/test_geoguessr_and_blueprint_ui.py` (2 tests) | 6/6 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.4: Developer & SDD Hooks Setup** | `.claude/hookify.quota-defense.local.md`<br>`.git/hooks/pre-commit` | Hook verification & automated pre-commit test execution | Pass | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.5: Release v0.6 Regression Audit** | Full test suite & Playwright visual audit | 91 automated tests + 9 Playwright checkpoints | 91/91 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 7.1: Pure Product Immersion & Heroic Command Deck** | `frontend/app.py`<br>`frontend/components/tactical_command_deck.py` | `frontend/tests/test_command_deck_ui.py`<br>`tests/e2e/test_dashboard_e2e.py` | 8/8 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 7.2: Playwright 9-Point Pure Product Audit** | `tests/e2e/run_playwright_audit.py`<br>`tests/e2e/screenshots/` | 9 verified pure product screenshots | 9/9 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 7.3: Release v0.7 Regression Certification** | All subsystems & test suites | 91 automated tests + 9 Playwright checkpoints | 91/91 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 
 ---
 
@@ -111,18 +114,18 @@ tests/e2e/test_dashboard_e2e.py ................ [100%] (4 passed)
 
 ## 🖥️ Browser Automation & Visual UI Verification (Playwright)
 
-In addition to headless unit and AppTest suites, the live running application was certified via browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome across the entire War Room 2.0 layout and all 4 master blueprint tabs.
+In addition to headless unit and AppTest suites, the live running application was certified via browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome across the entire pure product workflow.
 
 ### Visual Audit Checkpoints & Captured Screenshots (`tests/e2e/screenshots/`):
-1. **`01_tab1_screenshot_critique.png`**: Tab 1 Blueprint View — 4 visual flaw cards with red/amber severity badges and targeted architectural remedies.
-2. **`02_tab2_serpapi_features.png`**: Tab 2 Blueprint View — 3 high-impact OSINT feature cards and comprehensive SerpApi Multi-Engine Coverage matrix.
-3. **`03_tab4_roadmap.png`**: Tab 4 Blueprint View — Sprint execution roadmap from Sprint 1 to Sprint 6.
-4. **`04_tab3_command_deck_initial.png`**: Tab 3 Blueprint View — High-contrast War Room 2.0 HUD header, glowing `.neon-pulse` container, and mission briefing.
-5. **`05_deck_overview_with_twin.png`**: Tab 3 Command Deck — Visual Forensic Inspector with suspect image, visual bounding boxes, and **Side-by-Side Visual Twin Matcher** embedded directly beneath.
-6. **`06_deck_geoguessr_mode.png`**: Tab 3 Geoguessr Mode — 5,000-point competitive Geoguessr scorecard and 4-phase progressive radius tightening cards.
-7. **`07_deck_chronology_timeline.png`**: Tab 3 Chronological Provenance card with `EARLIEST KNOWN APPEARANCE` badge and publication timestamps.
-8. **`08_deck_osint_dorks.png`**: Tab 3 OSINT Dork visualizer formulating municipal, government, and archive queries.
-9. **`09_fraud_anomaly_unmasking.png`**: Tab 3 Vacation rental listing fraud unmasking with glowing red anomaly banner.
+1. **`01_initial_hero_command_deck.png`**: Heroic Pure Product Landing — High-contrast War Room 2.0 HUD header, interactive Mission Briefing card deck, and prominent primary launch trigger on main canvas.
+2. **`02_sidebar_target_and_tech_expander.png`**: Sidebar Investigation Drawer — Target selection, compact image preview, and expanded "ℹ️ Technical Architecture & SerpApi Coverage" drawer for judges.
+3. **`03_command_deck_overview_with_twin.png`**: 45/55 Split-Screen Command Deck — Top 5-badge telemetry ribbon, 1-Click "📥 Export HTML Dossier" action bar, suspect image + bounding boxes, and Side-by-Side Visual Twin Matcher directly below.
+4. **`04_deck_geoguessr_mode.png`**: Autonomous Geoguessr Mode — 5,000-point competitive Geoguessr scorecard and 4-phase progressive radius tightening cards.
+5. **`05_deck_chronology_timeline.png`**: Chronological Provenance card with `EARLIEST KNOWN APPEARANCE` badge and publication timestamps.
+6. **`06_deck_citation_ledger.png`**: Verifiable Evidentiary Citation Ledger grouped by SerpApi engine (Google Lens, Google Maps, Google News).
+7. **`07_deck_osint_dorks.png`**: Interactive Advanced OSINT Google Search Dorks formulated dynamically across municipal, property, and open directory sources.
+8. **`08_deck_executive_dossier.png`**: Executive Dossier Summary with download suite (Standalone HTML, JSON, Markdown).
+9. **`09_fraud_anomaly_unmasking.png`**: Vacation Rental Listing Fraud unmasked with glowing red anomaly banner and direct source verification link.
 
 ### Quota Defense Verification:
 - **SerpApi Live Credits Burned During UI Audit:** **0 credits** (100% resolved via SQLite WAL disk cache).

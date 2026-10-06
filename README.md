@@ -6,7 +6,7 @@
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-green.svg)](https://python.org)
 [![Tests Passing](https://img.shields.io/badge/Tests-91%2F91%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
-[![Release Certified](https://img.shields.io/badge/Release-v0.6.0--certified-blueviolet.svg)](AGENTS.md)
+[![Release Certified](https://img.shields.io/badge/Release-v0.7.0--certified-blueviolet.svg)](AGENTS.md)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)

@@ -50,6 +50,11 @@
 - **Task 6.4:** Developer & SDD Hooks Setup (`.claude/hookify.quota-defense.local.md`, `.git/hooks/pre-commit`).
 - **Task 6.5:** Full Regression Audit (91/91 tests), 9-Tab Playwright Browser Re-Certification & Release v0.6 Certification (`v0.6.0`).
 
+### Sprint 7: Pure Product Immersion & Streamlined Investigative Workflow (`v0.7-dev`)
+- **Task 7.1:** Pure Product Immersion — Elimination of outer meta-tabs, Heroic Tactical Command Deck landing, Centered primary launch trigger, Quick-Export action bar, and Collapsible Judge Tech Drawer (`app.py`, `tactical_command_deck.py`).
+- **Task 7.2:** Playwright 9-Point Pure Product Browser Audit & Certification (`run_playwright_audit.py`).
+- **Task 7.3:** Full Regression Audit (91/91 tests, 100% pass) & Release v0.7 Certification (`v0.7.0`).
+
 ---
 
 ## 📋 Task & Subagent Execution Matrix
@@ -82,4 +87,7 @@
 | **Task 6.3** | **Autonomous Geoguessr Mode**<br>• 5,000-point exponential decay scoring curve<br>• 4-stage progressive spatial radius tightening | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `223a74e` |
 | **Task 6.4** | **Developer & SDD Hooks Setup**<br>• `.claude/hookify.quota-defense.local.md` guardrail<br>• `.git/hooks/pre-commit` test automation gate | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `223a74e` |
 | **Task 6.5** | **Regression Audit & Release v0.6 Certification**<br>• 91/91 tests (100% pass) & 9 verified Playwright screenshots<br>• Release `v0.6.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6.0` |
+| **Task 7.1** | **Pure Product Immersion & Heroic Command Deck**<br>• Removal of outer meta-tabs, centered primary trigger<br>• Quick-Export action bar & Judge Tech Drawer in sidebar | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.7-dev` |
+| **Task 7.2** | **Playwright 9-Point Pure Product Browser Audit**<br>• Direct Command Deck verification & 9 screenshots | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.7-dev` |
+| **Task 7.3** | **Regression Audit & Release v0.7 Certification**<br>• 91/91 tests (100% pass) & Release `v0.7.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.7.0` |
 
