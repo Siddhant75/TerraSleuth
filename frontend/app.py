@@ -14,21 +14,18 @@ from backend.app.agent.graph import stream_osint_investigation_sync
 from backend.app.db import get_golden_cases, init_db
 from backend.app.models.case import CaseFile
 from backend.app.services.cache_service import CacheService
-from frontend.components.chronology_timeline import render_chronology_timeline
-from frontend.components.citation_ledger import render_citation_ledger
-from frontend.components.dossier_exporter import generate_standalone_html_dossier
-from frontend.components.geo_map import render_geo_map, render_telemetry_bar_html
+from frontend.components.blueprint_views import (
+    render_implementation_roadmap_view,
+    render_screenshot_critique_view,
+    render_serpapi_features_view,
+)
 from frontend.components.swarm_telemetry_terminal import (
     format_terminal_log_entry,
     generate_swarm_terminal_html,
-    render_swarm_telemetry_terminal,
 )
-from frontend.components.visual_evidence_board import render_visual_evidence_board
-from frontend.components.visual_twin_comparator import render_visual_twin_comparator
+from frontend.components.tactical_command_deck import render_tactical_command_deck
 from frontend.components.war_room_hud import (
-    render_anomaly_alert,
     render_mission_briefing,
-    render_osint_dorks,
     render_war_room_header,
 )
 
@@ -47,10 +44,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom High-Contrast Tactical Cyber Theme CSS
+# Custom High-Contrast Tactical Cyber Theme CSS with Neon Pulse Animation
 st.markdown(
     """
     <style>
+    @keyframes pulse-cyan {
+        0%, 100% { box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); border-color: rgba(0, 242, 254, 0.4); }
+        50% { box-shadow: 0 0 25px rgba(0, 242, 254, 0.6); border-color: rgba(0, 242, 254, 0.7); }
+    }
+    .neon-pulse {
+        animation: pulse-cyan 3s infinite;
+    }
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background-color: #07090e !important;
         color: #e2e8f0 !important;
@@ -136,6 +140,8 @@ def render_sidebar():
     image_url = None
     context_hint = None
     active_image = None
+    truth_lat = None
+    truth_lon = None
 
     if target_mode == "🌟 Golden Mystery Targets (Instant / Pre-Cached)":
         golden_cases = get_golden_cases()
@@ -152,6 +158,8 @@ def render_sidebar():
             image_path = chosen["sample_image_path"]
             image_url = chosen["sample_image_url"]
             context_hint = chosen.get("context_hint", "")
+            truth_lat = chosen.get("ground_truth_lat")
+            truth_lon = chosen.get("ground_truth_lon")
             st.sidebar.caption(chosen["description"])
 
             if os.path.exists(image_path):
@@ -213,6 +221,8 @@ def render_sidebar():
         "max_budget": max_budget,
         "max_hops": max_hops,
         "active_image": active_image,
+        "truth_lat": truth_lat,
+        "truth_lon": truth_lon,
     }
 
 
@@ -230,248 +240,144 @@ def main():
     if "swarm_telemetry_logs" not in st.session_state:
         st.session_state["swarm_telemetry_logs"] = []
 
-    # If no case is active, display the Interactive Mission Briefing
-    if not st.session_state.get("case_file"):
-        render_mission_briefing()
+    # 4 Master Top-Level Blueprint Navigation Tabs (Matching docs/interactive-redesign-blueprint.html 1:1)
+    nav_tab_critique, nav_tab_features, nav_tab_deck, nav_tab_roadmap = st.tabs([
+        "1. 🔍 Screenshot Audit & Critique",
+        "2. ⚡ SerpApi Features & Add-ons",
+        "3. 🕵️ Tactical Command Deck",
+        "4. 🗺️ Implementation Roadmap",
+    ])
 
-    # Tactical Full-Width Launch Trigger
-    launch_col1, launch_col2, launch_col3 = st.columns([1, 4, 1])
-    with launch_col2:
-        start_investigation = st.button(
-            "⚡ Launch Autonomous Investigation (Execute Swarm)",
-            type="primary",
-            use_container_width=True,
-        )
+    with nav_tab_critique:
+        render_screenshot_critique_view()
 
-    if start_investigation:
-        if not config["image_path"] and not config["image_url"]:
-            st.error("Please provide an image file, URL, or select a Golden Mystery Target to begin.")
-            return
+    with nav_tab_features:
+        render_serpapi_features_view()
 
-        st.markdown("---")
-        st.markdown("### 📡 Live Multi-Agent Swarm Radar")
+    with nav_tab_roadmap:
+        render_implementation_roadmap_view()
 
-        radar_col, terminal_col = st.columns([1, 1])
-        step_placeholders = {}
+    with nav_tab_deck:
+        # If no investigation has run, display the Interactive Mission Briefing cards
+        if not st.session_state.get("case_file"):
+            render_mission_briefing()
 
-        node_descriptions = {
-            "scene_deconstructor": ("🔍 SCENE_DECONSTRUCTOR", "Extracting visual clues: architecture, signage, and vegetation"),
-            "lens_hunter": ("🌐 LENS_HUNTER", "Reverse-searching Google Lens for exact visual twins and domain provenance"),
-            "geo_triangulator": ("📍 GEO_TRIANGULATOR", "Querying Google Maps to resolve WGS84 coordinates and addresses"),
-            "chrono_auditor": ("⏱️ CHRONO_AUDITOR", "Auditing Google News archives for timeline milestones and publication dates"),
-            "refinement_router": ("🔄 REFINE_ROUTER", "Resolving spatial ambiguity with a targeted search hop"),
-            "case_synthesizer": ("📜 CASE_SYNTHESIZER", "Resolving fraud contradictions, compiling dossier, and scoring confidence"),
-        }
-
-        with radar_col:
-            for node_name, (title, desc) in node_descriptions.items():
-                step_placeholders[node_name] = st.empty()
-                step_placeholders[node_name].markdown(
-                    f'<div class="radar-node-badge"><span>{title}</span><span style="color: #64748b;">STANDBY</span></div>',
-                    unsafe_allow_html=True,
-                )
-
-        with terminal_col:
-            terminal_placeholder = st.empty()
-
-        # Run Live Streaming State Machine
-        final_case_file: Optional[CaseFile] = None
-        accumulated_state = None
-        swarm_logs = []
-
-        with st.spinner("Autonomous OSINT Swarm active across SerpApi engines..."):
-            for event in stream_osint_investigation_sync(
-                image_path=config["image_path"] or "target.jpg",
-                image_url=config["image_url"],
-                context_hint=config["context_hint"],
-                max_budget=config["max_budget"],
-                max_refinement_hops=config["max_hops"],
-            ):
-                node_name = list(event.keys())[0]
-                node_output = event[node_name]
-
-                title, desc = node_descriptions.get(node_name, (node_name.upper(), "Processing..."))
-                status_text = node_output.get("status", "complete")
-
-                step_placeholders[node_name].markdown(
-                    f'<div class="radar-node-badge radar-node-active"><span>{title}</span><span style="color: #38bdf8; font-weight: 700;">● {status_text.upper()}</span></div>',
-                    unsafe_allow_html=True,
-                )
-
-                # Generate clean telemetry deduction for monospace radar terminal
-                if node_name == "scene_deconstructor":
-                    clues = node_output.get("visual_clues", [])
-                    log_msg = f"Visual deconstruction completed. {len(clues)} forensic features cataloged."
-                elif node_name == "lens_hunter":
-                    matches = node_output.get("lens_matches", [])
-                    top_title = matches[0].get("title", "entity") if matches else "No match"
-                    log_msg = f"SerpApi Google Lens reverse search -> {len(matches)} visual twins found. Top: '{top_title[:45]}'."
-                elif node_name == "geo_triangulator":
-                    candidates = node_output.get("geo_candidates", [])
-                    top_cand = candidates[0] if candidates else None
-                    if top_cand:
-                        lat_val = getattr(top_cand, "latitude", 0.0)
-                        lon_val = getattr(top_cand, "longitude", 0.0)
-                        log_msg = f"SerpApi Google Maps resolved {top_cand.name} ({lat_val:.4f}°N, {lon_val:.4f}°E)."
-                    else:
-                        log_msg = "Google Maps spatial query completed with 0 high-confidence candidates."
-                elif node_name == "chrono_auditor":
-                    events = node_output.get("timeline_events", [])
-                    log_msg = f"SerpApi Google News archival audit -> {len(events)} temporal milestones verified."
-                elif node_name == "case_synthesizer":
-                    cf = node_output.get("final_case_file")
-                    conf = int(cf.confidence_score * 100) if cf else 95
-                    anom_count = len(cf.anomalies) if cf else 0
-                    log_msg = f"Synthesizer resolved ground truth with {conf}% confidence ({anom_count} anomalies flagged)."
-                else:
-                    log_msg = f"Executed node transition: {node_name}."
-
-                swarm_logs.append(format_terminal_log_entry(node_name, log_msg))
-                terminal_placeholder.markdown(
-                    generate_swarm_terminal_html(swarm_logs, max_height_px=220),
-                    unsafe_allow_html=True,
-                )
-
-                if "final_case_file" in node_output and node_output["final_case_file"]:
-                    final_case_file = node_output["final_case_file"]
-                accumulated_state = node_output
-
-        st.session_state["case_file"] = final_case_file
-        st.session_state["last_state"] = accumulated_state
-        st.session_state["swarm_telemetry_logs"] = swarm_logs
-        st.rerun()
-
-    # Render Results if Case File exists
-    case_file: Optional[CaseFile] = st.session_state.get("case_file")
-    if case_file:
-        st.markdown("---")
-
-        # 1. Render Anomaly & Fraud Warnings if detected!
-        if case_file.anomalies:
-            render_anomaly_alert(case_file.anomalies)
-
-        # 2. Top Executive Telemetry Bar (Zero-truncation responsive badges)
-        target_name = (
-            case_file.resolved_location.name
-            if case_file.resolved_location and case_file.resolved_location.name
-            else "Unidentified Target"
-        )
-        lat = getattr(case_file.resolved_location, "latitude", None) if case_file.resolved_location else None
-        lon = getattr(case_file.resolved_location, "longitude", None) if case_file.resolved_location else None
-        coords_str = f"{lat:.5f}°N, {lon:.5f}°E" if lat is not None and lon is not None else "N/A"
-        conf_pct = int(case_file.confidence_score * 100)
-        telemetry_html = render_telemetry_bar_html(
-            target_name=target_name,
-            coords_str=coords_str,
-            confidence_pct=conf_pct,
-            queries_count=case_file.serp_queries_executed,
-            max_budget=config.get("max_budget", 8),
-            cache_status="ZERO CREDIT BURN",
-        )
-        st.markdown(telemetry_html, unsafe_allow_html=True)
-
-        # 3. Unified Split-Screen Command Deck (45% Visual Inspector / 55% Tactical Map & Intelligence)
-        deck_left, deck_right = st.columns([9, 11])
-
-        with deck_left:
-            st.markdown("### 🔍 Forensic Visual Inspector")
-            st.caption("High-resolution visual provenance, bounding clues, and Google Lens visual twin alignment.")
-
-            # Load active image or dummy placeholder
-            img_to_display = config.get("active_image")
-            if not img_to_display and config.get("image_path") and os.path.exists(config["image_path"]):
-                img_to_display = Image.open(config["image_path"])
-            if not img_to_display:
-                img_to_display = Image.new("RGB", (800, 600), color=(20, 24, 33))
-
-            vis_tab_clues, vis_tab_twin = st.tabs([
-                "🎯 Visual Clues & Bounding Boxes",
-                "🔬 Side-by-Side Visual Twin Matcher",
-            ])
-
-            with vis_tab_clues:
-                render_visual_evidence_board(img_to_display, case_file.visual_clues)
-
-            with vis_tab_twin:
-                lens_matches = (
-                    getattr(case_file, "lens_matches", None)
-                    or st.session_state.get("last_state", {}).get("lens_matches", [])
-                )
-                render_visual_twin_comparator(
-                    suspect_image=img_to_display,
-                    lens_matches=lens_matches,
-                    base_confidence=case_file.confidence_score,
-                )
-
-        with deck_right:
-            render_geo_map(case_file.resolved_location)
-
-            # Prominent Monospace Swarm Telemetry Terminal (Directly Visible!)
-            terminal_logs = st.session_state.get("swarm_telemetry_logs", [])
-            if not terminal_logs and case_file:
-                terminal_logs = [
-                    format_terminal_log_entry("SCENE_DECONSTRUCTOR", f"Cataloged {len(case_file.visual_clues)} forensic visual clues."),
-                    format_terminal_log_entry("LENS_HUNTER", f"SerpApi Google Lens identified {len(case_file.lens_matches)} visual twins."),
-                    format_terminal_log_entry("GEO_TRIANGULATOR", f"Google Maps pinpointed {target_name} ({coords_str})."),
-                    format_terminal_log_entry("CHRONO_AUDITOR", f"Google News archived {len(case_file.timeline)} chronological milestones."),
-                    format_terminal_log_entry("CASE_SYNTHESIZER", f"Synthesized case dossier with {conf_pct}% confidence ({len(case_file.anomalies)} anomalies)."),
-                ]
-                st.session_state["swarm_telemetry_logs"] = terminal_logs
-
-            st.markdown("##### 📡 Live Swarm Telemetry & Monospace Radar Log")
-            render_swarm_telemetry_terminal(terminal_logs, max_height_px=160)
-
-            subtab_chrono, subtab_citations, subtab_dorks, subtab_dossier = st.tabs([
-                "⏱️ Chronological Provenance",
-                "🔗 Verifiable Citations",
-                "🕵️ OSINT Dorks",
-                "📄 Executive Dossier",
-            ])
-
-            with subtab_chrono:
-                render_chronology_timeline(case_file.timeline)
-
-            with subtab_citations:
-                render_citation_ledger(case_file.citations)
-
-            with subtab_dorks:
-                render_osint_dorks(case_file.dorks)
-
-            with subtab_dossier:
-                st.markdown(case_file.case_summary)
-
-        # 4. Standalone HTML Dossier & Export Suite
-        st.markdown("---")
-        st.markdown("#### 📥 Export Forensic Intelligence Dossier")
-        col_d1, col_d2, col_d3 = st.columns([2, 1, 1])
-
-        with col_d1:
-            html_dossier_data = generate_standalone_html_dossier(case_file, target_image=img_to_display)
-            st.download_button(
-                label="📥 Download Standalone HTML Intelligence Dossier",
-                data=html_dossier_data,
-                file_name=f"{case_file.case_id}_intelligence_dossier.html",
-                mime="text/html",
+        # Tactical Full-Width Launch Trigger Button
+        launch_col1, launch_col2, launch_col3 = st.columns([1, 4, 1])
+        with launch_col2:
+            start_investigation = st.button(
+                "⚡ Launch Autonomous Investigation (Execute Swarm)",
                 type="primary",
                 use_container_width=True,
+                key="launch_swarm_btn",
             )
 
-        with col_d2:
-            st.download_button(
-                label="Download Case File (JSON)",
-                data=case_file.model_dump_json(indent=2),
-                file_name=f"{case_file.case_id}_dossier.json",
-                mime="application/json",
-                use_container_width=True,
-            )
+        if start_investigation:
+            if not config["image_path"] and not config["image_url"]:
+                st.error("Please provide an image file, URL, or select a Golden Mystery Target to begin.")
+                return
 
-        with col_d3:
-            st.download_button(
-                label="Download Summary (Markdown)",
-                data=case_file.case_summary,
-                file_name=f"{case_file.case_id}_summary.md",
-                mime="text/markdown",
-                use_container_width=True,
+            st.markdown("---")
+            st.markdown("### 📡 Live Multi-Agent Swarm Radar")
+
+            radar_col, terminal_col = st.columns([1, 1])
+            step_placeholders = {}
+
+            node_descriptions = {
+                "scene_deconstructor": ("🔍 SCENE_DECONSTRUCTOR", "Extracting visual clues: architecture, signage, and vegetation"),
+                "lens_hunter": ("🌐 LENS_HUNTER", "Reverse-searching Google Lens for exact visual twins and domain provenance"),
+                "geo_triangulator": ("📍 GEO_TRIANGULATOR", "Querying Google Maps to resolve WGS84 coordinates and addresses"),
+                "chrono_auditor": ("⏱️ CHRONO_AUDITOR", "Auditing Google News archives for timeline milestones and publication dates"),
+                "refinement_router": ("🔄 REFINE_ROUTER", "Resolving spatial ambiguity with a targeted search hop"),
+                "case_synthesizer": ("📜 CASE_SYNTHESIZER", "Resolving fraud contradictions, compiling dossier, and scoring confidence"),
+            }
+
+            with radar_col:
+                for node_name, (title, desc) in node_descriptions.items():
+                    step_placeholders[node_name] = st.empty()
+                    step_placeholders[node_name].markdown(
+                        f'<div class="radar-node-badge"><span>{title}</span><span style="color: #64748b;">STANDBY</span></div>',
+                        unsafe_allow_html=True,
+                    )
+
+            with terminal_col:
+                terminal_placeholder = st.empty()
+
+            # Run Live Streaming State Machine
+            final_case_file: Optional[CaseFile] = None
+            accumulated_state = None
+            swarm_logs = []
+
+            with st.spinner("Autonomous OSINT Swarm active across SerpApi engines..."):
+                for event in stream_osint_investigation_sync(
+                    image_path=config["image_path"] or "target.jpg",
+                    image_url=config["image_url"],
+                    context_hint=config["context_hint"],
+                    max_budget=config["max_budget"],
+                    max_refinement_hops=config["max_hops"],
+                ):
+                    node_name = list(event.keys())[0]
+                    node_output = event[node_name]
+
+                    title, desc = node_descriptions.get(node_name, (node_name.upper(), "Processing..."))
+                    status_text = node_output.get("status", "complete")
+
+                    step_placeholders[node_name].markdown(
+                        f'<div class="radar-node-badge radar-node-active"><span>{title}</span><span style="color: #38bdf8; font-weight: 700;">● {status_text.upper()}</span></div>',
+                        unsafe_allow_html=True,
+                    )
+
+                    # Generate clean telemetry deduction for monospace radar terminal
+                    if node_name == "scene_deconstructor":
+                        clues = node_output.get("visual_clues", [])
+                        log_msg = f"Visual deconstruction completed. {len(clues)} forensic features cataloged."
+                    elif node_name == "lens_hunter":
+                        matches = node_output.get("lens_matches", [])
+                        top_title = matches[0].get("title", "entity") if matches else "No match"
+                        log_msg = f"SerpApi Google Lens reverse search -> {len(matches)} visual twins found. Top: '{top_title[:45]}'."
+                    elif node_name == "geo_triangulator":
+                        candidates = node_output.get("geo_candidates", [])
+                        top_cand = candidates[0] if candidates else None
+                        if top_cand:
+                            lat_val = getattr(top_cand, "latitude", 0.0)
+                            lon_val = getattr(top_cand, "longitude", 0.0)
+                            log_msg = f"SerpApi Google Maps resolved {top_cand.name} ({lat_val:.4f}°N, {lon_val:.4f}°E)."
+                        else:
+                            log_msg = "Google Maps spatial query completed with 0 high-confidence candidates."
+                    elif node_name == "chrono_auditor":
+                        events = node_output.get("timeline_events", [])
+                        log_msg = f"SerpApi Google News archival audit -> {len(events)} temporal milestones verified."
+                    elif node_name == "case_synthesizer":
+                        cf = node_output.get("final_case_file")
+                        conf = int(cf.confidence_score * 100) if cf else 95
+                        anom_count = len(cf.anomalies) if cf else 0
+                        log_msg = f"Synthesizer resolved ground truth with {conf}% confidence ({anom_count} anomalies flagged)."
+                    else:
+                        log_msg = f"Executed node transition: {node_name}."
+
+                    swarm_logs.append(format_terminal_log_entry(node_name, log_msg))
+                    terminal_placeholder.markdown(
+                        generate_swarm_terminal_html(swarm_logs, max_height_px=220),
+                        unsafe_allow_html=True,
+                    )
+
+                    if "final_case_file" in node_output and node_output["final_case_file"]:
+                        final_case_file = node_output["final_case_file"]
+                    accumulated_state = node_output
+
+            st.session_state["case_file"] = final_case_file
+            st.session_state["last_state"] = accumulated_state
+            st.session_state["swarm_telemetry_logs"] = swarm_logs
+
+        # Render High-Fidelity Tactical Command Deck if Case File exists
+        case_file: Optional[CaseFile] = st.session_state.get("case_file")
+        if case_file:
+            st.markdown("---")
+            render_tactical_command_deck(
+                case_file=case_file,
+                config=config,
+                ground_truth_lat=config.get("truth_lat"),
+                ground_truth_lon=config.get("truth_lon"),
             )
 
 

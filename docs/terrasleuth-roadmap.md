@@ -43,6 +43,13 @@
 - **Task 5.3:** Standalone Self-Contained HTML Forensic Dossier Exporter (`frontend/components/dossier_exporter.py`) with Base64 embedded imagery and strict URL sanitization.
 - **Task 5.4:** War Room 2.0 HUD Overhaul (`war_room_hud.py`, `app.py`), Docker suite (`Dockerfile`, `docker-compose.yml`), submission documentation (`docs/hackathon-submission.md`), and Release v0.5 Certification.
 
+### Sprint 6: 1:1 Blueprint Alignment, Autonomous Geoguessr Mode & SDD Automation Hooks (`v0.6-dev`)
+- **Task 6.1:** Master 4-Tab Blueprint Navigation & CommonMark Indentation Safety (`blueprint_views.py`, `app.py`).
+- **Task 6.2:** Tactical Command Deck Refinement (`tactical_command_deck.py` with embedded Side-by-Side Visual Twin Matcher, `.neon-pulse` container, 5-badge telemetry bar).
+- **Task 6.3:** Autonomous Geoguessr Mode (`backend/app/models/geoguessr.py`, `backend/app/services/geoguessr_service.py`, `frontend/components/geoguessr_view.py` with 5,000-point decay score and 4-phase spatial radius tightening).
+- **Task 6.4:** Developer & SDD Hooks Setup (`.claude/hookify.quota-defense.local.md`, `.git/hooks/pre-commit`).
+- **Task 6.5:** Full Regression Audit (91/91 tests), 9-Tab Playwright Browser Re-Certification & Release v0.6 Certification (`v0.6.0`).
+
 ---
 
 ## 📋 Task & Subagent Execution Matrix
@@ -70,4 +77,9 @@
 | **Task 5.2** | **Advanced OSINT Google Dorking Assistant**<br>• Targeted Google search queries<br>• Municipal permits, news archives, open directories | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5-dev` |
 | **Task 5.3** | **Standalone HTML Forensic Dossier Exporter**<br>• Self-contained offline report with base64 imagery<br>• Strict URL sanitization neutralizing javascript: XSS | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5-dev` |
 | **Task 5.4** | **War Room 2.0 HUD & Release v0.5 Certification**<br>• 1:1 War Room HUD alignment, Docker containerization<br>• 84/84 tests (100% pass) & 9 verified Playwright screenshots | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.5.0` |
+| **Task 6.1** | **Master 4-Tab Blueprint Navigation**<br>• Screenshot audit critique, SerpApi engine matrix<br>• CommonMark code block indentation safety | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6-dev` |
+| **Task 6.2** | **Tactical Command Deck Refinement**<br>• Embedded Side-by-Side Visual Twin Matcher<br>• `.neon-pulse` container & 5-badge telemetry bar | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6-dev` |
+| **Task 6.3** | **Autonomous Geoguessr Mode**<br>• 5,000-point exponential decay scoring curve<br>• 4-stage progressive spatial radius tightening | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6-dev` |
+| **Task 6.4** | **Developer & SDD Hooks Setup**<br>• `.claude/hookify.quota-defense.local.md` guardrail<br>• `.git/hooks/pre-commit` test automation gate | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6-dev` |
+| **Task 6.5** | **Regression Audit & Release v0.6 Certification**<br>• 91/91 tests (100% pass) & 9 verified Playwright screenshots<br>• Release `v0.6.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.6.0` |
 

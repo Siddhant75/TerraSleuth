@@ -4,24 +4,25 @@
 
 ---
 
-## 🚀 Active Project Status: Release v0.5 Certified (`v0.5.0`)
+## 🚀 Active Project Status: Release v0.6 Certified (`v0.6.0`)
 
 - **Project Name:** **TerraSleuth** (Autonomous Multi-Modal Visual & Geospatial OSINT Detective)
 - **Hackathon:** SerpApi India Hackathon 2026 (AI Agents Track)
-- **Active Working Branch:** `v0.5-dev` (Merging to `main` @ `v0.5.0`)
+- **Active Working Branch:** `v0.6-dev` (Merging to `main` @ `v0.6.0`)
 - **Milestone Branching Hierarchy:**
-  - `main` — Certified release branch (`v0.1.0`, `v0.2.0`, `v0.3.0`, `v0.4.0`, and `v0.5.0` certified).
+  - `main` — Certified release branch (`v0.1.0`, `v0.2.0`, `v0.3.0`, `v0.4.0`, `v0.5.0`, and `v0.6.0` certified).
   - `v0.1-dev` — **Sprint 1 (Complete):** Foundation, SQLite Disk Cache & SerpApi Visual/Spatial Service.
   - `v0.2-dev` — **Sprint 2 (Complete):** LangGraph Multi-Agent OSINT Engine (Scene Deconstructor, Lens Hunter, Geo Triangulator, Chrono Auditor, Case Synthesizer).
   - `v0.3-dev` — **Sprint 3 (Complete):** Interactive Visual OSINT Dashboard (Bounding box visualizer, Leaflet Map Pinpoint, Evidence Chain & Golden Demo Walkthrough).
   - `v0.4-dev` — **Sprint 4 (Complete):** Tactical OSINT Command Deck & Feature Pack (45/55 Split-Screen, Visual Twin Matcher, Satellite Recon, Swarm Cyber Radar).
   - `v0.5-dev` — **Sprint 5 (Complete):** War Room 2.0 HUD, Anomaly & Fraud Engine, Standalone HTML Dossier Exporter, Docker Suite, and Submission Packaging.
+  - `v0.6-dev` — **Sprint 6 (Complete):** 1:1 Blueprint Alignment, 4-Tab Navigation, Autonomous Geoguessr Mode, Pre-Commit & Quota Hooks.
 - **Commit Policy:** Strict commit per task on the active development branch using `<type>(<scope>): <description> (Task <X.Y>)`.
 - **Active Single Source of Truth:**
   - **[docs/hackathon-submission.md](file:///d:/SerpAPI_hackathon/docs/hackathon-submission.md)** — Official hackathon submission document and judging writeup.
   - **[docs/terrasleuth-roadmap.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-roadmap.md)** — Master subagent blueprint, task execution matrix, review verdicts, and commit log.
   - **[docs/terrasleuth-plan.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-plan.md)** — Core architecture, LangGraph OSINT state machine design, and SerpApi multi-engine research.
-  - **[docs/terrasleuth-regression-audit.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-regression-audit.md)** — Subsystem health scorecard (84/84 tests) and multi-point regression verification report.
+  - **[docs/terrasleuth-regression-audit.md](file:///d:/SerpAPI_hackathon/docs/terrasleuth-regression-audit.md)** — Subsystem health scorecard (91/91 tests) and multi-point regression verification report.
 
 ---
 
