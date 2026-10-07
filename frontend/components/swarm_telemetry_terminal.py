@@ -27,8 +27,15 @@ def generate_swarm_terminal_html(
         escaped_lines = []
         for line in log_entries:
             safe_line = html.escape(str(line))
-            # Highlight step names in cyan/emerald
-            if "[SCENE_DECONSTRUCTOR]" in safe_line:
+            if "[HUNTER]" in safe_line:
+                safe_line = safe_line.replace("[HUNTER]", "<span style='color: #00f2fe; font-weight: 700;'>[HUNTER]</span>")
+            elif "[SKEPTIC]" in safe_line:
+                safe_line = safe_line.replace("[SKEPTIC]", "<span style='color: #ef4444; font-weight: 700;'>[SKEPTIC]</span>")
+            elif "[ARBITER]" in safe_line:
+                safe_line = safe_line.replace("[ARBITER]", "<span style='color: #10b981; font-weight: 700;'>[ARBITER]</span>")
+            elif "[THOUGHT]" in safe_line:
+                safe_line = safe_line.replace("[THOUGHT]", "<span style='color: #f59e0b; font-weight: 700;'>[THOUGHT]</span>")
+            elif "[SCENE_DECONSTRUCTOR]" in safe_line:
                 safe_line = safe_line.replace("[SCENE_DECONSTRUCTOR]", "<span style='color: #38bdf8; font-weight: 700;'>[SCENE_DECONSTRUCTOR]</span>")
             elif "[LENS_HUNTER]" in safe_line:
                 safe_line = safe_line.replace("[LENS_HUNTER]", "<span style='color: #a78bfa; font-weight: 700;'>[LENS_HUNTER]</span>")

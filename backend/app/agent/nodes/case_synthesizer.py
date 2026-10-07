@@ -244,6 +244,7 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         dorks=dorks_dicts,
         refinement_hops=refinement_hops,
         serp_queries_executed=queries_executed,
+        adversarial_audit_score=state.get("audit_score"),
     )
 
     logger.info(

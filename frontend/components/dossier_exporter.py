@@ -346,7 +346,7 @@ def generate_standalone_html_dossier(
     <div class="header-box">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span class="case-id">TERRASLEUTH // CASE FILE #{safe_case_id}</span>
-        <span class="badge badge-emerald">AUTHENTIC PROVENANCE VERIFIED</span>
+        <span class="badge {'badge-crimson' if case_file.anomalies else 'badge-emerald'}">{'🚨 ADVERSARIALLY DEBUNKED (FRAUD DETECTED)' if case_file.anomalies else '🛡️ RED-TEAM VERIFIED (AUDIT PASSED)'}</span>
       </div>
       <h1>{safe_title}</h1>
       <p style="color: #94a3b8; font-size: 13px; margin: 0;">Generated on {date_str} • Autonomous Multi-Modal OSINT Swarm Engine</p>
@@ -362,7 +362,7 @@ def generate_standalone_html_dossier(
         </div>
         <div class="meta-card">
           <div class="meta-label">Consensus Confidence</div>
-          <div class="meta-value text-emerald">{conf_pct}% [VERIFIED]</div>
+          <div class="meta-value text-emerald">{conf_pct}% [{'FRAUD UNMASKED' if case_file.anomalies else 'RED-TEAM CERTIFIED'}]</div>
         </div>
         <div class="meta-card">
           <div class="meta-label">SerpApi Searches</div>

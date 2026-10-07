@@ -10,7 +10,10 @@ import streamlit as st
 # Ensure repository root is on PYTHONPATH for backend imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from backend.app.agent.graph import stream_osint_investigation_sync
+from backend.app.agent.graph import (
+    stream_dialectical_investigation_sync,
+    stream_osint_investigation_sync,
+)
 from backend.app.db import get_golden_cases, init_db
 from backend.app.models.case import CaseFile
 from backend.app.services.cache_service import CacheService
@@ -254,11 +257,11 @@ def main():
 
         node_descriptions = {
             "scene_deconstructor": ("🔍 SCENE_DECONSTRUCTOR", "Extracting visual clues: architecture, signage, and vegetation"),
-            "lens_hunter": ("🌐 LENS_HUNTER", "Reverse-searching Google Lens for exact visual twins and domain provenance"),
-            "geo_triangulator": ("📍 GEO_TRIANGULATOR", "Querying Google Maps to resolve WGS84 coordinates and addresses"),
-            "chrono_auditor": ("⏱️ CHRONO_AUDITOR", "Auditing Google News archives for timeline milestones and publication dates"),
-            "refinement_router": ("🔄 REFINE_ROUTER", "Resolving spatial ambiguity with a targeted search hop"),
-            "case_synthesizer": ("📜 CASE_SYNTHESIZER", "Resolving fraud contradictions, compiling dossier, and scoring confidence"),
+            "hunter": ("🎯 HUNTER_SWARM", "Autonomous ReAct Agent: Dynamic Lens visual search & Maps geolocation"),
+            "skeptic": ("🛡️ SKEPTIC_AUDITOR", "Adversarial Red-Team: Debunking contradictions & verifying provenance"),
+            "arbiter": ("⚖️ ARBITER_JUDGE", "Weighing dialectical evidence, computing audit score & resolving consensus"),
+            "swarm_refinement_router": ("🔄 REFINE_ROUTER", "Resolving dialectical contention with a targeted search hop"),
+            "case_synthesizer": ("📜 CASE_SYNTHESIZER", "Compiling certified OSINT dossier with adversarial red-team audit"),
         }
 
         with radar_col:
@@ -278,7 +281,7 @@ def main():
         swarm_logs = []
 
         with st.spinner("Autonomous OSINT Swarm active across SerpApi engines..."):
-            for event in stream_osint_investigation_sync(
+            for event in stream_dialectical_investigation_sync(
                 image_path=config["image_path"] or "target.jpg",
                 image_url=config["image_url"],
                 context_hint=config["context_hint"],
@@ -291,19 +294,54 @@ def main():
                 title, desc = node_descriptions.get(node_name, (node_name.upper(), "Processing..."))
                 status_text = node_output.get("status", "complete")
 
-                step_placeholders[node_name].markdown(
-                    f'<div class="radar-node-badge radar-node-active"><span>{title}</span><span style="color: #38bdf8; font-weight: 700;">● {status_text.upper()}</span></div>',
-                    unsafe_allow_html=True,
-                )
+                if node_name in step_placeholders:
+                    step_placeholders[node_name].markdown(
+                        f'<div class="radar-node-badge radar-node-active"><span>{title}</span><span style="color: #38bdf8; font-weight: 700;">● {status_text.upper()}</span></div>',
+                        unsafe_allow_html=True,
+                    )
 
                 # Generate clean telemetry deduction for monospace radar terminal
                 if node_name == "scene_deconstructor":
                     clues = node_output.get("visual_clues", [])
                     log_msg = f"Visual deconstruction completed. {len(clues)} forensic features cataloged."
+                    swarm_logs.append(format_terminal_log_entry("SCENE", log_msg))
+                elif node_name == "hunter":
+                    hyps = node_output.get("hunter_hypotheses", [])
+                    top_hyp = hyps[0] if hyps else "Investigating visual clues..."
+                    matches = node_output.get("lens_matches", [])
+                    cands = node_output.get("geo_candidates", [])
+                    top_cand_name = cands[0].name if cands else "Target"
+                    log_msg = f"Hypothesis generated: '{top_hyp[:55]}' | Resolved: {top_cand_name} ({len(matches)} matches)."
+                    swarm_logs.append(format_terminal_log_entry("HUNTER", log_msg))
+                elif node_name == "skeptic":
+                    critiques = node_output.get("skeptic_critiques", [])
+                    top_critique = critiques[0] if critiques else "Audit completed."
+                    anoms = node_output.get("anomalies", [])
+                    log_msg = f"Red-team audit: '{top_critique[:60]}' ({len(anoms)} anomalies probed)."
+                    swarm_logs.append(format_terminal_log_entry("SKEPTIC", log_msg))
+                elif node_name == "arbiter":
+                    score = node_output.get("audit_score", 0.9)
+                    verdict = "VERIFIED CONSENSUS" if score >= 0.7 else "FRAUD / CONTRADICTION DETECTED"
+                    log_msg = f"Dialectical synthesis: {verdict} (Audit Confidence: {int(score * 100)}%)."
+                    swarm_logs.append(format_terminal_log_entry("ARBITER", log_msg))
+                elif node_name == "swarm_refinement_router":
+                    hops = node_output.get("refinement_hops", 1)
+                    budget = node_output.get("budget_remaining", 0)
+                    log_msg = f"Refinement hop #{hops} triggered (Budget remaining: {budget} queries)."
+                    swarm_logs.append(format_terminal_log_entry("ROUTER", log_msg))
+                elif node_name == "case_synthesizer":
+                    cf = node_output.get("final_case_file")
+                    conf = int(cf.confidence_score * 100) if cf else 95
+                    anom_count = len(cf.anomalies) if cf else 0
+                    audit_val = getattr(cf, "adversarial_audit_score", None) if cf else None
+                    audit_label = f" | Audit Score: {int(audit_val * 100)}%" if audit_val is not None else ""
+                    log_msg = f"Synthesizer certified case dossier with {conf}% confidence ({anom_count} anomalies flagged{audit_label})."
+                    swarm_logs.append(format_terminal_log_entry("ARBITER", log_msg))
                 elif node_name == "lens_hunter":
                     matches = node_output.get("lens_matches", [])
                     top_title = matches[0].get("title", "entity") if matches else "No match"
                     log_msg = f"SerpApi Google Lens reverse search -> {len(matches)} visual twins found. Top: '{top_title[:45]}'."
+                    swarm_logs.append(format_terminal_log_entry("HUNTER", log_msg))
                 elif node_name == "geo_triangulator":
                     candidates = node_output.get("geo_candidates", [])
                     top_cand = candidates[0] if candidates else None
@@ -313,18 +351,15 @@ def main():
                         log_msg = f"SerpApi Google Maps resolved {top_cand.name} ({lat_val:.4f}°N, {lon_val:.4f}°E)."
                     else:
                         log_msg = "Google Maps spatial query completed with 0 high-confidence candidates."
+                    swarm_logs.append(format_terminal_log_entry("GEO", log_msg))
                 elif node_name == "chrono_auditor":
                     events = node_output.get("timeline_events", [])
                     log_msg = f"SerpApi Google News archival audit -> {len(events)} temporal milestones verified."
-                elif node_name == "case_synthesizer":
-                    cf = node_output.get("final_case_file")
-                    conf = int(cf.confidence_score * 100) if cf else 95
-                    anom_count = len(cf.anomalies) if cf else 0
-                    log_msg = f"Synthesizer resolved ground truth with {conf}% confidence ({anom_count} anomalies flagged)."
+                    swarm_logs.append(format_terminal_log_entry("SKEPTIC", log_msg))
                 else:
                     log_msg = f"Executed node transition: {node_name}."
+                    swarm_logs.append(format_terminal_log_entry("SYS", log_msg))
 
-                swarm_logs.append(format_terminal_log_entry(node_name, log_msg))
                 terminal_placeholder.markdown(
                     generate_swarm_terminal_html(swarm_logs, max_height_px=220),
                     unsafe_allow_html=True,

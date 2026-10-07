@@ -88,3 +88,5 @@ class CaseFile(BaseModel):
     dorks: List[dict] = Field(default_factory=list, description="Targeted OSINT Google Search dorks")
     refinement_hops: int = Field(default=0, description="Number of iterative disambiguation cycles performed")
     serp_queries_executed: int = Field(default=0, description="Total SerpApi search queries executed")
+    adversarial_audit_score: Optional[float] = Field(default=None, description="Adversarial red-team audit score from 0.0 to 1.0")
+

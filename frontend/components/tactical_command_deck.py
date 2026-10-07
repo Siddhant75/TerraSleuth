@@ -68,7 +68,7 @@ def render_tactical_command_deck(
                 </div>
                 <div style="background: #121826; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center;">
                     <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">CONFIDENCE</span>
-                    <b style="color: #34d399; font-size: 13px; display: block;">{conf_pct}% [VERIFIED]</b>
+                    <b style="color: {'#ef4444' if case_file.anomalies else '#34d399'}; font-size: 13px; display: block;">{conf_pct}% [{'🚨 FRAUD DETECTED' if case_file.anomalies else '🛡️ RED-TEAM VERIFIED'}]</b>
                 </div>
                 <div style="background: #121826; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center;">
                     <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">SERPAPI QUERIES</span>
