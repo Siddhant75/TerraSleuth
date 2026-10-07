@@ -44,7 +44,7 @@ class OsintGraphState(TypedDict):
     # Level 5 Dialectical Swarm Evidence & Debates
     hunter_hypotheses: Annotated[List[str], merge_lists]
     skeptic_critiques: Annotated[List[str], merge_lists]
-    debate_history: Annotated[List[Dict[str, str]], merge_lists]
+    debate_history: Annotated[List[Dict[str, Any]], merge_lists]
     audit_score: float
 
     # Deterministic Circuit Breakers & Query Budgets

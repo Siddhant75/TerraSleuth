@@ -91,13 +91,19 @@ def should_refine_or_synthesize(state: OsintGraphState) -> str:
 def should_refine_debate(state: OsintGraphState) -> str:
     """Conditional router after Arbiter audit in dialectical swarm mode.
     
+    If status is 'fraud_unmasked', circuit breaker halts debate immediately to synthesizer.
     If audit_score < 0.70, hops < max_hops, and budget > 0, loops back to hunter.
     Otherwise, circuit breaker forces transition to case_synthesizer.
     """
+    status = state.get("status", "")
     audit_score = state.get("audit_score", 1.0)
     hops = state.get("refinement_hops", 0)
     max_hops = state.get("max_refinement_hops", 2)
     budget = state.get("budget_remaining", 0)
+
+    if status == "fraud_unmasked":
+        logger.info("Fraud conclusively unmasked by Arbiter: routing directly to case_synthesizer.")
+        return "case_synthesizer"
 
     if audit_score < 0.70 and hops < max_hops and budget > 0:
         logger.info(

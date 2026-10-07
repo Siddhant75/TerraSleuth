@@ -21,7 +21,7 @@ def tool_lens_search(image_url: str, crop_bbox: Optional[List[float]] = None) ->
     logger.info("tool_lens_search invoked for url: %s", image_url)
     res = _serp.search_lens(image_url=image_url)
     return {
-        "visual_matches": [m.model_dump() for m in res.visual_matches[:6]],
+        "visual_matches": [m.model_dump() for m in (res.visual_matches or [])[:6]],
         "knowledge_graph": res.knowledge_graph or {},
     }
 
@@ -34,7 +34,7 @@ def tool_maps_triangulate(
     logger.info("tool_maps_triangulate invoked for query: %s", query)
     res = _serp.search_maps(query=query)
     candidates = []
-    for c in res.candidates[:4]:
+    for c in (res.candidates or [])[:4]:
         candidates.append({
             "title": c.title,
             "address": c.address,
@@ -52,7 +52,7 @@ def tool_news_audit(query: str, date_filter: Optional[str] = None) -> Dict[str, 
     logger.info("tool_news_audit invoked for query: %s", query)
     res = _serp.search_news(query=query)
     events = []
-    for item in res.items[:4]:
+    for item in (res.items or [])[:4]:
         events.append({
             "title": item.title,
             "source": item.source,
