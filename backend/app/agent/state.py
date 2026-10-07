@@ -41,6 +41,12 @@ class OsintGraphState(TypedDict):
     lens_matches: Annotated[List[Dict[str, Any]], merge_lists]
     citations: Annotated[List[Citation], operator.add]
 
+    # Level 5 Dialectical Swarm Evidence & Debates
+    hunter_hypotheses: Annotated[List[str], merge_lists]
+    skeptic_critiques: Annotated[List[str], merge_lists]
+    debate_history: Annotated[List[Dict[str, str]], merge_lists]
+    audit_score: float
+
     # Deterministic Circuit Breakers & Query Budgets
     initial_budget: int
     budget_remaining: int
@@ -72,6 +78,10 @@ def create_initial_osint_state(
         "timeline_events": [],
         "lens_matches": [],
         "citations": [],
+        "hunter_hypotheses": [],
+        "skeptic_critiques": [],
+        "debate_history": [],
+        "audit_score": 1.0,
         "initial_budget": max(0, max_budget),
         "budget_remaining": max(0, max_budget),
         "refinement_hops": 0,
