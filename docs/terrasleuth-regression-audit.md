@@ -1,13 +1,13 @@
 # TerraSleuth — Living Regression Audit & Subsystem Health Scorecard
 
-> **Target Release:** Release v0.7 (Pure Product Immersion & Streamlined Investigative Workflow)  
-> **Active Working Branch:** `v0.7-dev`  
-> **Last Verification Run:** 2026-10-06  
+> **Target Release:** Release v0.8 (Level 4 ReAct Autonomous Tool Calling & Level 5 Dialectical Swarm)  
+> **Active Working Branch:** `main` (`v0.8.0` certified)  
+> **Last Verification Run:** 2026-10-07  
 > **Environment:** Python 3.11.11 & Python 3.12.1 / Windows / pytest  
 
 ---
 
-## 📊 Subsystem Health Scorecard (Release v0.7)
+## 📊 Subsystem Health Scorecard (Release v0.8)
 
 | Subsystem / Task | Component Files | Automated Tests | Pass Rate | Code Review Verdict | Status |
 |---|---|---|---|---|---|
@@ -33,10 +33,13 @@
 | **Task 6.2: Command Deck Refinement & Visual Twin** | `frontend/components/tactical_command_deck.py` | `frontend/tests/test_command_deck_ui.py` (4 tests) | 4/4 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.3: Autonomous Geoguessr Mode** | `backend/app/models/geoguessr.py`<br>`backend/app/services/geoguessr_service.py`<br>`frontend/components/geoguessr_view.py` | `backend/tests/test_geoguessr_service.py` (4 tests)<br>`frontend/tests/test_geoguessr_and_blueprint_ui.py` (2 tests) | 6/6 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.4: Developer & SDD Hooks Setup** | `.claude/hookify.quota-defense.local.md`<br>`.git/hooks/pre-commit` | Hook verification & automated pre-commit test execution | Pass | `PASS (APPROVED)` | 🟢 Certified |
-| **Task 6.5: Release v0.6 Regression Audit** | Full test suite & Playwright visual audit | 91 automated tests + 9 Playwright checkpoints | 91/91 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 7.1: Pure Product Immersion & Heroic Command Deck** | `frontend/app.py`<br>`frontend/components/tactical_command_deck.py` | `frontend/tests/test_command_deck_ui.py`<br>`tests/e2e/test_dashboard_e2e.py` | 8/8 (100%) | `PASS (APPROVED)` | 🟢 Certified |
-| **Task 7.2: Playwright 9-Point Pure Product Audit** | `tests/e2e/run_playwright_audit.py`<br>`tests/e2e/screenshots/` | 9 verified pure product screenshots | 9/9 (100%) | `PASS (APPROVED)` | 🟢 Certified |
-| **Task 7.3: Release v0.7 Regression Certification** | All subsystems & test suites | 91 automated tests + 9 Playwright checkpoints | 91/91 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.1: LangChain SerpApi & Vision Tools** | `backend/app/agent/tools.py` | `backend/tests/test_tools.py` (5 tests) | 5/5 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.2: Structured ReAct Supervisor & Thought Schema** | `backend/app/models/react.py`<br>`backend/app/agent/nodes/react_supervisor.py` | `backend/tests/test_react_supervisor.py` (2 tests) | 2/2 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.3: Dialectical Swarm Nodes (Hunter/Skeptic/Arbiter)** | `backend/app/agent/nodes/swarm_nodes.py`<br>`backend/app/agent/state.py` | `backend/tests/test_swarm_debate.py` (5 tests) | 5/5 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.4: Dialectical LangGraph State Machine & Routers** | `backend/app/agent/graph.py` | `backend/tests/test_dialectical_graph.py` (4 tests) | 4/4 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.5: UI Dialectical Stream, Badges & Radar** | `frontend/app.py`<br>`frontend/components/swarm_telemetry_terminal.py`<br>`frontend/components/dossier_exporter.py`<br>`frontend/components/tactical_command_deck.py` | `frontend/tests/test_swarm_ui.py` (1 test) | 1/1 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 8.6: E2E Browser Re-Certification & Adversarial Review** | `tests/e2e/run_playwright_audit.py`<br>`tests/e2e/screenshots/` | Full suite (108 automated tests + 9 Playwright checkpoints) | 108/108 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 
 ---
 

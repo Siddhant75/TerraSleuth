@@ -5,8 +5,8 @@
 
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Python Version](https://img.shields.io/badge/Python-3.11%20%7C%203.12-green.svg)](https://python.org)
-[![Tests Passing](https://img.shields.io/badge/Tests-91%2F91%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
-[![Release Certified](https://img.shields.io/badge/Release-v0.7.0--certified-blueviolet.svg)](AGENTS.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-108%2F108%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Release Certified](https://img.shields.io/badge/Release-v0.8.0--certified-blueviolet.svg)](AGENTS.md)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -17,18 +17,18 @@
 
 Standard LLMs hallucinate physical locations, invent dates, and operate in a digital vacuum.
 
-**TerraSleuth** transforms the AI agent into an autonomous **Digital Forensic OSINT Detective Swarm**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
+**TerraSleuth** transforms the AI agent into an autonomous **Level 4/5 ReAct & Dialectical Multi-Agent Detective Swarm**. Given an uncaptioned photograph, a viral breaking-news image, or a suspicious marketplace photo:
 
 1. **Deconstructs the Scene**: Extracts atomic visual clues—architectural styles, street signage scripts (Devanagari, Cyrillic, Latin), vehicle driving sides, and flora/climate—binding them to normalized bounding box coordinates.
-2. **Hunts Visual Provenance (Google Lens API)**: Searches the global visual web to unearth where the photo originated, finding exact matches, visual twins, and initial indexing timestamps.
-3. **Triangulates Physical Coordinates (Google Maps & Local API)**: Correlates street names, business signs, and landmarks into precise WGS84 latitude, longitude, and physical addresses with a spatial consensus radius on high-res satellite tiles.
-4. **Audits Chronology & Disinformation (Google News & Search APIs)**: Validates historical milestones and viral cycles, exposing recycled disaster media and unmasking vacation rental scams (e.g. stolen luxury hotel photos).
+2. **Hunter Agent (SerpApi Google Lens & Maps Tools)**: Autonomously reasons and invokes tools to discover visual twins and triangulate precise WGS84 coordinates on high-res satellite tiles.
+3. **Skeptic Agent (Adversarial Red-Team Debunker)**: Actively probes for temporal, climate, and architectural contradictions via Google News archival audits and AnomalyService fraud checks.
+4. **Arbiter Judge (Dialectical Consensus)**: Weighs Hunter evidence vs Skeptic objections, computes Adversarial Audit Scores, and issues certified verdicts with circuit-breaker refinement routing.
 5. **Formulates Advanced OSINT Google Dorks**: Dynamically crafts targeted dork queries for municipal permits, property deeds, archived press, and exposed web directories.
-6. **Compiles an Interactive Case File & Offline HTML Dossier**: Synthesizes findings into the tactical **War Room 2.0 Command Deck** and generates 1-click standalone offline HTML intelligence reports.
+6. **Compiles an Interactive Case File & Offline HTML Dossier**: Synthesizes findings into the tactical **War Room 2.0 Command Deck** with live monospace telemetry and generates 1-click standalone offline HTML intelligence reports.
 
 ---
 
-## 🗺️ System Architecture
+## 🗺️ System Architecture (Level 4 ReAct & Level 5 Dialectical Swarm)
 
 ```
                                 Input Mystery Image
@@ -40,49 +40,44 @@ Standard LLMs hallucinate physical locations, invent dates, and operate in a dig
                            └────────────┬─────────────┘
                                         │
                                         ▼
-                           ┌──────────────────────────┐
-                           │       Lens Hunter        │
-                           │   (SerpApi Google Lens)  │
-                           └────────────┬─────────────┘
-                                        │
-                                        ▼
-                           ┌──────────────────────────┐
-                           │     Geo Triangulator     │
-                           │   (SerpApi Google Maps)  │
-                           └────────────┬─────────────┘
-                                        │
-                         [Budget & Ambiguity Routing]
-                                        ├── (Refine if ambiguous) ──┐
-                                        │                           │
-                                        ▼                           │
-                           ┌──────────────────────────┐             │
-                           │      Chrono Auditor      │             │
-                           │   (SerpApi Google News)  │             │
-                           └────────────┬─────────────┘             │
-                                        │                           │
-                                        └─────────────┬─────────────┘
-                                                      │
-                                                      ▼
-                                       ┌─────────────────────────────┐
-                                       │   Lead Detective Synthesizer│
-                                       │ (LangGraph Consensus Engine)│
-                                       └──────────────┬──────────────┘
-                                                      │
-                                                      ▼
-                       ┌──────────────────────────────────────────────────────────┐
-                       │          Tactical OSINT Command Deck (v0.4.0)            │
-                       │  • 🎯 Visual Forensic Inspector & Bounding Clues         │
-                       │  • 🔬 Side-by-Side Visual Twin Matcher (Google Lens)     │
-                       │  • 📡 Live Monospace Swarm Telemetry Terminal (Cyber HUD)│
-                       │  • 🗺️ Satellite Recon Pinpoint (Esri World Imagery)       │
-                       │  • ⏱️ Chronological Provenance & Media Timeline          │
-                       │  • 🔗 Verifiable Multi-Engine SERP Citation Ledger       │
-                       └──────────────────────────────────────────────────────────┘
+       ┌─────────────────────────────────────────────────────────────────┐
+       │             DIALECTICAL MULTI-AGENT SWARM DEBATE                │
+       │                                                                 │
+       │   ┌────────────────────┐               ┌────────────────────┐   │
+       │   │    Hunter Agent    │ ◄───Debate──► │   Skeptic Agent    │   │
+       │   │  (Lens & Maps @tool│               │  (News & Dorks)    │   │
+       │   └─────────┬──────────┘               └─────────▲──────────┘   │
+       │             │                                    │              │
+       │             ▼                                    │              │
+       │   ┌────────────────────┐                         │              │
+       │   │   Arbiter Judge    │ ──(Score < 0.70 & Hop)──┘              │
+       │   │(Audit Score/Verdict│                                        │
+       │   └─────────┬──────────┘                                        │
+       └─────────────┼───────────────────────────────────────────────────┘
+                     │ (Certified or Fraud Unmasked)
+                     ▼
+       ┌─────────────────────────────┐
+       │    Case Dossier Compiler    │
+       │ (LangGraph Consensus Engine)│
+       └─────────────┬───────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────────────────────────────┐
+│          Tactical OSINT Command Deck (v0.8.0)            │
+│  • 🎯 Visual Forensic Inspector & Bounding Clues         │
+│  • 🔬 Side-by-Side Visual Twin Matcher (Google Lens)     │
+│  • 🛰️ Tactical Satellite Recon Map (Esri / CartoDB)       │
+│  • 📡 Live Monospace Swarm Telemetry Terminal (ReAct)    │
+│  • 🎯 Autonomous Geoguessr Mode (5000 pts / 4-phase)     │
+│  • 📥 1-Click Offline Self-Contained HTML Dossier        │
+│  • ⏱️ Chronological Provenance & Media Timeline          │
+│  • 🔗 Verifiable Multi-Engine SERP Citation Ledger       │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🕹️ Tactical OSINT Command Deck (v0.4.0)
+## 🕹️ Tactical OSINT Command Deck (v0.8.0)
 
 TerraSleuth features a Bellingcat/Palantir-grade Command Deck:
 

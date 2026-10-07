@@ -55,6 +55,14 @@
 - **Task 7.2:** Playwright 9-Point Pure Product Browser Audit & Certification (`run_playwright_audit.py`).
 - **Task 7.3:** Full Regression Audit (91/91 tests, 100% pass) & Release v0.7 Certification (`v0.7.0`).
 
+### Sprint 8: True Agentic Architecture Upgrade — Level 4 ReAct & Level 5 Dialectical Swarm (`v0.8-dev`)
+- **Task 8.1:** LangChain SerpApi & Vision Tools (`backend/app/agent/tools.py`) with zero-quota disk cache protection and safe None guards.
+- **Task 8.2:** Structured ReAct Supervisor & Thought Schema (`backend/app/models/react.py`, `backend/app/agent/nodes/react_supervisor.py`) with validated `AgentThought` models.
+- **Task 8.3:** Dialectical Swarm Nodes (`backend/app/agent/nodes/swarm_nodes.py`, `backend/app/agent/state.py`) implementing Hunter, Skeptic, and Arbiter agents with dynamic entity extraction, AnomalyService fraud detection, and Pydantic state mapping.
+- **Task 8.4:** Dialectical LangGraph State Machine (`backend/app/agent/graph.py`) with ReAct supervisor edge, resource circuit breakers, and explicit fraud short-circuit router.
+- **Task 8.5:** UI Dialectical Stream, Badges & Radar (`frontend/app.py`, `frontend/components/swarm_telemetry_terminal.py`, `frontend/components/dossier_exporter.py`, `frontend/components/tactical_command_deck.py`) streaming role badges (`[HUNTER]`, `[SKEPTIC]`, `[ARBITER]`, `[THOUGHT]`) and `[🛡️ RED-TEAM VERIFIED]` dossier badges.
+- **Task 8.6:** E2E Playwright Browser Re-Certification, Adversarial Code Review (PASS) & Release v0.8 Certification (`v0.8.0`, 108/108 automated tests passing).
+
 ---
 
 ## 📋 Task & Subagent Execution Matrix
@@ -90,4 +98,10 @@
 | **Task 7.1** | **Pure Product Immersion & Heroic Command Deck**<br>• Removal of outer meta-tabs, centered primary trigger<br>• Quick-Export action bar & Judge Tech Drawer in sidebar | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e89d1e9` |
 | **Task 7.2** | **Playwright 9-Point Pure Product Browser Audit**<br>• Direct Command Deck verification & 9 screenshots | `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e89d1e9` |
 | **Task 7.3** | **Regression Audit & Release v0.7 Certification**<br>• 91/91 tests (100% pass) & Release `v0.7.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.7.0` |
+| **Task 8.1** | **LangChain SerpApi & Vision Tools**<br>• `@tool` decorated functions with SQLite cache defense<br>• Safe None handling on tool responses | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `f0190a5` |
+| **Task 8.2** | **Structured ReAct Thought Schema**<br>• Pydantic `AgentThought` with `ReActStepType`<br>• Stream formatter with monospace terminal strings | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `5043603` |
+| **Task 8.3** | **Dialectical Swarm Nodes**<br>• Hunter, Skeptic, and Arbiter agents<br>• Dynamic entity extraction & AnomalyService fraud detection | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `e1e78ab` |
+| **Task 8.4** | **Dialectical LangGraph State Machine**<br>• Dynamic router & fraud short-circuit breaker<br>• `budget_remaining` and `refinement_hops` bounds | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `d67f27d` |
+| **Task 8.5** | **UI Dialectical Stream, Badges & Radar**<br>• Monospace terminal with `[HUNTER]`, `[SKEPTIC]`, `[ARBITER]`<br>• `[🛡️ RED-TEAM VERIFIED]` executive badge | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `c74917c` |
+| **Task 8.6** | **Full Regression Audit & Release v0.8 Certification**<br>• 108/108 tests passing (100% pass, 0 credits burned)<br>• Adversarial review PASS & Release `v0.8.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.8.0` |
 
