@@ -53,10 +53,16 @@ def reset_serpapi_client_context() -> None:
 
 
 @tool
-def tool_lens_search(image_url: str, crop_bbox: Optional[List[float]] = None) -> Dict[str, Any]:
-    """Search Google Lens for reverse visual twins and authoritative matches."""
-    logger.info("tool_lens_search invoked for url: %s", image_url)
-    res = get_current_serpapi_client().search_lens(image_url=image_url)
+def tool_lens_search(
+    image_url: Optional[str] = None,
+    image_path: Optional[str] = None,
+    crop_bbox: Optional[List[float]] = None,
+) -> Dict[str, Any]:
+    """Search Google Lens for reverse visual twins and authoritative matches using URL or uploaded image."""
+    logger.info("tool_lens_search invoked for url=%s, path=%s, crop_bbox=%s", image_url, image_path, crop_bbox)
+    res = get_current_serpapi_client().search_lens(
+        image_url=image_url, image_path=image_path, crop_bbox=crop_bbox
+    )
     return {
         "visual_matches": [m.model_dump() for m in (res.visual_matches or [])[:6]],
         "knowledge_graph": res.knowledge_graph or {},

@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Dict, List, Optional
 
 from backend.app.agent.state import OsintGraphState
@@ -28,8 +29,10 @@ def lens_hunter_node(state: OsintGraphState) -> Dict[str, Any]:
             "status": "lens_skipped_budget_exhausted",
         }
 
-    if not image_url:
-        logger.info("lens_hunter_node skipped: no remote image_url provided")
+    image_path = state.get("image_path")
+
+    if not image_url and (not image_path or not os.path.exists(image_path)):
+        logger.info("lens_hunter_node skipped: neither image_url nor existing image_path provided")
         return {
             "lens_matches": [],
             "citations": [],
@@ -42,7 +45,7 @@ def lens_hunter_node(state: OsintGraphState) -> Dict[str, Any]:
             api_key=state.get("api_key"),
             force_refresh=state.get("force_refresh", False),
         )
-        lens_result = serp.search_lens(image_url=image_url)
+        lens_result = serp.search_lens(image_url=image_url, image_path=image_path)
 
         visual_matches = [m.model_dump() for m in lens_result.visual_matches[:6]]
         citations: List[Citation] = []

@@ -37,9 +37,9 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
     debate_history: List[Dict[str, Any]] = []
 
     # 1. Autonomous ReAct Step 1: Google Lens Visual Twin search
-    if image_url:
+    if image_url or image_path:
         try:
-            lens_res = tool_lens_search.invoke({"image_url": image_url})
+            lens_res = tool_lens_search.invoke({"image_url": image_url, "image_path": image_path})
             lens_matches = lens_res.get("visual_matches", [])
             for m in lens_matches[:3]:
                 if m.get("link"):
@@ -54,12 +54,13 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
         except Exception as e:
             logger.warning("hunter_node lens search fallback: %s", e)
 
+    target_source = image_url or image_path or "suspect image"
     t1 = create_agent_thought(
         agent_role="hunter",
         thought="Initiating visual reconnaissance across global image index to discover visual twins.",
-        decision="Execute tool_lens_search on suspect image URL.",
+        decision=f"Execute tool_lens_search on {target_source}.",
         tool_call="tool_lens_search",
-        tool_args={"image_url": image_url or ""},
+        tool_args={"image_url": image_url or "", "image_path": image_path or ""},
         observation=f"Retrieved {len(lens_matches)} visual twin matches." if lens_matches else "0 visual matches.",
         step_type=ReActStepType.ACTION,
     )

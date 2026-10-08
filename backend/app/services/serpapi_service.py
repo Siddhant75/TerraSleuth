@@ -1,6 +1,10 @@
+import hashlib
+from io import BytesIO
 import logging
+import os
 from typing import Any, Dict, List, Optional
 import httpx
+from PIL import Image
 
 from backend.app.config import settings
 from backend.app.models.serp import (
@@ -152,18 +156,171 @@ class SerpApiService:
             logger.error(f"Unexpected error communicating with SerpApi: {sanitized_err}")
             raise SerpApiError(f"Failed to query SerpApi: {sanitized_err}") from None
 
-    def search_lens(
-        self, image_url: str, hl: str = "en", force_refresh: bool = False
-    ) -> LensVisualMatchesResult:
-        """Execute a visual reverse-image search using Google Lens API."""
-        if not image_url or not image_url.strip():
-            raise ValueError("image_url must be provided for Google Lens visual search.")
+    def upload_image(self, image_path: str, max_size_bytes: int = 500 * 1024) -> str:
+        """Upload a local image file to SerpApi Image API to obtain an image_id for Google Lens.
 
-        params = {
+        Includes SHA-256 caching (to avoid redundant uploads), automatic iterative Pillow compression
+        if the image exceeds SerpApi's 500 KB limit, quota tracking, and masked error handling.
+        """
+        if not image_path or not os.path.exists(image_path):
+            raise FileNotFoundError(f"Local image file not found for upload: {image_path}")
+
+        # 1. Read file and compute SHA-256 hash for cache lookup
+        with open(image_path, "rb") as f:
+            file_data = f.read()
+
+        file_hash = hashlib.sha256(file_data).hexdigest()
+        cache_key_params = {"action": "upload", "hash": file_hash}
+
+        # 2. Quota Defense: Check persistent disk cache first
+        if self._cache and not self.force_refresh:
+            cached_res = self._cache.get_cached_response("google_lens_upload", cache_key_params)
+            if cached_res and "image_id" in cached_res:
+                logger.info("SerpApi image upload disk cache HIT for hash=%s", file_hash[:10])
+                return str(cached_res["image_id"])
+
+        # 3. Compress if size exceeds SerpApi limit (500 KB)
+        if len(file_data) > max_size_bytes:
+            logger.info("Image size %d bytes exceeds 500 KB limit; compressing...", len(file_data))
+            try:
+                img = Image.open(BytesIO(file_data))
+                if img.mode not in ("RGB", "L"):
+                    img = img.convert("RGB")
+
+                # Iterative compression loop with floor constraint
+                quality = 85
+                out_io = BytesIO()
+                img.save(out_io, format="JPEG", optimize=True, quality=quality)
+                compressed = out_io.getvalue()
+
+                while len(compressed) > max_size_bytes and quality > 20:
+                    quality -= 15
+                    out_io = BytesIO()
+                    img.save(out_io, format="JPEG", optimize=True, quality=quality)
+                    compressed = out_io.getvalue()
+
+                # If still too large, downscale dimensions
+                while len(compressed) > max_size_bytes and img.width > 400:
+                    new_size = (int(img.width * 0.75), int(img.height * 0.75))
+                    img = img.resize(new_size, Image.Resampling.LANCZOS)
+                    out_io = BytesIO()
+                    img.save(out_io, format="JPEG", optimize=True, quality=65)
+                    compressed = out_io.getvalue()
+
+                file_data = compressed
+                logger.info("Compressed image to %d bytes (quality=%d)", len(file_data), quality)
+            except Exception as e:
+                logger.warning("Failed to compress image with Pillow: %s", e)
+
+        # 4. Quota Budget Enforcement
+        if self._budget_manager:
+            self._budget_manager.consume()
+
+        # 5. Dispatch multipart upload to SerpApi
+        api_key = self._get_api_key()
+        upload_url = "https://serpapi.com/image"
+
+        try:
+            filename = os.path.basename(image_path) or "image.jpg"
+            files = {"image": (filename, file_data, "image/jpeg")}
+            data = {"api_key": api_key}
+
+            response = self._client.post(upload_url, data=data, files=files)
+
+            if response.status_code == 429:
+                raise SerpApiRateLimitError("SerpApi quota or rate limit exceeded during image upload (HTTP 429).")
+            elif response.status_code in (401, 403):
+                raise SerpApiConfigError("Invalid SerpApi API key or unauthorized access during image upload.")
+            elif response.status_code >= 500:
+                raise SerpApiError(f"SerpApi image upload server error (HTTP {response.status_code}).")
+
+            response.raise_for_status()
+            res_data = response.json()
+
+            if "error" in res_data:
+                err_msg = self._sanitize_message(res_data["error"])
+                raise SerpApiError(f"SerpApi image upload error: {err_msg}")
+
+            image_id = res_data.get("image_id")
+            if not image_id:
+                raise SerpApiError("No image_id returned from SerpApi Image API.")
+
+            logger.info("Successfully uploaded image to SerpApi: image_id=%s", image_id)
+
+            # 6. Store in cache
+            if self._cache:
+                self._cache.set_cached_response(
+                    "google_lens_upload", cache_key_params, {"image_id": image_id}
+                )
+
+            return str(image_id)
+
+        except httpx.TimeoutException as exc:
+            logger.error("SerpApi image upload timed out after %ds", self.timeout)
+            raise SerpApiTimeoutError(f"SerpApi image upload timed out after {self.timeout}s") from None
+        except (SerpApiError, SerpApiConfigError, SerpApiRateLimitError, SerpApiTimeoutError):
+            raise
+        except Exception as exc:
+            sanitized_err = self._sanitize_message(str(exc))
+            logger.error("Unexpected error during SerpApi image upload: %s", sanitized_err)
+            raise SerpApiError(f"Failed to upload image to SerpApi: {sanitized_err}") from None
+
+    def search_lens(
+        self,
+        image_url: Optional[str] = None,
+        image_path: Optional[str] = None,
+        image_id: Optional[str] = None,
+        crop_bbox: Optional[List[float]] = None,
+        hl: str = "en",
+        force_refresh: bool = False,
+    ) -> LensVisualMatchesResult:
+        """Execute a visual reverse-image search using Google Lens API.
+
+        Accepts either a public image_url, a local image_path (which is automatically uploaded
+        via SerpApi Image API to get an image_id), a pre-existing image_id, or an optional crop_bbox
+        for targeted visual inspection of garments, signs, or objects.
+        """
+        if not image_url and not image_path and not image_id:
+            raise ValueError("image_url must be provided (or local image_path / image_id).")
+
+        active_image_id = image_id
+        active_url = image_url
+
+        # Handle local image cropping or upload if no remote image_url or image_id is provided,
+        # or if a targeted crop_bbox is requested for item/outfit/signage search.
+        if not active_image_id and ((not active_url) or (crop_bbox and len(crop_bbox) == 4)) and image_path and os.path.exists(image_path):
+            target_path = image_path
+            tmp_crop_path = None
+
+            try:
+                # If bounding box is specified, crop the targeted region first
+                if crop_bbox and len(crop_bbox) == 4:
+                    from backend.app.services.vision_service import crop_image_region
+                    tmp_crop_path = crop_image_region(image_path=image_path, bbox=crop_bbox)
+                    target_path = tmp_crop_path
+
+                # Upload to SerpApi Image API to obtain image_id
+                active_image_id = self.upload_image(target_path)
+            finally:
+                # Guarantee cleanup of temporary cropped file
+                if tmp_crop_path and os.path.exists(tmp_crop_path):
+                    try:
+                        os.remove(tmp_crop_path)
+                    except OSError:
+                        pass
+
+        params: Dict[str, Any] = {
             "engine": "google_lens",
-            "url": image_url.strip(),
             "hl": hl,
         }
+
+        if active_image_id:
+            params["image_id"] = active_image_id
+        elif active_url:
+            params["url"] = active_url.strip()
+        else:
+            raise ValueError("No valid image_url, existing image_path, or image_id available for Google Lens.")
+
         raw_data = self._execute_query(params, force_refresh=True) if force_refresh else self._execute_query(params)
         return self._parse_lens_response(raw_data)
 

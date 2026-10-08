@@ -259,6 +259,41 @@ def test_scenario_santorini_fraud(service: SerpApiService, force_refresh: bool) 
     }
 
 
+def test_custom_image_upload(service: SerpApiService, image_path: str, force_refresh: bool) -> Dict[str, Any]:
+    """Test custom local image file via SerpApi Image Upload & Google Lens."""
+    print("\n" + "-" * 70)
+    print(f"  [CUSTOM IMAGE] Local Image Upload & Analysis: {image_path}")
+    print("-" * 70)
+
+    start_time = time.time()
+    if not os.path.exists(image_path):
+        print(f"  [ERROR] Image file not found: {image_path}")
+        return {"name": f"Custom Image ({os.path.basename(image_path)})", "passed": False, "elapsed_seconds": 0.0}
+
+    file_size_kb = os.path.getsize(image_path) / 1024
+    print(f"  [1/2] Uploading local image to SerpApi Image API ({file_size_kb:.1f} KB)...")
+    lens_res = service.search_lens(image_path=image_path, force_refresh=force_refresh)
+    top_matches = lens_res.visual_matches or []
+    print(f"  [2/2] Retrieved {len(top_matches)} Google Lens visual matches:")
+    for idx, match in enumerate(top_matches[:5]):
+        print(f"        [{idx + 1}] {match.title} ({match.source})")
+        if match.link:
+            print(f"            Link: {match.link}")
+
+    if lens_res.knowledge_graph:
+        print(f"        -> Knowledge Graph: {lens_res.knowledge_graph.get('title')} ({lens_res.knowledge_graph.get('subtitle')})")
+
+    elapsed = time.time() - start_time
+    passed = len(top_matches) > 0 or lens_res.knowledge_graph is not None
+
+    return {
+        "name": f"Custom Image ({os.path.basename(image_path)})",
+        "passed": passed,
+        "elapsed_seconds": elapsed,
+        "matches_count": len(top_matches),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="TerraSleuth Live SerpApi Integration Test Harness"
@@ -279,6 +314,12 @@ def main():
         "--allow-cached",
         action="store_true",
         help="Allow cached responses if available instead of forcing live refresh",
+    )
+    parser.add_argument(
+        "--image-path", "-i",
+        type=str,
+        default=None,
+        help="Path to custom local image file for live Google Lens analysis",
     )
     args = parser.parse_args()
 
@@ -314,17 +355,21 @@ def main():
     results = []
 
     try:
-        if args.scenario in ("all", "gateway"):
-            res1 = test_scenario_gateway(service, force_refresh)
-            results.append(res1)
+        if args.image_path:
+            res_custom = test_custom_image_upload(service, args.image_path, force_refresh)
+            results.append(res_custom)
+        else:
+            if args.scenario in ("all", "gateway"):
+                res1 = test_scenario_gateway(service, force_refresh)
+                results.append(res1)
 
-        if args.scenario in ("all", "neuschwanstein"):
-            res2 = test_scenario_neuschwanstein(service, force_refresh)
-            results.append(res2)
+            if args.scenario in ("all", "neuschwanstein"):
+                res2 = test_scenario_neuschwanstein(service, force_refresh)
+                results.append(res2)
 
-        if args.scenario in ("all", "santorini"):
-            res3 = test_scenario_santorini_fraud(service, force_refresh)
-            results.append(res3)
+            if args.scenario in ("all", "santorini"):
+                res3 = test_scenario_santorini_fraud(service, force_refresh)
+                results.append(res3)
 
     except SerpApiConfigError as exc:
         print(f"\n[ERROR] Configuration Error: {exc}")
