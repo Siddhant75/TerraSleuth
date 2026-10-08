@@ -63,7 +63,10 @@ def geo_triangulator_node(state: OsintGraphState) -> Dict[str, Any]:
 
     # Enforce strict budget cap: maximum 2 spatial queries per node execution
     queries_to_execute = candidate_queries[:2]
-    serp = SerpApiService()
+    serp = SerpApiService(
+        api_key=state.get("api_key"),
+        force_refresh=state.get("force_refresh", False),
+    )
     geo_candidates: List[GeoCandidate] = []
     citations: List[Citation] = []
     queries_count = 0

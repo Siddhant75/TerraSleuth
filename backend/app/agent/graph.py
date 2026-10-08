@@ -17,6 +17,7 @@ from backend.app.agent.nodes.swarm_nodes import (
     skeptic_node,
 )
 from backend.app.agent.state import OsintGraphState, create_initial_osint_state
+from backend.app.agent.tools import configure_serpapi_client, reset_serpapi_client_context
 from backend.app.models.case import CaseFile
 
 logger = logging.getLogger(__name__)
@@ -258,18 +259,26 @@ def stream_osint_investigation_sync(
     max_budget: int = 8,
     max_refinement_hops: int = 2,
     dialectical: bool = False,
+    api_key: Optional[str] = None,
+    force_refresh: bool = False,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding node execution updates for UI streaming."""
-    graph = create_dialectical_osint_graph() if dialectical else create_osint_graph()
-    initial_state = create_initial_osint_state(
-        image_path=image_path,
-        image_url=image_url,
-        context_hint=context_hint,
-        max_budget=max_budget,
-        max_refinement_hops=max_refinement_hops,
-    )
-    for event in graph.stream(initial_state):
-        yield event
+    configure_serpapi_client(api_key=api_key, force_refresh=force_refresh)
+    try:
+        graph = create_dialectical_osint_graph() if dialectical else create_osint_graph()
+        initial_state = create_initial_osint_state(
+            image_path=image_path,
+            image_url=image_url,
+            context_hint=context_hint,
+            max_budget=max_budget,
+            max_refinement_hops=max_refinement_hops,
+            api_key=api_key,
+            force_refresh=force_refresh,
+        )
+        for event in graph.stream(initial_state):
+            yield event
+    finally:
+        reset_serpapi_client_context()
 
 
 def stream_dialectical_investigation_sync(
@@ -278,6 +287,8 @@ def stream_dialectical_investigation_sync(
     context_hint: Optional[str] = None,
     max_budget: int = 8,
     max_refinement_hops: int = 2,
+    api_key: Optional[str] = None,
+    force_refresh: bool = False,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding dialectical swarm updates for the UI."""
     return stream_osint_investigation_sync(
@@ -287,6 +298,8 @@ def stream_dialectical_investigation_sync(
         max_budget=max_budget,
         max_refinement_hops=max_refinement_hops,
         dialectical=True,
+        api_key=api_key,
+        force_refresh=force_refresh,
     )
 
 

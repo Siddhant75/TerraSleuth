@@ -50,6 +50,7 @@ class SerpApiService:
         cache_service: Optional[CacheService] = None,
         use_cache: bool = True,
         budget_manager: Optional[QuotaBudgetManager] = None,
+        force_refresh: bool = False,
     ):
         self._api_key = api_key or settings.SERPAPI_API_KEY
         self.base_url = settings.SERPAPI_BASE_URL
@@ -62,6 +63,7 @@ class SerpApiService:
             else (CacheService() if (use_cache and settings.CACHE_ENABLED) else None)
         )
         self._budget_manager = budget_manager
+        self.force_refresh = force_refresh
 
     def close(self) -> None:
         """Close the underlying HTTP client session."""
@@ -76,27 +78,32 @@ class SerpApiService:
 
     def _get_api_key(self) -> str:
         """Resolve and validate the API key, raising clean errors if missing."""
-        if not self._api_key or self._api_key.strip() == "" or "your_serpapi" in self._api_key.lower():
+        import os
+        key = self._api_key or os.environ.get("SERPAPI_API_KEY") or settings.SERPAPI_API_KEY
+        if not key or str(key).strip() == "" or "your_serpapi" in str(key).lower():
             raise SerpApiConfigError(
                 "SERPAPI_API_KEY is not configured. Set SERPAPI_API_KEY in .env or provide it directly."
             )
-        return self._api_key.strip()
+        return str(key).strip()
 
     def _sanitize_message(self, message: str) -> str:
         """Mask the API key from any error message, exception string, or URL representation."""
         if not message:
             return ""
+        import os
         sanitized = message
-        if self._api_key and self._api_key in sanitized:
-            sanitized = sanitized.replace(self._api_key, "***")
+        active_key = self._api_key or os.environ.get("SERPAPI_API_KEY") or settings.SERPAPI_API_KEY
+        if active_key and active_key in sanitized:
+            sanitized = sanitized.replace(active_key, "***")
         return sanitized
 
     def _execute_query(self, params: Dict[str, Any], force_refresh: bool = False) -> Dict[str, Any]:
         """Dispatch a query to SerpApi with cache check, error handling, and sanitized parameters."""
         engine = str(params.get("engine", "google"))
+        should_force = force_refresh or self.force_refresh
 
         # 1. Quota Defense: Check persistent disk cache first
-        if self._cache and not force_refresh:
+        if self._cache and not should_force:
             cached_data = self._cache.get_cached_response(engine, params)
             if cached_data is not None:
                 logger.info("SerpApi disk cache HIT for engine=%s", engine)
@@ -137,13 +144,13 @@ class SerpApiService:
 
         except httpx.TimeoutException as exc:
             logger.error(f"SerpApi query timed out after {self.timeout}s for engine: {params.get('engine')}")
-            raise SerpApiTimeoutError(f"SerpApi request timed out after {self.timeout}s") from exc
+            raise SerpApiTimeoutError(f"SerpApi request timed out after {self.timeout}s") from None
         except (SerpApiError, SerpApiConfigError, SerpApiRateLimitError, SerpApiTimeoutError):
             raise
         except Exception as exc:
             sanitized_err = self._sanitize_message(str(exc))
             logger.error(f"Unexpected error communicating with SerpApi: {sanitized_err}")
-            raise SerpApiError(f"Failed to query SerpApi: {sanitized_err}") from exc
+            raise SerpApiError(f"Failed to query SerpApi: {sanitized_err}") from None
 
     def search_lens(
         self, image_url: str, hl: str = "en", force_refresh: bool = False

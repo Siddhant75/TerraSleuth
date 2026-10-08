@@ -57,6 +57,10 @@ class OsintGraphState(TypedDict):
     status: str
     error: Optional[str]
 
+    # Session Credentials & Network Mode (Isolated per run)
+    api_key: Optional[str]
+    force_refresh: bool
+
     # Final Dossier Synthesis
     final_case_file: Optional[CaseFile]
 
@@ -67,12 +71,16 @@ def create_initial_osint_state(
     context_hint: Optional[str] = None,
     max_budget: int = 8,
     max_refinement_hops: int = 2,
+    api_key: Optional[str] = None,
+    force_refresh: bool = False,
 ) -> OsintGraphState:
     """Create a pristine initial OsintGraphState for an investigative run."""
     return {
         "image_path": image_path,
         "image_url": image_url,
         "context_hint": context_hint,
+        "api_key": api_key,
+        "force_refresh": force_refresh,
         "visual_clues": [],
         "geo_candidates": [],
         "timeline_events": [],

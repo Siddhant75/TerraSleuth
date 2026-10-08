@@ -38,7 +38,10 @@ def lens_hunter_node(state: OsintGraphState) -> Dict[str, Any]:
         }
 
     try:
-        serp = SerpApiService()
+        serp = SerpApiService(
+            api_key=state.get("api_key"),
+            force_refresh=state.get("force_refresh", False),
+        )
         lens_result = serp.search_lens(image_url=image_url)
 
         visual_matches = [m.model_dump() for m in lens_result.visual_matches[:6]]

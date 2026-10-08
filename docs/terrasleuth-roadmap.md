@@ -62,6 +62,8 @@
 - **Task 8.4:** Dialectical LangGraph State Machine (`backend/app/agent/graph.py`) with ReAct supervisor edge, resource circuit breakers, and explicit fraud short-circuit router.
 - **Task 8.5:** UI Dialectical Stream, Badges & Radar (`frontend/app.py`, `frontend/components/swarm_telemetry_terminal.py`, `frontend/components/dossier_exporter.py`, `frontend/components/tactical_command_deck.py`) streaming role badges (`[HUNTER]`, `[SKEPTIC]`, `[ARBITER]`, `[THOUGHT]`) and `[🛡️ RED-TEAM VERIFIED]` dossier badges.
 - **Task 8.6:** E2E Playwright Browser Re-Certification, Adversarial Code Review (PASS) & Release v0.8 Certification (`v0.8.0`, 108/108 automated tests passing).
+- **Task 8.7:** C4 Architecture Model & Hackathon Showcase Overhaul (`C4-Documentation/`, `README.md`) highlighting SerpApi synergy, Plan-Search-Compare-Act paradigm, and multi-agent strengths.
+- **Task 8.8:** Live SerpApi API Key Integration, Context Isolation & Scenario Test Harness (`scripts/test_live_serpapi.py`, `backend/tests/test_live_config.py`, `backend/app/services/serpapi_service.py`, `frontend/app.py`).
 
 ---
 
@@ -105,4 +107,6 @@
 | **Task 8.5** | **UI Dialectical Stream, Badges & Radar**<br>• Monospace terminal with `[HUNTER]`, `[SKEPTIC]`, `[ARBITER]`<br>• `[🛡️ RED-TEAM VERIFIED]` executive badge | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `c74917c` |
 | **Task 8.6** | **Full Regression Audit & Release v0.8 Certification**<br>• 108/108 tests passing (100% pass, 0 credits burned)<br>• Adversarial review PASS & Release `v0.8.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.8.0` |
 | **Task 8.7** | **C4 Architecture Model & Hackathon Showcase Overhaul**<br>• Complete 4-tier C4 documentation suite (`C4-Documentation/`)<br>• OpenAPI 3.1.0 contract specification<br>• Enhanced README.md highlighting SerpApi synergy & agentic strengths | `architect` / `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `main` |
+| **Task 8.8** | **Live SerpApi API Key Integration, Context Isolation & Scenario Test Harness**<br>• Masked sidebar API key input & connection pill (`🟢 Live SerpApi Connected`)<br>• ContextVar session-isolated credentials preventing race conditions<br>• Exception chain suppression (`from None`) preventing secret leaks<br>• CLI verification harness (`test_live_serpapi.py`) testing all 3 flagship scenarios<br>• 112/112 tests passing (100% pass, 0 credits burned) | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `main` |
+
 

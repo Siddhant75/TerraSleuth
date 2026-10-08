@@ -66,7 +66,10 @@ def chrono_auditor_node(state: OsintGraphState) -> Dict[str, Any]:
     queries_consumed = 0
 
     try:
-        serp = SerpApiService()
+        serp = SerpApiService(
+            api_key=state.get("api_key"),
+            force_refresh=state.get("force_refresh", False),
+        )
         queries_consumed += 1
         news_result = serp.search_news(query=target_query)
 

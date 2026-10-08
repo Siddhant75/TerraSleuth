@@ -196,6 +196,55 @@ def render_sidebar():
             st.sidebar.image(image_url, caption="Target URL Preview", use_container_width=True)
 
     st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🔑 SerpApi Credentials & Mode")
+    env_api_key = os.environ.get("SERPAPI_API_KEY", "")
+    session_key = st.session_state.get("serpapi_api_key", env_api_key)
+
+    api_key_input = st.sidebar.text_input(
+        "SerpApi API Key:",
+        value=session_key,
+        type="password",
+        placeholder="Enter your SerpApi API key...",
+        help="Enter your SerpApi API key to execute live web queries across Google Lens, Maps, News, and Search.",
+    )
+    if api_key_input:
+        st.session_state["serpapi_api_key"] = api_key_input.strip()
+
+    has_valid_key = bool(
+        st.session_state.get("serpapi_api_key")
+        and str(st.session_state.get("serpapi_api_key")).strip() != ""
+        and "your_serpapi" not in str(st.session_state.get("serpapi_api_key")).lower()
+    )
+
+    if has_valid_key:
+        st.sidebar.markdown(
+            """
+            <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px;">
+                <span style="color: #10b981; font-weight: 600; font-size: 12px;">🟢 Live SerpApi Connected</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        live_mode = st.sidebar.checkbox(
+            "🌐 Live Network Mode (Bypass Cache)",
+            value=st.session_state.get("live_network_mode", False),
+            help="When enabled, bypasses SQLite disk cache and dispatches real-time queries directly to SerpApi.",
+        )
+        st.session_state["live_network_mode"] = live_mode
+    else:
+        st.sidebar.markdown(
+            """
+            <div style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 6px; padding: 6px 10px; margin-bottom: 8px;">
+                <span style="color: #38bdf8; font-weight: 600; font-size: 12px;">🛡️ Offline Zero-Credit Mode</span><br>
+                <span style="color: #94a3b8; font-size: 11px;">Golden benchmarks execute 100% cached. Enter API key above for live web search.</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        live_mode = False
+        st.session_state["live_network_mode"] = False
+
+    st.sidebar.markdown("---")
     st.sidebar.markdown("### ⚙️ Swarm Parameters")
     max_budget = st.sidebar.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
     max_hops = st.sidebar.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
@@ -210,6 +259,8 @@ def render_sidebar():
         "active_image": active_image,
         "truth_lat": truth_lat,
         "truth_lon": truth_lon,
+        "api_key": st.session_state.get("serpapi_api_key") if has_valid_key else None,
+        "live_mode": live_mode,
     }
 
 
@@ -287,6 +338,8 @@ def main():
                 context_hint=config["context_hint"],
                 max_budget=config["max_budget"],
                 max_refinement_hops=config["max_hops"],
+                api_key=config.get("api_key"),
+                force_refresh=config.get("live_mode", False),
             ):
                 node_name = list(event.keys())[0]
                 node_output = event[node_name]
