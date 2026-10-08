@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: TerraSleuth OSINT Detective Swarm API
+  description: >-
+    Programmatic and streaming interface for TerraSleuth's autonomous multi-modal visual and geospatial
+    OSINT detective engine, powered by SerpApi and LangGraph Level 5 Dialectical Swarm.
+  version: 0.8.0
+servers:
+  - url: http://localhost:8501
+    description: Local Docker / Streamlit deployment server
+paths:
+  /_stcore/health:
+    get:
+      summary: Service Health Check
+      description: Returns health status of the Web Application and Streamlit runtime.
+      responses:
+        '200':
+          description: Service is healthy and operational.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "ok"
+        '503':
+          description: Service unavailable or unhealthy.
+
+  /api/cases/golden:
+    get:
+      summary: List Pre-Seeded Golden Benchmark Cases
+      description: Returns all pre-seeded offline benchmark mystery cases from SQLite.
+      responses:
+        '200':
+          description: List of golden mystery cases.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GoldenCase'
+
+  /api/investigate/stream:
+    post:
+      summary: Launch Autonomous Dialectical OSINT Investigation
+      description: Streams real-time investigative reasoning and hypothesis resolution events using Server-Sent Events (SSE).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvestigationRequest'
+      responses:
+        '200':
+          description: Real-time event stream of agent thoughts, tool calls, and final CaseFile.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Chunked SSE stream formatted as `event: <name>\ndata: <json>\n\n`.
+        '400':
+          description: Invalid request parameters or missing target image.
+        '429':
+          description: SerpApi session query budget exhausted by circuit breaker.
+
+  /api/cache/stats:
+    get:
+      summary: Retrieve SQLite Cache & Quota Telemetry
+      description: Returns query count, cache hit ratio, and live credits saved.
+      responses:
+        '200':
+          description: Cache telemetry statistics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CacheStats'
+
+components:
+  schemas:
+    InvestigationRequest:
+      type: object
+      required:
+        - image_path
+      properties:
+        image_path:
+          type: string
+          description: Path to local target image or remote URL.
+          example: "frontend/assets/targets/gateway_mumbai.jpg"
+        image_url:
+          type: string
+          nullable: true
+          description: Optional remote image URL.
+        context_hint:
+          type: string
+          nullable: true
+          description: Optional context claim or metadata (e.g. rental listing, disaster claim).
+          example: "Historic waterfront arch monument"
+        max_budget:
+          type: integer
+          default: 8
+          description: Maximum allowed live SerpApi search queries before circuit breaker terminates.
+        max_hops:
+          type: integer
+          default: 2
+          description: Maximum allowed dialectical debate refinement hops.
+
+    GoldenCase:
+      type: object
+      required:
+        - case_id
+        - title
+        - ground_truth_location
+        - ground_truth_lat
+        - ground_truth_lon
+      properties:
+        case_id:
+          type: string
+          example: "case_gateway_mumbai"
+        title:
+          type: string
+          example: "Waterfront Basalt Arch & Promontory"
+        description:
+          type: string
+        sample_image_url:
+          type: string
+        sample_image_path:
+          type: string
+        ground_truth_location:
+          type: string
+          example: "Gateway of India, Colaba, Mumbai, Maharashtra 400001, India"
+        ground_truth_lat:
+          type: number
+          format: float
+          example: 18.9220
+        ground_truth_lon:
+          type: number
+          format: float
+          example: 72.8347
+
+    CacheStats:
+      type: object
+      properties:
+        total_cached_queries:
+          type: integer
+          example: 42
+        total_bytes_cached:
+          type: integer
+          example: 184590
+        cache_hits_recorded:
+          type: integer
+          example: 128
+        quota_credits_saved:
+          type: integer
+          example: 128
+
+    VisualClue:
+      type: object
+      required:
+        - category
+        - description
+        - confidence
+      properties:
+        category:
+          type: string
+          enum: [ARCHITECTURE, SIGNAGE, VEGETATION, VEHICLE, INFRASTRUCTURE, LANDMARK, ANOMALY]
+        description:
+          type: string
+        bounding_box:
+          type: array
+          items:
+            type: number
+          description: Normalized [ymin, xmin, ymax, xmax] in [0.0, 1.0]
+        confidence:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+
+    GeoCandidate:
+      type: object
+      required:
+        - name
+        - latitude
+        - longitude
+        - match_score
+        - engine_source
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        match_score:
+          type: number
+        engine_source:
+          type: string
+          enum: [google_maps, google_lens]
+
+    CaseFile:
+      type: object
+      required:
+        - case_id
+        - title
+        - confidence_score
+      properties:
+        case_id:
+          type: string
+        title:
+          type: string
+        case_summary:
+          type: string
+        confidence_score:
+          type: number
+        resolved_location:
+          $ref: '#/components/schemas/GeoCandidate'
+        visual_clues:
+          type: array
+          items:
+            $ref: '#/components/schemas/VisualClue'
+        adversarial_audit_score:
+          type: number
+          nullable: true

@@ -104,4 +104,5 @@
 | **Task 8.4** | **Dialectical LangGraph State Machine**<br>• Dynamic router & fraud short-circuit breaker<br>• `budget_remaining` and `refinement_hops` bounds | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `d67f27d` |
 | **Task 8.5** | **UI Dialectical Stream, Badges & Radar**<br>• Monospace terminal with `[HUNTER]`, `[SKEPTIC]`, `[ARBITER]`<br>• `[🛡️ RED-TEAM VERIFIED]` executive badge | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `c74917c` |
 | **Task 8.6** | **Full Regression Audit & Release v0.8 Certification**<br>• 108/108 tests passing (100% pass, 0 credits burned)<br>• Adversarial review PASS & Release `v0.8.0` certification | `architect` (Blueprint) | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `v0.8.0` |
+| **Task 8.7** | **C4 Architecture Model & Hackathon Showcase Overhaul**<br>• Complete 4-tier C4 documentation suite (`C4-Documentation/`)<br>• OpenAPI 3.1.0 contract specification<br>• Enhanced README.md highlighting SerpApi synergy & agentic strengths | `architect` / `developer` | `code-reviewer` (Adversarial: PASS) | ✅ Completed | `main` |
 
