@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from typing import Any, Dict, List, Optional
 import uuid
 
@@ -117,10 +118,69 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
     # 2. Autonomous Dynamic Entity Extraction from Tool Outputs / Visual Clues (Landmarks / Physical Targets)
     target_query = ""
     if lens_matches:
-        top_title = lens_matches[0].get("title", "")
-        clean_title = top_title.split(" - ")[0].split(" | ")[0].split(" : ")[0].strip()
-        if clean_title:
-            target_query = clean_title
+        GENERIC_PHOTO_TERMS = {
+            "free photo", "stock photo", "stock photography", "free image", "wallpapers",
+            "hd wallpaper", "free download", "getty images", "shutterstock", "alamy",
+            "desktop wallpaper", "photo on unsplash", "free stock", "royalty-free",
+            "photos, images", "how to", "tips on", "problems to keep", "stock pictures",
+            "photos and premium", "istock", "stock", "dreamstime", "depositphotos",
+        }
+        LANDMARK_PLACE_KEYWORDS = {
+            "temple", "shrine", "castle", "palace", "fort", "fortress", "tower", "bridge",
+            "cathedral", "church", "monument", "sanctuary", "building", "square", "plaza",
+            "unesco", "heritage", "harbor", "promenade", "kyoto", "tokyo", "mumbai",
+            "bavaria", "santorini", "national park", "botanical garden", "pagoda", "torii",
+        }
+        LANDSCAPE_NATURE_KEYWORDS = {
+            "garden", "gardens", "park", "parks", "lake", "mountain", "valley", "cliff",
+            "waterfall", "river", "island", "nature", "scenery", "scenic", "landscape",
+            "lookout", "trail", "tree", "trees", "forest", "foliage",
+        }
+
+        best_cand_query = ""
+        best_cand_score = -999
+
+        for m in lens_matches[:15]:
+            t = m.get("title") or ""
+            link = m.get("link") or ""
+            source = m.get("source") or ""
+            if not t:
+                continue
+            clean = t.split(" - ")[0].split(" | ")[0].split(" : ")[0].split(" (")[0].strip()
+            clean_lower = clean.lower()
+            full_lower = f"{t} {source} {link}".lower()
+            if not clean or len(clean) < 3:
+                continue
+
+            score = 0
+            if any(re.search(rf"\b{re.escape(gpt)}\b", full_lower) for gpt in GENERIC_PHOTO_TERMS):
+                score -= 8
+
+            words = set(re.findall(r"\b[a-z]{3,}\b", full_lower))
+            landmark_hits = words.intersection(LANDMARK_PLACE_KEYWORDS)
+            score += len(landmark_hits) * 8
+            nature_hits = words.intersection(LANDSCAPE_NATURE_KEYWORDS)
+            score += len(nature_hits) * 2
+
+            words_orig = clean.split()
+            cap_words = [w for w in words_orig if w and w[0].isupper()]
+            score += min(3, len(cap_words))
+
+            if "kyoto" in full_lower and "kyoto" not in clean_lower:
+                clean = f"{clean} Kyoto"
+                score += 5
+
+            if score > best_cand_score:
+                best_cand_score = score
+                best_cand_query = clean
+
+        target_query = best_cand_query
+
+        if not target_query:
+            top_title = lens_matches[0].get("title", "")
+            clean_title = top_title.split(" - ")[0].split(" | ")[0].split(" : ")[0].strip()
+            if clean_title:
+                target_query = clean_title
 
     if not target_query:
         visual_clues = state.get("visual_clues", [])

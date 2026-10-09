@@ -24,6 +24,12 @@ GEOSPATIAL_KEYWORDS = {
     "mountain", "lake", "gorge", "cliff", "valley", "river", "bay", "island",
     "city", "town", "village", "mumbai", "bavaria", "germany", "india", "greece",
     "tourist attraction", "landmark", "unesco", "heritage", "coordinates", "wgs84",
+    # Landscape, nature, and scenic travel terms
+    "garden", "gardens", "park", "parks", "shrine", "shrines", "tree", "trees",
+    "nature", "forest", "woodland", "scenery", "scenic", "landscape", "lookout",
+    "trail", "walkway", "path", "stream", "pond", "waterfall", "falls", "foliage",
+    "flora", "botanical", "arboretum", "zen", "pagoda", "torii", "kyoto", "japan",
+    "japanese", "travel", "sightseeing", "destination", "outdoors", "outdoor",
 }
 
 FRAUD_KEYWORDS = {
@@ -31,16 +37,24 @@ FRAUD_KEYWORDS = {
     "misleading", "vacation rental", "listing", "impersonation", "disinformation",
 }
 
-FASHION_DOMAINS = {
+DEDICATED_FASHION_DOMAINS = {
     "shein.com", "zara.com", "dior.com", "gucci.com", "prada.com", "chanel.com",
     "farfetch.com", "asos.com", "nordstrom.com", "vogue.com", "net-a-porter.com",
-    "pinterest.com", "hm.com", "forever21.com", "shopbop.com", "revolve.com",
-    "myntra.com", "ajio.com", "amazon.com", "etsy.com", "aliexpress.com",
+    "hm.com", "forever21.com", "shopbop.com", "revolve.com", "myntra.com", "ajio.com",
 }
+
+GENERAL_MARKETPLACE_DOMAINS = {
+    "etsy.com", "amazon.com", "pinterest.com", "aliexpress.com", "ebay.com",
+}
+
+# Unified set preserved for backwards compatibility
+FASHION_DOMAINS = DEDICATED_FASHION_DOMAINS.union(GENERAL_MARKETPLACE_DOMAINS)
 
 GEOSPATIAL_DOMAINS = {
     "wikipedia.org", "tripadvisor.com", "britannica.com", "unesco.org",
     "lonelyplanet.com", "wikivoyage.org", "google.com/maps", "archdaily.com",
+    "flickr.com", "unsplash.com", "pexels.com", "alamy.com", "alltrails.com",
+    "nationalgeographic.com", "trip.com", "japan-guide.com",
 }
 
 FRAUD_DOMAINS = {
@@ -67,16 +81,31 @@ class IntentClassificationService:
         hint_lower = (context_hint or "").lower().strip()
         path_lower = (image_path or "").lower().strip()
 
-        # 1. Fast-path: Explicit context hint or filename signals
-        if any(w in hint_lower or w in path_lower for w in FRAUD_KEYWORDS):
+        # 1. Fast-path: Word-boundary matching for context hints and file paths
+        hint_words = set(re.findall(r"\b[a-z]{3,}\b", hint_lower))
+        path_words = set(re.findall(r"\b[a-z]{3,}\b", path_lower))
+        combined_prompt_words = hint_words.union(path_words)
+
+        def matches_any(text: str, words_set: set, keywords: set) -> bool:
+            """Check keyword matching using strict word boundaries to prevent false-positive substring overlap."""
+            single_words = {k for k in keywords if " " not in k}
+            if words_set.intersection(single_words):
+                return True
+            multi_words = {k for k in keywords if " " in k}
+            for phrase in multi_words:
+                if re.search(rf"\b{re.escape(phrase)}\b", text):
+                    return True
+            return False
+
+        if matches_any(f"{hint_lower} {path_lower}", combined_prompt_words, FRAUD_KEYWORDS):
             logger.info("Intent classified as FRAUD_DISINFORMATION based on context hint/path")
             return InvestigationIntent.FRAUD_DISINFORMATION
 
-        if any(w in hint_lower for w in FASHION_KEYWORDS):
+        if matches_any(hint_lower, hint_words, FASHION_KEYWORDS):
             logger.info("Intent classified as FASHION_PRODUCT based on explicit fashion hint")
             return InvestigationIntent.FASHION_PRODUCT
 
-        if any(w in hint_lower for w in GEOSPATIAL_KEYWORDS):
+        if matches_any(hint_lower, hint_words, GEOSPATIAL_KEYWORDS):
             logger.info("Intent classified as GEOSPATIAL_LANDMARK based on explicit landmark hint")
             return InvestigationIntent.GEOSPATIAL_LANDMARK
 
@@ -84,15 +113,17 @@ class IntentClassificationService:
         kg = lens_data.get("knowledge_graph") or {}
         kg_type = (kg.get("type") or "").lower()
         kg_title = (kg.get("title") or "").lower()
+        kg_full = f"{kg_type} {kg_title}"
+        kg_words = set(re.findall(r"\b[a-z]{3,}\b", kg_full))
 
         visual_matches: List[Dict[str, Any]] = lens_data.get("visual_matches") or []
 
         # 3. Knowledge Graph Entity Signal
-        if any(k in kg_type or k in kg_title for k in FASHION_KEYWORDS):
+        if matches_any(kg_full, kg_words, FASHION_KEYWORDS):
             logger.info("Intent classified as FASHION_PRODUCT via Knowledge Graph: %s", kg_title)
             return InvestigationIntent.FASHION_PRODUCT
 
-        if any(k in kg_type or k in kg_title for k in GEOSPATIAL_KEYWORDS):
+        if matches_any(kg_full, kg_words, GEOSPATIAL_KEYWORDS):
             logger.info("Intent classified as GEOSPATIAL_LANDMARK via Knowledge Graph: %s", kg_title)
             return InvestigationIntent.GEOSPATIAL_LANDMARK
 
@@ -100,6 +131,7 @@ class IntentClassificationService:
         fashion_score = 0
         geo_score = 0
         fraud_score = 0
+        total_fashion_keywords_found = 0
 
         for match in visual_matches[:8]:
             title = (match.get("title") or "").lower()
@@ -117,26 +149,43 @@ class IntentClassificationService:
                 except Exception:
                     domain = ""
 
-            if any(fd in domain for fd in FASHION_DOMAINS):
+            # Check lexical keywords in title and snippet
+            words = set(re.findall(r"\b[a-z]{3,}\b", f"{title} {snippet}"))
+            f_words = words.intersection(FASHION_KEYWORDS)
+            g_words = words.intersection(GEOSPATIAL_KEYWORDS)
+            r_words = words.intersection(FRAUD_KEYWORDS)
+
+            total_fashion_keywords_found += len(f_words)
+
+            # Dedicated fashion boutiques/brands award domain authority
+            if any(fd in domain for fd in DEDICATED_FASHION_DOMAINS):
                 fashion_score += 3
+            # General multi-category marketplaces only award fashion points if this specific listing has fashion keywords
+            elif any(md in domain for md in GENERAL_MARKETPLACE_DOMAINS):
+                if f_words:
+                    fashion_score += 2
+
             if any(gd in domain for gd in GEOSPATIAL_DOMAINS):
                 geo_score += 3
             if any(rd in domain for rd in FRAUD_DOMAINS):
                 fraud_score += 2
 
-            # Check lexical keywords in title and snippet
-            words = set(re.findall(r"\b[a-z]{3,}\b", f"{title} {snippet}"))
-            fashion_score += len(words.intersection(FASHION_KEYWORDS))
-            geo_score += len(words.intersection(GEOSPATIAL_KEYWORDS))
-            fraud_score += len(words.intersection(FRAUD_KEYWORDS))
+            fashion_score += len(f_words)
+            geo_score += len(g_words)
+            fraud_score += len(r_words)
 
         logger.debug(
-            "Intent scoring: fashion=%d, geo=%d, fraud=%d (matches evaluated: %d)",
-            fashion_score, geo_score, fraud_score, len(visual_matches[:8]),
+            "Intent scoring: fashion=%d (kw=%d), geo=%d, fraud=%d (matches evaluated: %d)",
+            fashion_score, total_fashion_keywords_found, geo_score, fraud_score, len(visual_matches[:8]),
         )
 
         # 5. Determine winning intent based on aggregate confidence
-        if fashion_score > geo_score and fashion_score > fraud_score and fashion_score >= 2:
+        # Require verifiable fashion evidence (at least 1 explicit clothing keyword or dedicated fashion domain presence)
+        if (
+            fashion_score > geo_score
+            and fashion_score > fraud_score
+            and (total_fashion_keywords_found > 0 or fashion_score >= 3)
+        ):
             return InvestigationIntent.FASHION_PRODUCT
 
         if fraud_score > geo_score and fraud_score > fashion_score and fraud_score >= 2:

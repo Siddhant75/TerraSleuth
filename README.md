@@ -6,7 +6,7 @@
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Architecture](https://img.shields.io/badge/Architecture-C4%20Model%20Certified-orange.svg)](C4-Documentation/)
 [![Agent Level](https://img.shields.io/badge/Agent%20Level-Level%205%20Dialectical%20Swarm-purple.svg)](C4-Documentation/c4-component-osint-agent-swarm.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-127%2F127%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-130%2F130%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -162,7 +162,7 @@ cp .env.example .env
 streamlit run frontend/app.py
 ```
 
-### 3. Run the Full Automated Test Suite (127/127 Tests)
+### 3. Run the Full Automated Test Suite (130/130 Tests)
 Run unit, integration, and E2E regression tests with zero API credit consumption:
 ```bash
 # Linux / macOS
