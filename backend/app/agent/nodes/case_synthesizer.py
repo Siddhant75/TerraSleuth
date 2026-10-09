@@ -3,7 +3,7 @@ import time
 from typing import Any, Dict, List, Optional
 import uuid
 
-from backend.app.agent.state import OsintGraphState
+from backend.app.agent.state import InvestigationIntent, OsintGraphState
 from backend.app.models.case import CaseFile, GeoCandidate
 from backend.app.services.anomaly_service import AnomalyService
 from backend.app.services.dork_service import DorkService
@@ -16,6 +16,7 @@ def calculate_confidence_score(
     visual_clues_count: int,
     lens_matches_count: int,
     timeline_events_count: int,
+    itemized_dossier_count: int = 0,
 ) -> float:
     """Compute a holistic, explainable confidence score in [0.0, 1.0].
     
@@ -24,7 +25,11 @@ def calculate_confidence_score(
     - Multi-modal visual forensic clues: 25%
     - Reverse-image provenance twin matches: 15%
     - Chronological/news timeline corroboration: 15%
+    - For itemized fashion decomposition: calibrated to segmented item coverage
     """
+    if itemized_dossier_count > 0:
+        return min(0.98, max(0.85, 0.85 + itemized_dossier_count * 0.02))
+
     if not resolved_location and lens_matches_count == 0:
         # Bare visual clues without geospatial resolution cannot exceed exploratory confidence
         return min(0.20, round(visual_clues_count * 0.05, 2))
@@ -74,6 +79,25 @@ def generate_case_summary_markdown(
             if a.get("evidence_url"):
                 lines.append(f"- **Verification Evidence:** [Direct Source Link]({a['evidence_url']})")
             lines.append("")
+
+    # Insert itemized wardrobe & product ledger if present
+    itemized = state.get("itemized_dossier", [])
+    if itemized:
+        lines.extend([
+            "---",
+            "",
+            "## 👗 Itemized Wardrobe & Product Forensic Ledger",
+            "",
+        ])
+        for idx, item in enumerate(itemized, 1):
+            lbl = item.get("label", f"Item {idx}").replace("_", " ").title()
+            cat = item.get("category", "apparel").upper()
+            title = item.get("title") or lbl
+            src = item.get("source") or "web"
+            url = item.get("url") or "#"
+            conf = int(item.get("confidence", 0.9) * 100)
+            lines.append(f"{idx}. `[{cat}]` **{lbl}:** [{title}]({url}) — Source: `{src}` (Confidence: `{conf}%`)")
+        lines.append("")
 
     lines.extend([
         "---",
@@ -182,7 +206,18 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         top_m = lens_matches[0]
         top_lens_title = top_m.get("title") if isinstance(top_m, dict) else getattr(top_m, "title", None)
 
-    if resolved_location:
+    intent = state.get("intent")
+    itemized_dossier = state.get("itemized_dossier", [])
+
+    if intent in (InvestigationIntent.FASHION_PRODUCT, "FASHION_PRODUCT"):
+        if itemized_dossier:
+            top_item = itemized_dossier[0].get("title") or "Designer Wardrobe"
+            case_title = f"Wardrobe Catalog: {top_item}"
+        elif top_lens_title:
+            case_title = f"Fashion Product: {top_lens_title}"
+        else:
+            case_title = "Designer Wardrobe & Accessories"
+    elif resolved_location:
         case_title = f"{resolved_location.name} ({resolved_location.address or 'Identified Vicinity'})"
     elif top_lens_title:
         case_title = f"{top_lens_title}"
@@ -213,6 +248,7 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         visual_clues_count=len(visual_clues),
         lens_matches_count=len(lens_matches),
         timeline_events_count=len(timeline_events),
+        itemized_dossier_count=len(itemized_dossier),
     )
 
     # 6. Generate structured summary Markdown
@@ -245,6 +281,8 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         refinement_hops=refinement_hops,
         serp_queries_executed=queries_executed,
         adversarial_audit_score=state.get("audit_score"),
+        intent=intent.value if hasattr(intent, "value") else str(intent) if intent else None,
+        itemized_dossier=itemized_dossier,
     )
 
     logger.info(

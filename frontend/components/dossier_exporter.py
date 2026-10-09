@@ -43,11 +43,13 @@ def generate_standalone_html_dossier(
     img_data_uri = image_to_base64_data_uri(target_image)
     
     loc = case_file.resolved_location
-    loc_name = html.escape(loc.name if loc and loc.name else "Unidentified")
+    is_fashion = bool(case_file.intent == "FASHION_PRODUCT" or case_file.itemized_dossier)
+    loc_name = html.escape(case_file.title if is_fashion and case_file.title else (loc.name if loc and loc.name else "Unidentified Target"))
     loc_addr = html.escape(loc.address if loc and loc.address else "Unspecified")
     lat_str = f"{loc.latitude:.5f}°N" if loc and loc.latitude is not None else "N/A"
     lon_str = f"{loc.longitude:.5f}°E" if loc and loc.longitude is not None else "N/A"
-    coords_display = f"{lat_str}, {lon_str}" if loc else "N/A"
+    coord_label = "Item Components" if is_fashion else "WGS84 Coordinates"
+    coords_display = f"{len(case_file.itemized_dossier)} Items Decomposed" if is_fashion else (f"{lat_str}, {lon_str}" if loc else "N/A")
     maps_url = sanitize_url(loc.source_url) if loc and loc.source_url else sanitize_url(f"https://www.google.com/maps/search/?api=1&query={loc.latitude},{loc.longitude}") if loc else "#"
 
     # Build Anomalies HTML
@@ -155,6 +157,61 @@ def generate_standalone_html_dossier(
         </div>
         """)
     dorks_html = "".join(dorks_rows) if dorks_rows else ""
+
+    # Build Wardrobe Ledger HTML
+    wardrobe_html = ""
+    if case_file.itemized_dossier:
+        w_rows = []
+        for idx, item in enumerate(case_file.itemized_dossier, 1):
+            lbl = html.escape(item.get("label", f"item_{idx}").replace("_", " ").title())
+            cat = html.escape(item.get("category", "apparel")).upper()
+            title = html.escape(item.get("title") or lbl)
+            src = html.escape(item.get("source") or "Web")
+            url = sanitize_url(item.get("url"))
+            conf = int(item.get("confidence", 0.9) * 100)
+            bbox = item.get("bounding_box", [])
+            bbox_str = f"[{', '.join(f'{b:.2f}' for b in bbox)}]" if bbox else "Full"
+            w_rows.append(f"""
+            <tr>
+              <td><span class="badge badge-cyan">{cat}</span></td>
+              <td><b>{lbl}</b> <span class="text-slate font-mono text-xs">{html.escape(bbox_str)}</span></td>
+              <td><a href="{url}" target="_blank" class="link-cyan">{title}</a></td>
+              <td class="font-mono text-slate">{src}</td>
+              <td class="text-right font-mono text-emerald">{conf}%</td>
+            </tr>
+            """)
+        w_table_html = "".join(w_rows)
+        wardrobe_html = f"""
+        <div class="section-container">
+          <h2 class="section-title text-cyan">👗 MULTI-OBJECT PRODUCT & WARDROBE DECOMPOSITION</h2>
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Item Component</th>
+                <th>Matched Product / Brand</th>
+                <th>Source Retailer</th>
+                <th class="text-right">Confidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {w_table_html}
+            </tbody>
+          </table>
+        </div>
+        """
+
+    # Build Geospatial HTML
+    geo_html = ""
+    if not is_fashion and loc:
+        geo_html = f"""
+        <div class="section-container">
+          <h2 class="section-title">📍 GEOSPATIAL PINPOINT & TRIANGULATION</h2>
+          <p><b>Street Address:</b> {loc_addr}</p>
+          <p><b>Coordinates:</b> <code class="badge badge-cyan">{coords_display}</code></p>
+          <p><b>Google Maps Reference:</b> <a href="{maps_url}" target="_blank" class="link-cyan">Open in Google Maps ↗</a></p>
+        </div>
+        """
 
     date_str = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
 
@@ -357,7 +414,7 @@ def generate_standalone_html_dossier(
           <div class="meta-value text-emerald">{loc_name}</div>
         </div>
         <div class="meta-card">
-          <div class="meta-label">WGS84 Coordinates</div>
+          <div class="meta-label">{coord_label}</div>
           <div class="meta-value font-mono">{coords_display}</div>
         </div>
         <div class="meta-card">
@@ -374,13 +431,9 @@ def generate_standalone_html_dossier(
     <!-- Anomaly Section (if any) -->
     {anomalies_html}
 
-    <!-- Geospatial Triangulation -->
-    <div class="section-container">
-      <h2 class="section-title">📍 GEOSPATIAL PINPOINT & TRIANGULATION</h2>
-      <p><b>Street Address:</b> {loc_addr}</p>
-      <p><b>Coordinates:</b> <code class="badge badge-cyan">{coords_display}</code></p>
-      <p><b>Google Maps Reference:</b> <a href="{maps_url}" target="_blank" class="link-cyan">Open in Google Maps ↗</a></p>
-    </div>
+    <!-- Geospatial Triangulation & Wardrobe Ledger -->
+    {geo_html}
+    {wardrobe_html}
 
     <!-- Target Image & Visual Clues -->
     <div class="section-container">

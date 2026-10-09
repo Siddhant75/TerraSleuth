@@ -1,0 +1,219 @@
+{
+  "case_id": "case_51c3a8ff",
+  "title": "Vancouver Lookout (555 W Hastings St, Vancouver, BC V6B 1N9, Canada)",
+  "case_summary": "# 🔍 OSINT Forensic Dossier: Vancouver Lookout (555 W Hastings St, Vancouver, BC V6B 1N9, Canada)\n\n**Investigative Status:** Case Closed  \n**Confidence Rating:** `88%` (High Verifiability)  \n**Refinement Cycles:** 0  \n\n---\n\n## 📍 Primary Ground Truth & Triangulation\n- **Resolved Landmark / Target:** **Vancouver Lookout**\n- **Street Address:** 555 W Hastings St, Vancouver, BC V6B 1N9, Canada\n- **Coordinates (WGS84):** `49.28492, -123.11223`\n- **Place Identifier:** `ChIJfe2sYHhxhlQRoXvjMeNv3VA`\n- **Triangulation Source:** `google_maps` (Match Score: `1.00`)\n- **Evidence Note:** Google Maps consensus for Vancouver Lookout\n- **Map Reference:** [View on Google Maps](https://www.google.com/maps/search/?api=1&query=49.2849182,-123.11222839999999)\n\n## 🏛️ Forensic Visual Evidence\n- `[LANDMARK]` **Prominent primary focal entity identified from visual composition: unidentified mystery subject.** (Confidence: `0.85`)\n- `[INFRASTRUCTURE]` **Background structural patterns and environmental context.** (Confidence: `0.75`)\n\n## 🔬 Google Lens Visual Twin Matches\n1. **[Vancouver Scenery (mirrafiory) - Perfil | Pinterest](https://cl.pinterest.com/mirrafiory)** (Source: `Pinterest`)\n2. **[TNN NEWS | ផ្លូវថ្មើរជើង Sidewalk ស្អាត ...](https://www.instagram.com/p/DUmfgQfDbZm/)** (Source: `Instagram`)\n3. **[Charming Neighborhood Street in Summer · Free Stock Photo](https://www.pexels.com/photo/charming-neighborhood-street-in-summer-37480475/)** (Source: `Pexels`)\n\n## ⏱️ Chronological Provenance & Media Timeline\n- **04/20/2026, 07:00 AM, +0000 UTC** — **My 2 Day Trip to Vancouver, BC** (The Traveling Spud): Archival verification for Vancouver Lookout\n- **05/03/2026, 07:00 AM, +0000 UTC** — **Free entry to Vancouver Lookout observation deck for City of Vancouver exhibit on considering higher buildings** (Daily Hive): Archival verification for Vancouver Lookout\n- **04/24/2026, 07:00 AM, +0000 UTC** — **City cracked down on Vancouver venues after lobbying by bar and club groups, emails reveal** (Investigative Journalism Foundation): Archival verification for Vancouver Lookout\n\n## 🔗 Verifiable Citation Chain\n1. `[google_lens]` [Vancouver Scenery (mirrafiory) - Perfil | Pinterest](https://cl.pinterest.com/mirrafiory) — *Visual twin match via Pinterest*\n2. `[google_lens]` [TNN NEWS | ផ្លូវថ្មើរជើង Sidewalk ស្អាត ...](https://www.instagram.com/p/DUmfgQfDbZm/) — *Visual twin match via Instagram*\n3. `[google_lens]` [Charming Neighborhood Street in Summer · Free Stock Photo](https://www.pexels.com/photo/charming-neighborhood-street-in-summer-37480475/) — *Visual twin match via Pexels*\n4. `[google_maps]` [Google Maps Place: Vancouver Lookout](https://www.google.com/maps/search/?api=1&query=49.2849182,-123.11222839999999) — *Resolved coordinates: 49.2849, -123.1122 (555 W Hastings St, Vancouver, BC V6B 1N9, Canada)*\n5. `[google_maps]` [Google Maps Place: Cypress Lookout](https://www.google.com/maps/search/?api=1&query=49.3529694,-123.17807219999999) — *Resolved coordinates: 49.3530, -123.1781 (Cypress Bowl Rd, West Vancouver, BC V7S 3J2, Canada)*\n6. `[google_maps]` [Google Maps Place: Vancouver Seawall](https://www.google.com/maps/search/?api=1&query=49.2960965,-123.12797959999999) — *Resolved coordinates: 49.2961, -123.1280 (Vancouver, BC V6G 3E2, Canada)*\n7. `[google_maps]` [Google Maps Place: Siwash Rock](https://www.google.com/maps/search/?api=1&query=49.308662299999995,-123.1560351) — *Resolved coordinates: 49.3087, -123.1560 (Vancouver, BC, Canada)*\n8. `[google_news]` [My 2 Day Trip to Vancouver, BC](https://www.travelingspud.com/my-2-day-trip-to-vancouver-bc/) — *Archival verification via The Traveling Spud*\n9. `[google_news]` [Free entry to Vancouver Lookout observation deck for City of Vancouver exhibit on considering higher buildings](https://dailyhive.com/vancouver/vancouver-lookout-city-higher-buildings-policy-review-exhibit) — *Archival verification via Daily Hive*\n10. `[google_news]` [City cracked down on Vancouver venues after lobbying by bar and club groups, emails reveal](https://theijf.org/article/vancouver-venue-crackdown) — *Archival verification via Investigative Journalism Foundation*\n\n## 🕵️ Targeted OSINT Google Search Dorks\n- **Municipal & Property Records:** `filetype:pdf (\"Vancouver Lookout\") (\"permit\" OR \"zoning\" OR \"property\" OR \"architectural\" OR \"report\")` — [Execute Query ↗](https://www.google.com/search?q=filetype%3Apdf+%28%22Vancouver+Lookout%22%29+%28%22permit%22+OR+%22zoning%22+OR+%22property%22+OR+%22architectural%22+OR+%22report%22%29)\n- **Investigative Press & Archives:** `\"Vancouver Lookout\" (\"investigation\" OR \"controversy\" OR \"renovation\" OR \"history\" OR \"lawsuit\")` — [Execute Query ↗](https://www.google.com/search?q=%22Vancouver+Lookout%22+%28%22investigation%22+OR+%22controversy%22+OR+%22renovation%22+OR+%22history%22+OR+%22lawsuit%22%29)\n- **Government & Academic Registries:** `site:gov OR site:org OR site:edu (\"Vancouver Lookout\")` — [Execute Query ↗](https://www.google.com/search?q=site%3Agov+OR+site%3Aorg+OR+site%3Aedu+%28%22Vancouver+Lookout%22%29)\n- **Exposed Web Directories:** `intitle:\"index of\" \"Vancouver Lookout\"` — [Execute Query ↗](https://www.google.com/search?q=intitle%3A%22index+of%22+%22Vancouver+Lookout%22)",
+  "confidence_score": 0.88,
+  "resolved_location": {
+    "name": "Vancouver Lookout",
+    "address": "555 W Hastings St, Vancouver, BC V6B 1N9, Canada",
+    "latitude": 49.2849182,
+    "longitude": -123.11222839999999,
+    "place_id": "ChIJfe2sYHhxhlQRoXvjMeNv3VA",
+    "match_score": 1.0,
+    "engine_source": "google_maps",
+    "evidence_snippet": "Google Maps consensus for Vancouver Lookout",
+    "source_url": "https://www.google.com/maps/search/?api=1&query=49.2849182,-123.11222839999999"
+  },
+  "visual_clues": [
+    {
+      "clue_id": "c1b1ee34",
+      "category": "landmark",
+      "description": "Prominent primary focal entity identified from visual composition: unidentified mystery subject.",
+      "bounding_box": [
+        0.2,
+        0.2,
+        0.8,
+        0.8
+      ],
+      "confidence": 0.85,
+      "suggested_query": "mystery landmark visual reverse search"
+    },
+    {
+      "clue_id": "7dac2e03",
+      "category": "infrastructure",
+      "description": "Background structural patterns and environmental context.",
+      "bounding_box": [
+        0.05,
+        0.05,
+        0.95,
+        0.95
+      ],
+      "confidence": 0.75,
+      "suggested_query": "contextual visual surroundings"
+    }
+  ],
+  "lens_matches": [
+    {
+      "title": "Vancouver Scenery (mirrafiory) - Perfil | Pinterest",
+      "link": "https://cl.pinterest.com/mirrafiory",
+      "source": "Pinterest",
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ8dmoqyzyhS60CUdqmCSv52GtglST2ryNH0t8TjqL1tmBU0s78",
+      "score": 1,
+      "is_exact": false,
+      "source_date": null
+    },
+    {
+      "title": "TNN NEWS | ផ្លូវថ្មើរជើង Sidewalk ស្អាត ...",
+      "link": "https://www.instagram.com/p/DUmfgQfDbZm/",
+      "source": "Instagram",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTggqLljLryGX_rbs8oK6xCugh7PVGSGlwB56oznCmLmj-3Izow",
+      "score": 2,
+      "is_exact": false,
+      "source_date": null
+    },
+    {
+      "title": "Charming Neighborhood Street in Summer · Free Stock Photo",
+      "link": "https://www.pexels.com/photo/charming-neighborhood-street-in-summer-37480475/",
+      "source": "Pexels",
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ_t4ylaOLP-qcVh7lHau2quqtLnYbiheDex24k9Mj_rz9e_BiO",
+      "score": 3,
+      "is_exact": false,
+      "source_date": null
+    },
+    {
+      "title": "44 Ohana Manchester - Streetscape ideas in 2026 | green ...",
+      "link": "https://www.pinterest.com/urbansketch2016/ohana-manchester-streetscape/",
+      "source": "Pinterest",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw0m2WkJLHnE0JD2Rw9UYEKX-1Hc0fYIxDfcJQ1DnioMeB9Gnd",
+      "score": 4,
+      "is_exact": false,
+      "source_date": null
+    },
+    {
+      "title": "Apartments For Rent in Vancouver, WA | Avalon Park ...",
+      "link": "https://www.liveavalonpark.com/",
+      "source": "www.liveavalonpark.com",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSggrBbDq3qPLH2js7x-B6ysXuW4SwMN4hC53Kk6dyYmqZnYNhi",
+      "score": 5,
+      "is_exact": false,
+      "source_date": null
+    },
+    {
+      "title": "The Beautiful Sidewalks | Rob Moses Photography",
+      "link": "https://robmosesphotography.com/2021/04/23/the-beautiful-sidewalks/",
+      "source": "Rob Moses Photography",
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTqA7UN-DIScofa7ImDDPm0eHOdbKYjFD7kkXS_GY74rVebx2kz",
+      "score": 6,
+      "is_exact": false,
+      "source_date": null
+    }
+  ],
+  "timeline": [
+    {
+      "date": "04/20/2026, 07:00 AM, +0000 UTC",
+      "title": "My 2 Day Trip to Vancouver, BC",
+      "source": "The Traveling Spud",
+      "url": "https://www.travelingspud.com/my-2-day-trip-to-vancouver-bc/",
+      "snippet": "Archival verification for Vancouver Lookout",
+      "is_origin": false
+    },
+    {
+      "date": "05/03/2026, 07:00 AM, +0000 UTC",
+      "title": "Free entry to Vancouver Lookout observation deck for City of Vancouver exhibit on considering higher buildings",
+      "source": "Daily Hive",
+      "url": "https://dailyhive.com/vancouver/vancouver-lookout-city-higher-buildings-policy-review-exhibit",
+      "snippet": "Archival verification for Vancouver Lookout",
+      "is_origin": false
+    },
+    {
+      "date": "04/24/2026, 07:00 AM, +0000 UTC",
+      "title": "City cracked down on Vancouver venues after lobbying by bar and club groups, emails reveal",
+      "source": "Investigative Journalism Foundation",
+      "url": "https://theijf.org/article/vancouver-venue-crackdown",
+      "snippet": "Archival verification for Vancouver Lookout",
+      "is_origin": false
+    }
+  ],
+  "citations": [
+    {
+      "title": "Vancouver Scenery (mirrafiory) - Perfil | Pinterest",
+      "url": "https://cl.pinterest.com/mirrafiory",
+      "engine": "google_lens",
+      "snippet": "Visual twin match via Pinterest"
+    },
+    {
+      "title": "TNN NEWS | ផ្លូវថ្មើរជើង Sidewalk ស្អាត ...",
+      "url": "https://www.instagram.com/p/DUmfgQfDbZm/",
+      "engine": "google_lens",
+      "snippet": "Visual twin match via Instagram"
+    },
+    {
+      "title": "Charming Neighborhood Street in Summer · Free Stock Photo",
+      "url": "https://www.pexels.com/photo/charming-neighborhood-street-in-summer-37480475/",
+      "engine": "google_lens",
+      "snippet": "Visual twin match via Pexels"
+    },
+    {
+      "title": "Google Maps Place: Vancouver Lookout",
+      "url": "https://www.google.com/maps/search/?api=1&query=49.2849182,-123.11222839999999",
+      "engine": "google_maps",
+      "snippet": "Resolved coordinates: 49.2849, -123.1122 (555 W Hastings St, Vancouver, BC V6B 1N9, Canada)"
+    },
+    {
+      "title": "Google Maps Place: Cypress Lookout",
+      "url": "https://www.google.com/maps/search/?api=1&query=49.3529694,-123.17807219999999",
+      "engine": "google_maps",
+      "snippet": "Resolved coordinates: 49.3530, -123.1781 (Cypress Bowl Rd, West Vancouver, BC V7S 3J2, Canada)"
+    },
+    {
+      "title": "Google Maps Place: Vancouver Seawall",
+      "url": "https://www.google.com/maps/search/?api=1&query=49.2960965,-123.12797959999999",
+      "engine": "google_maps",
+      "snippet": "Resolved coordinates: 49.2961, -123.1280 (Vancouver, BC V6G 3E2, Canada)"
+    },
+    {
+      "title": "Google Maps Place: Siwash Rock",
+      "url": "https://www.google.com/maps/search/?api=1&query=49.308662299999995,-123.1560351",
+      "engine": "google_maps",
+      "snippet": "Resolved coordinates: 49.3087, -123.1560 (Vancouver, BC, Canada)"
+    },
+    {
+      "title": "My 2 Day Trip to Vancouver, BC",
+      "url": "https://www.travelingspud.com/my-2-day-trip-to-vancouver-bc/",
+      "engine": "google_news",
+      "snippet": "Archival verification via The Traveling Spud"
+    },
+    {
+      "title": "Free entry to Vancouver Lookout observation deck for City of Vancouver exhibit on considering higher buildings",
+      "url": "https://dailyhive.com/vancouver/vancouver-lookout-city-higher-buildings-policy-review-exhibit",
+      "engine": "google_news",
+      "snippet": "Archival verification via Daily Hive"
+    },
+    {
+      "title": "City cracked down on Vancouver venues after lobbying by bar and club groups, emails reveal",
+      "url": "https://theijf.org/article/vancouver-venue-crackdown",
+      "engine": "google_news",
+      "snippet": "Archival verification via Investigative Journalism Foundation"
+    }
+  ],
+  "anomalies": [],
+  "dorks": [
+    {
+      "category": "Municipal & Property Records",
+      "query": "filetype:pdf (\"Vancouver Lookout\") (\"permit\" OR \"zoning\" OR \"property\" OR \"architectural\" OR \"report\")",
+      "explanation": "Searches indexed government or municipal PDF archives for construction permits, property deeds, and zoning documentation.",
+      "search_url": "https://www.google.com/search?q=filetype%3Apdf+%28%22Vancouver+Lookout%22%29+%28%22permit%22+OR+%22zoning%22+OR+%22property%22+OR+%22architectural%22+OR+%22report%22%29"
+    },
+    {
+      "category": "Investigative Press & Archives",
+      "query": "\"Vancouver Lookout\" (\"investigation\" OR \"controversy\" OR \"renovation\" OR \"history\" OR \"lawsuit\")",
+      "explanation": "Exposes deep investigative journalism, regulatory controversies, architectural renovations, or litigation.",
+      "search_url": "https://www.google.com/search?q=%22Vancouver+Lookout%22+%28%22investigation%22+OR+%22controversy%22+OR+%22renovation%22+OR+%22history%22+OR+%22lawsuit%22%29"
+    },
+    {
+      "category": "Government & Academic Registries",
+      "query": "site:gov OR site:org OR site:edu (\"Vancouver Lookout\")",
+      "explanation": "Restricts search to verified educational, non-profit heritage, and governmental domains.",
+      "search_url": "https://www.google.com/search?q=site%3Agov+OR+site%3Aorg+OR+site%3Aedu+%28%22Vancouver+Lookout%22%29"
+    },
+    {
+      "category": "Exposed Web Directories",
+      "query": "intitle:\"index of\" \"Vancouver Lookout\"",
+      "explanation": "Discovers unindexed server storage directories containing raw blueprints, uncaptioned photos, or internal dossiers.",
+      "search_url": "https://www.google.com/search?q=intitle%3A%22index+of%22+%22Vancouver+Lookout%22"
+    }
+  ],
+  "refinement_hops": 0,
+  "serp_queries_executed": 0,
+  "adversarial_audit_score": 0.94
+}

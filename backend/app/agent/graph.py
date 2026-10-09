@@ -13,10 +13,15 @@ from backend.app.agent.nodes import (
 )
 from backend.app.agent.nodes.swarm_nodes import (
     arbiter_node,
+    fashion_hunter_node,
     hunter_node,
     skeptic_node,
 )
-from backend.app.agent.state import OsintGraphState, create_initial_osint_state
+from backend.app.agent.state import (
+    InvestigationIntent,
+    OsintGraphState,
+    create_initial_osint_state,
+)
 from backend.app.agent.tools import configure_serpapi_client, reset_serpapi_client_context
 from backend.app.models.case import CaseFile
 
@@ -89,18 +94,32 @@ def should_refine_or_synthesize(state: OsintGraphState) -> str:
     return "case_synthesizer"
 
 
+def route_after_hunter(state: OsintGraphState) -> str:
+    """Conditional router after Hunter agent hypothesis generation."""
+    intent = state.get("intent")
+    if intent in (InvestigationIntent.FASHION_PRODUCT, "FASHION_PRODUCT"):
+        logger.info("Fashion intent detected: routing to fashion_hunter for multi-object decomposition")
+        return "fashion_hunter"
+    return "skeptic"
+
+
 def should_refine_debate(state: OsintGraphState) -> str:
     """Conditional router after Arbiter audit in dialectical swarm mode.
     
-    If status is 'fraud_unmasked', circuit breaker halts debate immediately to synthesizer.
+    If intent is fashion or status is 'fraud_unmasked', halts debate immediately to synthesizer.
     If audit_score < 0.70, hops < max_hops, and budget > 0, loops back to hunter.
     Otherwise, circuit breaker forces transition to case_synthesizer.
     """
     status = state.get("status", "")
+    intent = state.get("intent")
     audit_score = state.get("audit_score", 1.0)
     hops = state.get("refinement_hops", 0)
     max_hops = state.get("max_refinement_hops", 2)
     budget = state.get("budget_remaining", 0)
+
+    if intent in (InvestigationIntent.FASHION_PRODUCT, "FASHION_PRODUCT"):
+        logger.info("Fashion catalog certified: routing directly to case_synthesizer.")
+        return "case_synthesizer"
 
     if status == "fraud_unmasked":
         logger.info("Fraud conclusively unmasked by Arbiter: routing directly to case_synthesizer.")
@@ -179,6 +198,7 @@ def create_dialectical_osint_graph() -> CompiledStateGraph:
 
     workflow.add_node("scene_deconstructor", scene_deconstructor_node)
     workflow.add_node("hunter", hunter_node)
+    workflow.add_node("fashion_hunter", fashion_hunter_node)
     workflow.add_node("skeptic", skeptic_node)
     workflow.add_node("arbiter", arbiter_node)
     workflow.add_node("swarm_refinement_router", swarm_refinement_router_node)
@@ -186,7 +206,15 @@ def create_dialectical_osint_graph() -> CompiledStateGraph:
 
     workflow.add_edge(START, "scene_deconstructor")
     workflow.add_edge("scene_deconstructor", "hunter")
-    workflow.add_edge("hunter", "skeptic")
+    workflow.add_conditional_edges(
+        "hunter",
+        route_after_hunter,
+        {
+            "fashion_hunter": "fashion_hunter",
+            "skeptic": "skeptic",
+        },
+    )
+    workflow.add_edge("fashion_hunter", "skeptic")
     workflow.add_edge("skeptic", "arbiter")
 
     workflow.add_conditional_edges(

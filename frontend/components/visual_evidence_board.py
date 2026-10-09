@@ -11,6 +11,10 @@ CATEGORY_COLORS = {
     "vegetation": (46, 204, 113),       # Emerald Green
     "landmark": (241, 196, 15),         # Sun Yellow
     "infrastructure": (155, 89, 182),   # Amethyst Purple
+    "apparel": (56, 189, 248),          # Cyan
+    "accessory": (244, 114, 182),       # Pink
+    "footwear": (251, 146, 60),         # Orange
+    "jewelry": (250, 204, 21),          # Gold
     "other": (149, 165, 166),           # Concrete Grey
 }
 
@@ -23,19 +27,26 @@ def draw_bounding_boxes(
     """Draw forensic bounding boxes and category labels onto a Pillow image copy.
     
     Coordinates are assumed normalized [ymin, xmin, ymax, xmax] in [0.0, 1.0].
+    Supports both VisualClue models and itemized_dossier dictionaries.
     """
     annotated = image.copy().convert("RGB")
     draw = ImageDraw.Draw(annotated)
     w, h = annotated.size
 
     for clue in clues:
-        bbox = clue.bounding_box if hasattr(clue, "bounding_box") else clue.get("bounding_box")
+        bbox = clue.bounding_box if hasattr(clue, "bounding_box") else (clue.get("bounding_box") if isinstance(clue, dict) else None)
         if not bbox or len(bbox) != 4:
             continue
 
-        raw_cat = clue.category.value if hasattr(getattr(clue, "category", None), "value") else str(getattr(clue, "category", "other"))
+        if hasattr(clue, "category"):
+            raw_cat = clue.category.value if hasattr(clue.category, "value") else str(clue.category)
+        elif isinstance(clue, dict):
+            raw_cat = clue.get("category") or clue.get("label") or "other"
+        else:
+            raw_cat = "other"
+
         cat_key = raw_cat.lower()
-        color = CATEGORY_COLORS.get(cat_key, (241, 196, 15))
+        color = CATEGORY_COLORS.get(cat_key, (56, 189, 248))
 
         ymin, xmin, ymax, xmax = bbox
         x1 = max(0, min(w - 1, int(xmin * w)))
@@ -50,8 +61,13 @@ def draw_bounding_boxes(
         draw.rectangle([x1, y1, x2, y2], outline=color, width=box_width)
 
         # Draw label header banner
-        confidence = getattr(clue, "confidence", 1.0)
-        label_text = f"{cat_key.upper()} ({int(confidence * 100)}%)"
+        display_label = (
+            getattr(clue, "label", None)
+            or (clue.get("label") if isinstance(clue, dict) else None)
+            or cat_key
+        ).replace("_", " ").title()
+        confidence = getattr(clue, "confidence", None) or (clue.get("confidence", 1.0) if isinstance(clue, dict) else 1.0)
+        label_text = f"{display_label} ({int(confidence * 100)}%)"
 
         # Draw text background pill
         text_bbox = draw.textbbox((x1, max(0, y1 - 20)), label_text)
@@ -83,11 +99,20 @@ def render_visual_evidence_board(
         cols = ctx.columns(min(len(visual_clues), 4))
         for idx, clue in enumerate(visual_clues):
             col = cols[idx % len(cols)]
-            raw_cat = clue.category.value if hasattr(getattr(clue, "category", None), "value") else str(getattr(clue, "category", "other"))
-            desc = getattr(clue, "description", "") or ""
-            conf = getattr(clue, "confidence", 0.0)
+            if hasattr(clue, "category"):
+                raw_cat = clue.category.value if hasattr(clue.category, "value") else str(clue.category)
+                desc = getattr(clue, "description", "") or ""
+                conf = getattr(clue, "confidence", 0.0)
+            elif isinstance(clue, dict):
+                raw_cat = clue.get("category") or clue.get("label", "item")
+                desc = clue.get("title") or clue.get("label", "").replace("_", " ").title()
+                conf = clue.get("confidence", 0.9)
+            else:
+                raw_cat = "other"
+                desc = str(clue)
+                conf = 0.8
 
-            safe_cat = html.escape(str(raw_cat))
+            safe_cat = html.escape(str(raw_cat).upper())
             safe_desc = html.escape(str(desc))
 
             with col:

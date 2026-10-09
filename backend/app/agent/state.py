@@ -1,5 +1,7 @@
+from enum import Enum
 import operator
 from typing import Annotated, Any, Dict, List, Optional
+from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
 from backend.app.models.case import (
@@ -9,6 +11,23 @@ from backend.app.models.case import (
     TimelineEvent,
     VisualClue,
 )
+
+
+class InvestigationIntent(str, Enum):
+    """Categorized investigative intent determined dynamically by the swarm."""
+    GEOSPATIAL_LANDMARK = "GEOSPATIAL_LANDMARK"
+    FASHION_PRODUCT = "FASHION_PRODUCT"
+    FRAUD_DISINFORMATION = "FRAUD_DISINFORMATION"
+    GENERAL_OBJECT = "GENERAL_OBJECT"
+
+
+class DetectedObject(BaseModel):
+    """A discrete visual object detected and segmented from the input image."""
+    label: str
+    category: str = "apparel"
+    bounding_box: List[float] = Field(..., description="[ymin, xmin, ymax, xmax] normalized coordinates")
+    confidence: float = 0.90
+    lens_match: Optional[Dict[str, Any]] = None
 
 
 def merge_lists(left: list, right: list) -> list:
@@ -33,6 +52,11 @@ class OsintGraphState(TypedDict):
     image_path: str
     image_url: Optional[str]
     context_hint: Optional[str]
+
+    # Dynamic Intent & Multi-Object Decomposition
+    intent: Optional[InvestigationIntent]
+    detected_objects: Annotated[List[DetectedObject], merge_lists]
+    itemized_dossier: Annotated[List[Dict[str, Any]], merge_lists]
 
     # Accumulated OSINT Evidence (Reducers)
     visual_clues: Annotated[List[VisualClue], operator.add]
@@ -79,6 +103,9 @@ def create_initial_osint_state(
         "image_path": image_path,
         "image_url": image_url,
         "context_hint": context_hint,
+        "intent": None,
+        "detected_objects": [],
+        "itemized_dossier": [],
         "api_key": api_key,
         "force_refresh": force_refresh,
         "visual_clues": [],
