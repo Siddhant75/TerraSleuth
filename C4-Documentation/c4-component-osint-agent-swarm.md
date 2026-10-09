@@ -19,6 +19,9 @@ Solves the challenge of autonomous multi-modal geolocation and image provenance 
 
 ## 3. Software Features
 - **Level 4 ReAct Supervision:** Observe-Orient-Decide-Act (OODA) loops utilizing structured `AgentThought` streaming logs.
+- **Dynamic Intent Routing:** Rapid (<20ms) zero-LLM intent classification evaluating Google Lens knowledge graph types, domain authority (`zara`, `shein`, `vogue` vs `wikipedia`, `tripadvisor`), and user hints into `GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, or `GENERAL_OBJECT`.
+- **Multi-Object Visual Decomposition:** Native OpenCV contour detection with chromatic/spatial sub-segmentation (`_split_cluster`) decomposing touching flat-lay items into discrete normalized bounding boxes.
+- **Adaptive Graph Branching & Quota Defense:** Bypasses Google Maps Local API for fashion queries; executes `fashion_hunter_node` with a hard cap (max 5 items) to strictly defend SerpApi quotas.
 - **Level 5 Dialectical Tension:** Adversarial debate where the Skeptic tests climate, temporal recycling, and rental scam signals to invalidate Hunter claims.
 - **Circuit Breaker Termination:** Strictly bounded refinement hops ($\le 2$) and search budgets preventing infinite recursion.
 - **Synchronous SSE/Generator Streaming:** Yields incremental state snapshots to decouple graph compute from user interface updates.
@@ -27,20 +30,24 @@ Solves the challenge of autonomous multi-modal geolocation and image provenance 
 
 ## 4. Code Elements
 Synthesizes and integrates the following code documentation files:
-- [`c4-code-backend-app-agent-nodes.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent-nodes.md): Investigation nodes (`scene_deconstructor`, `lens_hunter`, `geo_triangulator`, `chrono_auditor`, `case_synthesizer`, `hunter_node`, `skeptic_node`, `arbiter_node`, `react_supervisor`).
-- [`c4-code-backend-app-agent.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent.md): State schema (`state.py`), tool decorators (`tools.py`), and graph topologies (`graph.py`).
+- [`c4-code-backend-app-agent-nodes.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent-nodes.md): Investigation nodes (`scene_deconstructor`, `lens_hunter`, `geo_triangulator`, `chrono_auditor`, `case_synthesizer`, `hunter_node`, `fashion_hunter_node`, `skeptic_node`, `arbiter_node`, `react_supervisor`).
+- [`c4-code-backend-app-agent.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent.md): State schema (`state.py`), tool decorators (`tools.py`), and graph topologies with adaptive branching (`graph.py`).
+- [`c4-code-backend-app-services.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-services.md): Supporting services (`intent_service.py`, `object_separation_service.py`, `serpapi_service.py`).
 
 ---
 
 ## 5. Interfaces
 - **Graph Invocations:**
   - `create_osint_graph() -> StateGraph`: Compiles deterministic Level 3 pipeline.
-  - `create_dialectical_osint_graph() -> StateGraph`: Compiles Level 5 Hunter/Skeptic/Arbiter state machine.
+  - `create_dialectical_osint_graph() -> StateGraph`: Compiles Level 5 Hunter/Skeptic/Arbiter state machine with `route_after_hunter` dynamic branch.
+- **Dynamic Conditional Routers:**
+  - `route_after_hunter(state: OsintGraphState) -> str`: Routes to `fashion_hunter` when `intent == FASHION_PRODUCT`; otherwise routes to `skeptic`.
+  - `should_refine_debate(state: OsintGraphState) -> str`: Decides refinement loop vs final synthesis.
 - **Streaming Entry Points:**
   - `stream_osint_investigation_sync(initial_state: Dict[str, Any]) -> Generator[Tuple[str, Dict[str, Any]], None, None]`
   - `stream_dialectical_investigation_sync(initial_state: Dict[str, Any]) -> Generator[Tuple[str, Dict[str, Any]], None, None]`
 - **LangChain Tool Registry:**
-  - `tool_lens_search(image_url: str, crop_bbox: Optional[List[float]])`
+  - `tool_lens_search(image_url: Optional[str] = None, image_path: Optional[str] = None, crop_bbox: Optional[List[float]] = None)`
   - `tool_maps_triangulate(query: str, lat_hint: Optional[float], lon_hint: Optional[float])`
   - `tool_news_audit(query: str, date_filter: Optional[str])`
   - `tool_google_dork(dork_query: str)`
@@ -50,9 +57,9 @@ Synthesizes and integrates the following code documentation files:
 
 ## 6. Dependencies
 - **Components Used:**
-  - **SerpApi Multi-Modal Engine:** Queries Google Lens, Maps, and News through cached service proxies.
+  - **SerpApi Multi-Modal Engine:** Queries Google Lens, Maps, and News through cached service proxies and SerpApi Image Upload API.
   - **Anomaly & Fraud Engine:** Skeptic node calls `AnomalyService` to uncover fraud flags.
-  - **Evidence Schema Ledger:** Consumes and emits typed `OsintGraphState`, `GeoCandidate`, and `CaseFile` models.
+  - **Evidence Schema Ledger:** Consumes and emits typed `OsintGraphState`, `DetectedObject`, `GeoCandidate`, and `CaseFile` models.
 - **External Systems:**
   - SerpApi Gateway (proxied through SQLite cache)
   - Vision LLMs (Google Gemini / OpenAI, with deterministic offline fallbacks)
@@ -67,7 +74,12 @@ graph TD
     
     subgraph Swarm[OSINT Agent Swarm]
         Deconstruct[Scene Deconstructor] --> Hunter[Hunter Node]
-        Hunter --> Skeptic[Skeptic Debunker Node]
+        Hunter --> IntentCheck{route_after_hunter}
+        
+        IntentCheck -->|FASHION_PRODUCT| FashionHunter[Fashion Hunter Node<br>Max 5 Regional Crops]
+        IntentCheck -->|GEOSPATIAL_LANDMARK| Skeptic[Skeptic Debunker Node]
+        
+        FashionHunter --> Skeptic
         Skeptic --> RefineRouter{Refine Router}
         RefineRouter -->|Ambiguous & Budget > 0| Hunter
         RefineRouter -->|Consensus or Exhausted| Arbiter[Arbiter Node]
@@ -76,6 +88,7 @@ graph TD
 
     Graph --> Deconstruct
     Hunter -->|Tool Call| ToolReg[Tools Registry]
+    FashionHunter -->|Crop Tool Call| ToolReg
     Skeptic -->|Detect Anomalies| AnomalySvc[Anomaly Service]
     ToolReg --> SerpApi[SerpApi Retrieval Engine]
     Synthesizer -->|Emits| CaseFileModel[CaseFile Domain Model]

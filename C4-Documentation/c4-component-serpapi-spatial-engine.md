@@ -15,6 +15,10 @@ Provides reliable, high-speed, and secure external intelligence retrieval while 
 
 ## 3. Software Features
 - **Multi-Modal Visual Search:** Google Lens integration with high-resolution visual matches, exact matches, source domain attribution, and knowledge graph extraction.
+- **SerpApi Local Image Upload API:** Native multipart upload (`POST https://serpapi.com/image`) for custom local photos, retrieving an `image_id` used for Google Lens search.
+- **Iterative Auto-Compression & Resizing:** Pillow image preprocessing loop automatically compressing images larger than 500 KB to strictly honor SerpApi file size limits.
+- **Bounding-Box Regional Cropping:** Extracts normalized sub-regions (`[ymin, xmin, ymax, xmax]`), uploads temporary crops, and executes targeted Google Lens queries for individual items or signs.
+- **SHA-256 Upload Caching:** Hashes image file bytes with SHA-256 to prevent duplicate uploads to the SerpApi Image API.
 - **Geospatial Triangulation:** Google Maps local places search resolving WGS84 latitude/longitude, place IDs, user ratings, and reviews.
 - **Chronological Auditing:** Google News queries isolating earliest publication timestamps to identify original source media.
 - **Quota Defense & SQLite Caching:** Deterministic SHA-256 key hashing excluding secrets and transient flags, guaranteeing that repeated queries and golden demo runs burn zero live API credits.
@@ -30,7 +34,8 @@ Synthesizes and integrates the following code documentation files:
 
 ## 5. Interfaces
 - **SerpApiService Client Methods:**
-  - `search_lens(image_url: str, hl: str = "en", force_refresh: bool = False) -> LensVisualMatchesResult`
+  - `upload_image(image_path: str, max_size_bytes: int = 500 * 1024) -> str`: Uploads binary file to SerpApi Image API and caches `image_id`.
+  - `search_lens(image_url: Optional[str] = None, image_path: Optional[str] = None, image_id: Optional[str] = None, crop_bbox: Optional[List[float]] = None, hl: str = "en", force_refresh: bool = False) -> LensVisualMatchesResult`: Dispatches Google Lens search with URL, local upload, or cropped bounding box.
   - `search_maps(query: str, ll: Optional[str] = None, hl: str = "en", force_refresh: bool = False) -> MapsSearchResult`
   - `search_news(query: str, time_range: Optional[str] = None, gl: str = "us", hl: str = "en", force_refresh: bool = False) -> NewsSearchResult`
   - `search_google(query: str, gl: str = "us", hl: str = "en", force_refresh: bool = False) -> GoogleSearchResult`

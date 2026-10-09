@@ -1,5 +1,5 @@
 # ==============================================================================
-# VCSentry — Git Ignore Rules
+# TerraSleuth — Git Ignore Rules
 # ==============================================================================
 
 # Python
@@ -57,6 +57,10 @@ token.json
 *.db
 *.sqlite
 *.sqlite3
+*.db-wal
+*.db-shm
+*.db-journal
+terrasleuth.db
 vcsentry.db
 cache/
 .cache/
@@ -69,6 +73,16 @@ playwright-report/
 test-results/
 blob-report/
 artifacts/
+temp_crops/
+*_crop_*.png
+*_crop_*.jpg
+*_crop_*.jpeg
+tmp_*
+
+# Live Test Temporary Outputs (Keep test image assets, ignore generated reports)
+tests/live-test/**/*.html
+tests/live-test/**/*.json
+tests/live-test/**/*.md
 
 # Scraped Temporary Hackathon HTML (Local Reference)
 hackathon_site.html

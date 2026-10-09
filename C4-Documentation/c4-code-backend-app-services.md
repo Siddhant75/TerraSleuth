@@ -24,8 +24,10 @@ Unified wrapper for SerpApi with strict parameter sanitization, automatic SQLite
   - **`__init__(self, api_key: Optional[str] = None, timeout_seconds: Optional[int] = None, client: Optional[httpx.Client] = None, cache_service: Optional[CacheService] = None, use_cache: bool = True, budget_manager: Optional[QuotaBudgetManager] = None)`**
     Initializes HTTP client, credentials, cache link, and quota budget manager.
   - **`close(self) -> None`**: Closes underlying `httpx.Client`.
-  - **`search_lens(self, image_url: str, hl: str = "en", force_refresh: bool = False) -> LensVisualMatchesResult`**:
-    Executes visual reverse-image query via SerpApi Google Lens engine (`engine=google_lens`).
+  - **`upload_image(self, image_path: str, max_size_bytes: int = 500 * 1024) -> str`**:
+    Uploads a local image file to SerpApi Image API (`POST https://serpapi.com/image`) to obtain an `image_id` for Google Lens. Performs iterative Pillow compression and resizing if the file exceeds 500 KB, caches the resulting `image_id` by SHA-256 hash in SQLite, and masks credentials in logs and exceptions (`from None`).
+  - **`search_lens(self, image_url: Optional[str] = None, image_path: Optional[str] = None, image_id: Optional[str] = None, crop_bbox: Optional[List[float]] = None, hl: str = "en", force_refresh: bool = False) -> LensVisualMatchesResult`**:
+    Executes visual reverse-image query via SerpApi Google Lens engine (`engine=google_lens`). Supports remote image URLs, local image uploads via `upload_image`, or cropped bounding boxes (`crop_bbox`) for targeted visual inspection of garments, accessories, or architectural signage.
   - **`search_maps(self, query: str, ll: Optional[str] = None, hl: str = "en", force_refresh: bool = False) -> MapsSearchResult`**:
     Queries Google Maps places and coordinates (`engine=google_maps`). Supports GPS bounding center (`ll`).
   - **`search_news(self, query: str, time_range: Optional[str] = None, gl: str = "us", hl: str = "en", force_refresh: bool = False) -> NewsSearchResult`**:
@@ -120,6 +122,20 @@ Provides competitive Geoguessr scoring and 4-phase spatial radius narrowing.
   - **`evaluate_guess(candidate: GeoCandidate, ground_truth_lat: float, ground_truth_lon: float, ground_truth_name: str) -> GeoguessrResult`**:
     Generates complete evaluation payload.
 
+### 2.8 `intent_service.py` (Dynamic Investigation Intent Classification)
+Fast (<20ms) rule-based intent classification engine operating without external LLM dependencies to adaptively route multi-modal queries.
+
+- **Class:** `IntentClassificationService`
+  - **`classify_intent(lens_data: Dict[str, Any], context_hint: Optional[str] = None, image_path: Optional[str] = None) -> InvestigationIntent`**:
+    Evaluates Google Lens Knowledge Graph `type` (e.g. `Clothing`, `Tourist attraction`), domain authority heuristics (`shein.com`, `zara.com`, `vogue.com` vs `wikipedia.org`, `tripadvisor.com`), match titles, and context cues. Returns `InvestigationIntent` (`FASHION_PRODUCT`, `GEOSPATIAL_LANDMARK`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`).
+
+### 2.9 `object_separation_service.py` (Local Computer Vision Object Separation)
+Native OpenCV and Pillow visual decomposition engine for multi-item moodboard, flat-lay, and wardrobe images.
+
+- **Class:** `ObjectSeparationService`
+  - **`segment_image(image_path: str, max_objects: int = 6) -> List[DetectedObject]`**:
+    Processes local image using OpenCV grayscale conversion, Otsu adaptive thresholding, and morphological opening/closing. Detects salient non-background contours, performs chromatic/spatial cluster splitting (`_split_cluster`) to separate touching items (e.g. dress vs adjacent handbag and shoes), clamps normalized bounding boxes `[ymin, xmin, ymax, xmax]`, and infers category tags (`apparel`, `accessory`, `footwear`, `jewelry`).
+
 ---
 
 ## 3. Dependencies
@@ -131,9 +147,12 @@ Provides competitive Geoguessr scoring and 4-phase spatial radius narrowing.
   - `backend.app.models.anomaly`
   - `backend.app.models.dork`
   - `backend.app.models.geoguessr`
+  - `backend.app.agent.state` (`DetectedObject`, `InvestigationIntent`)
 - **External:**
   - `httpx` (HTTP client)
   - `sqlite3` (disk caching)
   - `PIL.Image` (Pillow image processing)
+  - `cv2` (OpenCV computer vision)
+  - `numpy` (array processing)
   - `pydantic`
   - `hashlib`, `math`, `urllib.parse`

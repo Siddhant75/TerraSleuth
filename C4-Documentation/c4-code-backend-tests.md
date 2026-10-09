@@ -2,7 +2,7 @@
 
 ## 1. Overview
 - **Name:** TerraSleuth Backend Automated Verification & Unit Test Suite
-- **Description:** 16 comprehensive test modules verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic debate loops, and anomaly detection.
+- **Description:** 20 comprehensive test modules (127 automated tests passing project-wide) verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic debate loops, local image uploads, OpenCV object separation, dynamic intent routing, and anomaly detection.
 - **Location:** [`backend/tests`](file:///d:/SerpAPI_hackathon/backend/tests)
 - **Language:** Python 3.11+
 - **Purpose:** Regression prevention and multi-gate verification ensuring 100% deterministic test execution, 0 live SerpApi credits burned during CI/CD, and robust schema compliance.
@@ -77,9 +77,31 @@
 - Tests `create_dialectical_osint_graph` graph compilation, state transitions, debate refinement loops, and circuit breakers.
 - Tests synchronous streaming via `stream_dialectical_investigation_sync`.
 
+### 2.17 `test_image_upload.py` (Local Image Upload & Bounding-Box Search Tests)
+- Tests `upload_image` via SerpApi Image API (`POST /image`) returning `image_id`.
+- Validates Pillow iterative auto-resizing reducing images > 500 KB to comply with SerpApi constraints.
+- Validates SHA-256 binary hash caching preventing redundant re-uploads.
+- Tests `search_lens` with `crop_bbox` regional snippet generation.
+- Tests credential sanitization and exception suppression (`from None`).
+
+### 2.18 `test_intent_service.py` (Dynamic Intent Classification Tests)
+- Tests `IntentClassificationService.classify_intent` domain authority heuristics (`shein.com`, `zara.com` -> `FASHION_PRODUCT`).
+- Tests geospatial landmark classification and fraud signal routing.
+- Validates fast (<20ms) execution without external LLM dependencies.
+
+### 2.19 `test_object_separation.py` (OpenCV Contour Segmentation Tests)
+- Tests `ObjectSeparationService.segment_image` contour extraction on synthetic flat-lay targets.
+- Validates chromatic/spatial sub-segmentation (`_split_cluster`) decomposing touching items (dress vs handbag vs heels) on real-world moodboard images.
+- Validates normalized bounding box clamping `[ymin, xmin, ymax, xmax]`.
+
+### 2.20 `test_fashion_swarm.py` (Fashion Swarm & Adaptive Routing Tests)
+- Tests `route_after_hunter` dynamic conditional branching.
+- Validates `fashion_hunter_node` hard quota cap at max 5 items (`min(5, len(detected_objects))`).
+- Validates end-to-end dialectical graph execution, ensuring Google Maps place triangulation is bypassed for fashion targets.
+
 ---
 
 ## 3. Dependencies
 - **Test Runner:** `pytest`
 - **Internal:** All modules in `backend.app.services`, `backend.app.agent`, `backend.app.models`, and `backend.app.db`.
-- **External:** `pytest`, `httpx`, `unittest.mock`, `tempfile`, `PIL`
+- **External:** `pytest`, `httpx`, `unittest.mock`, `tempfile`, `PIL`, `cv2`, `numpy`

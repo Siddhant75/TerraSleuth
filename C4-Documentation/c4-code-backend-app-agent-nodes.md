@@ -53,12 +53,15 @@
 ### 2.7 `swarm_nodes.py` (Level 5 Dialectical Swarm)
 - **Function:** `hunter_node(state: OsintGraphState) -> Dict[str, Any]`
   - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L18-L120`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L18-L120)
-  - **Description:** Proposes optimistic geographic hypotheses, calls `tool_lens_search` and `tool_maps_triangulate`, dynamically extracts entity queries, and returns typed models.
+  - **Description:** Proposes optimistic hypotheses, dispatches `tool_lens_search`, runs dynamic intent classification (`IntentClassificationService.classify_intent`), segments multi-item collages via `ObjectSeparationService`, and bypasses Google Maps if `intent == FASHION_PRODUCT`.
+- **Function:** `fashion_hunter_node(state: OsintGraphState) -> Dict[str, Any]`
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L198-L272`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L198-L272)
+  - **Description:** Decomposes moodboards/collages into itemized garments and accessories. Enforces strict quota defense (hard cap of max 5 items), calls `tool_lens_search` with normalized `crop_bbox`, and populates `itemized_dossier` and citations.
 - **Function:** `skeptic_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L122-L198`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L122-L198)
-  - **Description:** Adversarial red-team auditor. Calls `tool_news_audit`, evaluates environmental contradictions and fraud via `AnomalyService.detect_anomalies`.
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L274-L350`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L274-L350)
+  - **Description:** Adversarial red-team auditor. Calls `tool_news_audit`, evaluates environmental contradictions, audits wardrobe catalogs, and checks fraud signals via `AnomalyService.detect_anomalies`.
 - **Function:** `arbiter_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L200-L243`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L200-L243)
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L352-L410`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L352-L410)
   - **Description:** Dialectical judge weighing Hunter hypotheses vs Skeptic critiques. Computes `AdversarialAuditScore`, issues certified consensus or `fraud_unmasked` verdict.
 
 ---
@@ -69,6 +72,8 @@
   - `backend.app.agent.tools.*`
   - `backend.app.services.serpapi_service.SerpApiService`
   - `backend.app.services.vision_service.VisionService`
+  - `backend.app.services.intent_service.IntentClassificationService`
+  - `backend.app.services.object_separation_service.ObjectSeparationService`
   - `backend.app.services.anomaly_service.AnomalyService`
   - `backend.app.services.dork_service.DorkService`
   - `backend.app.models.case.*`
@@ -81,8 +86,11 @@
 
 ```mermaid
 graph TD
-    SD["scene_deconstructor_node"] --> HN["hunter_node (Lens + Maps)"]
-    HN --> SN["skeptic_node (News + Anomaly)"]
+    SD["scene_deconstructor_node"] --> HN["hunter_node (Lens + Intent)"]
+    HN --> IntentCheck{route_after_hunter}
+    IntentCheck -->|FASHION_PRODUCT| FHN["fashion_hunter_node (Max 5 Crops)"]
+    IntentCheck -->|GEOSPATIAL_LANDMARK| SN["skeptic_node (News + Anomaly)"]
+    FHN --> SN
     SN --> AN["arbiter_node (Judge)"]
     AN -->|fraud_unmasked or Certified| CS["case_synthesizer_node"]
     AN -->|Refine & Score < 0.70| HN

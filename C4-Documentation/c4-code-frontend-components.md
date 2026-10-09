@@ -16,11 +16,13 @@ The primary operational container coordinating all evidence sub-views.
 
 - **Function:** `render_tactical_command_deck(case_file: CaseFile, config: Dict[str, Any], ground_truth_lat: Optional[float] = None, ground_truth_lon: Optional[float] = None) -> None`
   - Wraps the deck in a `.neon-pulse` obsidian container (`#0b0e17`).
-  - Renders top 5-badge telemetry ribbon: Target Entity, WGS84 Coordinates, Confidence, SerpApi Queries Executed, Zero-Credit Cache Status.
+  - Renders top 5-badge telemetry ribbon: Target Entity, WGS84 Coordinates, Confidence, SerpApi Queries Executed, Zero-Credit Cache Status. Adapts to `👗 WARDROBE CATALOG` when fashion intent is detected.
   - Renders 1-Click Action Bar: "📥 Export Offline HTML Dossier" and "🔄 New Investigation".
   - Orchestrates 45/55 split-screen columns:
     - **Left Column (45%):** Visual Forensic Inspector with bounding boxes (`render_visual_evidence_board`) and Side-by-Side Visual Twin Matcher (`render_visual_twin_comparator`) stacked below.
-    - **Right Column (55%):** Esri Satellite Recon Map (`render_geo_map`), Consensus Address Banner, Live Monospace Swarm Telemetry Terminal (`render_swarm_telemetry_terminal`), and 5 intelligence tabs (`🎯 Geoguessr Mode`, `⏱️ Chronology`, `🔗 Citations`, `🔍 OSINT Dorks`, `📄 Executive Dossier`).
+    - **Right Column (55%):** Esri Satellite Recon Map (`render_geo_map`), Consensus Address Banner, Itemized Wardrobe Ledger (`render_itemized_wardrobe_ledger`), Live Monospace Swarm Telemetry Terminal (`render_swarm_telemetry_terminal`), and intelligence tabs (`🎯 Geoguessr Mode`, `👗 Wardrobe Ledger`, `⏱️ Chronology`, `🔗 Citations`, `🔍 OSINT Dorks`, `📄 Executive Dossier`).
+- **Function:** `render_itemized_wardrobe_ledger(dossier_items: List[Dict[str, Any]]) -> None`
+  - Renders multi-item wardrobe catalog cards with category badges, match titles, retailer sources, confidence percentages, and retail URLs.
 
 ### 2.2 `war_room_hud.py` (War Room Header, Mission Briefings & Alert Banners)
 Provides tactical headers, mission briefing selector cards, and glowing alert banners.
@@ -46,9 +48,9 @@ Interactive Leaflet/Folium geospatial map supporting Dark Matter and Satellite R
 Renders suspect photograph overlaid with color-coded bounding boxes and forensic clue cards.
 
 - **Functions:**
-  - `draw_bounding_boxes(image: Image.Image, clues: List[VisualClue]) -> Image.Image`:
-    Draws PIL color-coded bounding box rectangles with labeled badge tags.
-  - `render_visual_evidence_board(image: Image.Image, clues: List[VisualClue]) -> None`:
+  - `draw_bounding_boxes(image: Image.Image, clues: List[Any]) -> Image.Image`:
+    Draws PIL color-coded bounding box rectangles with labeled badge tags across architecture, signage, vegetation, and fashion categories (`apparel` `#a855f7`, `accessory` `#3b82f6`, `footwear` `#f97316`, `jewelry` `#eab308`).
+  - `render_visual_evidence_board(image: Image.Image, visual_clues: List[Any]) -> None`:
     Displays annotated image and expandable forensic clue cards with category pills.
 
 ### 2.5 `visual_twin_comparator.py` (Side-by-Side Visual Matcher)
@@ -93,7 +95,7 @@ Generates self-contained, zero-dependency offline investigative reports.
   - `sanitize_url(url: Optional[str]) -> str`: Enforces safe HTTP/HTTPS URL protocols.
   - `image_to_base64_data_uri(img: Optional[Image.Image]) -> Optional[str]`: Embeds suspect image as Base64 JPEG data URI.
   - `generate_standalone_html_dossier(case_file: CaseFile, target_image: Optional[Image.Image] = None) -> str`:
-    Compiles complete HTML document containing embedded styles, telemetry ribbon, forensic anomalies, visual twin comparison, Red-Team audit badge, citation chain, and print stylesheets.
+    Compiles complete HTML document containing embedded styles, telemetry ribbon, Itemized Wardrobe & Product Forensic Ledger table (if fashion target), forensic anomalies, visual twin comparison, Red-Team audit badge, citation chain, and print stylesheets.
 
 ### 2.11 `blueprint_views.py` (Blueprint Audit & Milestone Views)
 Renders supplementary architectural critique and release roadmap views for hackathon judges.

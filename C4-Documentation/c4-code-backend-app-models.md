@@ -34,10 +34,18 @@
   - `title: str`, `url: str`, `engine: str`, `snippet: str`
 - **Class:** `CaseFile(BaseModel)`
   - `case_id: str`, `title: str`, `case_summary: str`, `confidence_score: float`
+  - `intent: Optional[str]` (`FASHION_PRODUCT`, `GEOSPATIAL_LANDMARK`, etc.)
   - `resolved_location: Optional[GeoCandidate]`
+  - `itemized_dossier: List[dict]` (Wardrobe and product items decomposed with bounding boxes, match titles, retailer sources, and retail URLs)
   - `visual_clues: List[VisualClue]`, `lens_matches: List[dict]`, `timeline: List[TimelineEvent]`, `citations: List[Citation]`
   - `anomalies: List[dict]`, `dorks: List[dict]`, `refinement_hops: int`, `serp_queries_executed: int`
   - `adversarial_audit_score: Optional[float]`
+
+- **Class:** `InvestigationIntent(str, Enum)` (in `backend.app.agent.state`)
+  - `GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`
+
+- **Class:** `DetectedObject(BaseModel)` (in `backend.app.agent.state`)
+  - `label: str`, `category: str`, `bounding_box: List[float]`, `confidence: float`, `lens_match: Optional[dict]`
 
 ### 2.2 `serp.py` (SerpApi Response Normalization)
 - **Class:** `LensMatch(BaseModel)`: `title: str`, `link: str`, `source: str`, `thumbnail: Optional[str]`, `score: Optional[int]`, `is_exact: bool`
