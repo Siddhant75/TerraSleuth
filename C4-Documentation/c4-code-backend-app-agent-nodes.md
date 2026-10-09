@@ -37,8 +37,8 @@
 
 ### 2.5 `case_synthesizer.py`
 - **Function:** `case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/case_synthesizer.py#L170-L261`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/case_synthesizer.py#L170-L261)
-  - **Description:** Compiles accumulated evidence, runs AnomalyService and DorkService, calculates overall confidence score, and synthesizes final `CaseFile`.
+  - **Location:** [`backend/app/agent/nodes/case_synthesizer.py#L250-L327`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/case_synthesizer.py#L250-L327)
+  - **Description:** Compiles accumulated evidence, runs AnomalyService and DorkService, calculates overall confidence score, generates structured markdown summary (dynamically invoking `LLMDetectiveAgentService.synthesize_summary` when Gemini key is available), and synthesizes final `CaseFile`.
 - **Helper Functions:**
   - `calculate_confidence_score(...) -> float`
   - `generate_case_summary_markdown(...) -> str`
@@ -50,19 +50,19 @@
 - **Function:** `generate_agent_thought(...) -> str`
   - **Description:** Returns formatted monospace terminal telemetry stream string.
 
-### 2.7 `swarm_nodes.py` (Level 5 Dialectical Swarm)
+### 2.7 `swarm_nodes.py` (Level 5 Dialectical Swarm & Dynamic LLM Engine)
 - **Function:** `hunter_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L18-L120`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L18-L120)
-  - **Description:** Proposes optimistic hypotheses, dispatches `tool_lens_search`, runs dynamic intent classification (`IntentClassificationService.classify_intent`), segments multi-item collages via `ObjectSeparationService`, and bypasses Google Maps if `intent == FASHION_PRODUCT`.
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L28-L230`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L28-L230)
+  - **Description:** Proposes optimistic hypotheses, dispatches `tool_lens_search`, runs dynamic intent classification & entity disambiguation (`LLMSemanticReasoningService`), segments multi-item collages via `ObjectSeparationService` with HITL directives, and bypasses Google Maps if `intent == FASHION_PRODUCT`.
 - **Function:** `fashion_hunter_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L198-L272`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L198-L272)
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L232-L415`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L232-L415)
   - **Description:** Decomposes moodboards/collages into itemized garments and accessories. Enforces strict quota defense (hard cap of max 5 items), calls `tool_lens_search` with normalized `crop_bbox`, and populates `itemized_dossier` and citations.
 - **Function:** `skeptic_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L274-L350`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L274-L350)
-  - **Description:** Adversarial red-team auditor. Calls `tool_news_audit`, evaluates environmental contradictions, audits wardrobe catalogs, and checks fraud signals via `AnomalyService.detect_anomalies`.
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L417-L566`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L417-L566)
+  - **Description:** Adversarial red-team auditor. Implements two-tier Antigravity dynamic fraud evaluation: Tier-1 dispatches semantic cross-examination via `LLMDetectiveAgentService.evaluate_skeptic` comparing user caption against SerpApi ground truth; Tier-2 engages deterministic `AnomalyService.detect_anomalies` fallback when offline.
 - **Function:** `arbiter_node(state: OsintGraphState) -> Dict[str, Any]`
-  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L352-L410`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L352-L410)
-  - **Description:** Dialectical judge weighing Hunter hypotheses vs Skeptic critiques. Computes `AdversarialAuditScore`, issues certified consensus or `fraud_unmasked` verdict.
+  - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L568-L666`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L568-L666)
+  - **Description:** Dialectical judge weighing Hunter hypotheses vs Skeptic critiques. Tier-1 dynamically calls `LLMDetectiveAgentService.arbitrate_case` computing continuous `adversarial_audit_score` (0.0 to 1.0) and official verdict (`fraud_unmasked`, `debate_certified`, `refining_debate`); Tier-2 engages deterministic heuristic fallback.
 
 ---
 
@@ -73,12 +73,16 @@
   - `backend.app.services.serpapi_service.SerpApiService`
   - `backend.app.services.vision_service.VisionService`
   - `backend.app.services.intent_service.IntentClassificationService`
+  - `backend.app.services.llm_reasoning_service.LLMSemanticReasoningService`
+  - `backend.app.services.llm_agent_service.LLMDetectiveAgentService`
   - `backend.app.services.object_separation_service.ObjectSeparationService`
   - `backend.app.services.anomaly_service.AnomalyService`
   - `backend.app.services.dork_service.DorkService`
   - `backend.app.models.case.*`
+  - `backend.app.models.llm_agent.*`
   - `backend.app.models.react.*`
-- **External:** `langgraph`, `pydantic`, `logging`, `uuid`
+- **External:** `langgraph`, `pydantic`, `logging`, `uuid`, `httpx`
+
 
 ---
 

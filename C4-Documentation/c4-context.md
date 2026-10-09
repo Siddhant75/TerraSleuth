@@ -38,7 +38,7 @@ TerraSleuth transforms this manual investigative process into an autonomous, gla
 
 #### Persona 4: Hackathon Evaluator & Technical Judge
 - **Role:** Evaluator assessing SerpApi utilization, multi-agent sophistication, product design, and architectural rigor.
-- **Goals:** Verify live agent tool calls, inspect deterministic cache defense, review test suite health (108/108 passing), and audit C4 architecture.
+- **Goals:** Verify live agent tool calls, inspect deterministic cache defense, review test suite health (159/159 passing), and audit C4 architecture.
 - **Key Features Used:** Live Monospace Swarm Telemetry Terminal, Golden Mystery Targets, C4 Architecture Documentation, Offline Dossier Exporter.
 
 ### 2.2 Programmatic Personas
@@ -114,8 +114,8 @@ sequenceDiagram
 
 | External System | Type | Protocol | Role in TerraSleuth |
 |---|---|---|---|
-| **SerpApi Cloud Gateway** | External SaaS API | HTTPS / REST / JSON | Authoritative search proxy providing access to Google Lens, Google Maps, Google News, and Google Search. |
-| **Vision LLM API (Gemini / OpenAI)** | External AI API | HTTPS / REST / JSON | Optional multi-modal vision models for dynamic image deconstruction when live keys are provided. |
+| **SerpApi Cloud Gateway** | External SaaS API | HTTPS / REST / JSON | Authoritative search proxy providing access to Google Lens (visual provenance, image upload API, crops), Google Maps (places, coordinates), Google News (historical timeline), and Google Search (OSINT dorks). |
+| **Google AI Studio (Gemini 1.5 Flash)** | External AI Cloud API | HTTPS / REST / JSON (`x-goog-api-key`) | Antigravity-Style Dynamic LLM Decision Engine powering semantic fraud cross-examination, continuous dialectical arbitration, executive synthesis, and 2D spatial vision bounding boxes (with 100% offline zero-credit fallback). |
 | **Esri & CartoDB Tile CDNs** | Geospatial CDN | HTTPS / Tile Images | Delivers tactical Dark Matter and high-resolution Satellite Recon map tiles to the Leaflet UI. |
 | **SQLite Persistent Database** | Local Database Storage | POSIX File I/O / WAL | Embedded relational storage managing the zero-quota query cache (`serp_cache`) and golden cases (`golden_cases`). |
 
@@ -135,7 +135,7 @@ graph TD
     end
 
     SerpApi[<b>SerpApi Cloud Gateway</b><br><i>Google Lens, Google Maps, Google News, Google Search</i>]
-    VisionAPI[<b>Vision LLM Services</b><br><i>Google Gemini 1.5 / OpenAI GPT-4o</i>]
+    GeminiAPI[<b>Google AI Studio (Gemini 1.5 Flash)</b><br><i>Dynamic Semantic Reasoning, Spatial 2D Bounding Boxes & Dialectical Arbitration</i>]
     MapTiles[<b>Geospatial Tile CDNs</b><br><i>Esri World Imagery / CartoDB Dark Matter</i>]
     LocalDisk[(<b>Local Host Storage</b><br><i>SQLite DB terrasleuth.db & Photographic Assets</i>)]
 
@@ -145,7 +145,7 @@ graph TD
     AutoTest -->|Executes automated regressions & headless E2E audits| TerraSleuth
 
     TerraSleuth -->|Dispatches reverse-image, spatial & news queries| SerpApi
-    TerraSleuth -.->|Optional scene deconstruction prompts| VisionAPI
+    TerraSleuth <-->|Dynamic fraud analysis, arbitration & spatial vision| GeminiAPI
     TerraSleuth -->|Fetches satellite imagery & dark tiles| MapTiles
     TerraSleuth <-->|Reads & writes cached payloads under WAL mode| LocalDisk
 ```

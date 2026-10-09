@@ -129,12 +129,39 @@ Fast (<20ms) rule-based intent classification engine operating without external 
   - **`classify_intent(lens_data: Dict[str, Any], context_hint: Optional[str] = None, image_path: Optional[str] = None) -> InvestigationIntent`**:
     Evaluates Google Lens Knowledge Graph `type` (e.g. `Clothing`, `Tourist attraction`), domain authority heuristics (`shein.com`, `zara.com`, `vogue.com` vs `wikipedia.org`, `tripadvisor.com`), match titles, and context cues. Returns `InvestigationIntent` (`FASHION_PRODUCT`, `GEOSPATIAL_LANDMARK`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`).
 
-### 2.9 `object_separation_service.py` (Local Computer Vision Object Separation)
-Native OpenCV and Pillow visual decomposition engine for multi-item moodboard, flat-lay, and wardrobe images.
+### 2.9 `object_separation_service.py` (Hybrid Computer Vision & Multi-Modal Vision Ensemble)
+Two-tier multi-object segmentation engine combining cloud-based multi-modal spatial reasoning with local OpenCV computer vision for multi-item moodboard, flat-lay, and wardrobe images.
 
 - **Class:** `ObjectSeparationService`
-  - **`segment_image(image_path: str, max_objects: int = 6) -> List[DetectedObject]`**:
-    Processes local image using OpenCV grayscale conversion, Otsu adaptive thresholding, and morphological opening/closing. Detects salient non-background contours, performs chromatic/spatial cluster splitting (`_split_cluster`) to separate touching items (e.g. dress vs adjacent handbag and shoes), clamps normalized bounding boxes `[ymin, xmin, ymax, xmax]`, and infers category tags (`apparel`, `accessory`, `footwear`, `jewelry`).
+  - **`segment_image(image_path: str, max_objects: int = 6, user_directive: Optional[str] = None, gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> List[DetectedObject]`**:
+    - **Tier 1 (Multi-Modal Vision LLM):** Dispatches base64 image to Google AI Studio Gemini 1.5 Flash Vision endpoint with Human-in-the-Loop (HITL) detective directives. Prompts Gemini to locate fine-grained items, normalizing coordinates from 0-1000 scale to `[ymin, xmin, ymax, xmax]` floats in `[0.0, 1.0]`.
+    - **Tier 2 (Offline OpenCV Fallback):** Engages native OpenCV grayscale conversion, Otsu adaptive thresholding, and morphological opening/closing when API keys are absent or requests time out. Detects salient non-background contours, performs chromatic/spatial cluster splitting (`_split_cluster`) to separate touching items, clamps normalized bounding boxes, and infers category tags (`apparel`, `accessory`, `footwear`, `jewelry`).
+
+### 2.10 `llm_reasoning_service.py` (Dynamic Intent & Entity Disambiguation Engine)
+Hybrid semantic reasoning service providing Tier-1 semantic agentic deduction over raw Google Lens matches while maintaining a zero-credit deterministic fallback.
+
+- **Class:** `LLMSemanticReasoningService`
+  - **`disambiguate_with_gemini(visual_matches: List[Dict[str, Any]], knowledge_graph: Optional[Dict[str, Any]] = None, context_hint: Optional[str] = None, gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[SemanticDisambiguationResult]`**:
+    Invokes Google AI Studio Gemini 1.5 Flash REST API with `x-goog-api-key` header. Parses structured chain-of-thought JSON extracting `intent`, `primary_entity`, `target_query`, and `confidence`.
+  - **`disambiguate_with_openai(visual_matches: List[Dict[str, Any]], knowledge_graph: Optional[Dict[str, Any]] = None, context_hint: Optional[str] = None, openai_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[SemanticDisambiguationResult]`**:
+    Secondary provider fallback invoking OpenAI `gpt-4o-mini`.
+  - **`classify_and_disambiguate(visual_matches: List[Dict[str, Any]], knowledge_graph: Optional[Dict[str, Any]] = None, context_hint: Optional[str] = None, image_path: Optional[str] = None, gemini_api_key: Optional[str] = None, openai_api_key: Optional[str] = None) -> SemanticDisambiguationResult`**:
+    Master hybrid entry point trying Tier-1 Gemini, then Tier-1 OpenAI, and seamlessly degrading to Tier-2 `IntentClassificationService` heuristics on network timeout or missing credentials.
+
+### 2.11 `llm_agent_service.py` (Antigravity-Style Dynamic LLM Decision Engine)
+Institutional-grade dynamic decision engine powering Antigravity-style autonomous agentic reasoning across Skeptic, Arbiter, and Synthesizer nodes using Google AI Studio (Gemini 1.5 Flash), strictly preserving a zero-credit deterministic fallback.
+
+- **Class:** `LLMDetectiveAgentService`
+  - **`evaluate_skeptic(claimed_context: Optional[str], visual_clues: List[Any], lens_matches: List[Any], geo_candidate: Optional[Any], timeline_events: List[Any], gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[SkepticEvaluationResult]`**:
+    Performs dynamic semantic cross-examination comparing user caption against SerpApi Google Lens matches, Maps place data, and News historical timeline. Deduces architectural, geographic, or temporal contradictions and outputs `SkepticEvaluationResult` with `critique`, `fraud_probability`, and `is_fraud`.
+  - **`arbitrate_case(hunter_hypotheses: List[str], skeptic_critique: str, fraud_probability: float, geo_candidate: Optional[Any], lens_matches: List[Any], gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[ArbiterEvaluationResult]`**:
+    Weighs Hunter's location hypotheses vs Skeptic's counter-arguments to calculate a continuous `adversarial_audit_score` (0.0 to 1.0) and official verdict (`fraud_unmasked`, `debate_certified`, `refining_debate`).
+  - **`synthesize_summary(case_title: str, confidence_score: float, audit_score: Optional[float], resolved_location: Optional[Any], is_fraud: bool, anomalies: Optional[List[Dict[str, Any]]], gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[str]`**:
+    Generates a bespoke, context-rich executive forensic intelligence narrative for the final CaseFile.
+  - **Security & Reliability:**
+    - API key masking (`_mask_key`) ensuring keys are never printed in plaintext logs or error traces.
+    - JSON markdown fence stripping (`_clean_json_markdown`) protecting Pydantic parsing.
+    - Strict 8-second HTTP timeout with `httpx.TimeoutException` catch and fallback.
 
 ---
 
@@ -147,12 +174,14 @@ Native OpenCV and Pillow visual decomposition engine for multi-item moodboard, f
   - `backend.app.models.anomaly`
   - `backend.app.models.dork`
   - `backend.app.models.geoguessr`
+  - `backend.app.models.llm` (`SemanticDisambiguationResult`)
+  - `backend.app.models.llm_agent` (`SkepticEvaluationResult`, `ArbiterEvaluationResult`)
   - `backend.app.agent.state` (`DetectedObject`, `InvestigationIntent`)
 - **External:**
-  - `httpx` (HTTP client)
-  - `sqlite3` (disk caching)
-  - `PIL.Image` (Pillow image processing)
+  - `httpx` (HTTP client for SerpApi and Google AI Studio REST calls)
+  - `sqlite3` (disk caching under WAL mode)
+  - `PIL.Image` (Pillow image processing and regional cropping)
   - `cv2` (OpenCV computer vision)
   - `numpy` (array processing)
-  - `pydantic`
+  - `pydantic` (V2 validation models)
   - `hashlib`, `math`, `urllib.parse`

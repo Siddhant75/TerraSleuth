@@ -4,7 +4,7 @@ info:
   description: >-
     Programmatic and streaming interface for TerraSleuth's autonomous multi-modal visual and geospatial
     OSINT detective engine, powered by SerpApi and LangGraph Level 5 Dialectical Swarm.
-  version: 0.8.0
+  version: 0.8.1
 servers:
   - url: http://localhost:8501
     description: Local Docker / Streamlit deployment server

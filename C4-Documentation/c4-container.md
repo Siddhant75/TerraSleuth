@@ -9,7 +9,7 @@ The TerraSleuth system is structured into containerized deployment units separat
 | **TerraSleuth War Room Container** (`terrasleuth-warroom`) | Web Application & Agent Runtime | Python 3.11, Streamlit, LangGraph, LangChain, Pillow, Folium | Docker Container (`python:3.11-slim`), Port 8501 | Runs the interactive Command Deck UI, hosts the LangGraph Dialectical Swarm, and coordinates domain services. |
 | **Persistent SQLite Storage** (`terrasleuth-data`) | Relational Database & Volume | SQLite3 (WAL Mode), POSIX File System | Docker Named Volume mounted at `/app/data` & `/app/terrasleuth.db` | Persists pre-seeded golden benchmark cases, cached SerpApi query payloads, and cache statistics. |
 | **SerpApi Cloud Gateway** (External) | Third-Party REST API | SerpApi JSON Endpoints | Multi-Region Cloud (`https://serpapi.com/search`) | Provides external search retrieval across Google Lens, Google Maps, Google News, and Google Search. |
-| **Vision LLM Cloud Services** (External / Optional) | Multi-Modal Vision API | Google Gemini / OpenAI GPT-4o API | HTTPS REST Cloud | Optional cloud vision providers used for dynamic image scene deconstruction when live keys are supplied. |
+| **Google AI Studio Cloud** (External) | Multi-Modal & LLM API | Google Gemini 1.5 Flash REST API (`x-goog-api-key`) | HTTPS REST Cloud | Powers the Antigravity-Style Dynamic LLM Decision Engine (fraud debunker, continuous arbitration, executive synthesis) and 2D spatial vision decomposition (with zero-credit offline heuristic fallback). |
 
 ---
 
@@ -57,8 +57,8 @@ The TerraSleuth system is structured into containerized deployment units separat
 - **Internal Communication:** In-process Python function calls and synchronous generator streaming between the UI layer and the LangGraph engine.
 - **Storage Protocol:** SQLite file I/O via standard C-level sqlite3 bindings.
 - **External Network Protocols:**
-  - HTTPS / JSON to `https://serpapi.com/search`.
-  - HTTPS / REST to Google Gemini or OpenAI vision endpoints.
+  - HTTPS / JSON to `https://serpapi.com/search` and `https://serpapi.com/image`.
+  - HTTPS / REST with `x-goog-api-key` to Google AI Studio (`generativelanguage.googleapis.com`).
   - HTTPS CDN image requests to CartoDB and Esri tile endpoints.
 
 ---
@@ -95,7 +95,7 @@ graph TD
         CacheService <-->|File I/O / WAL| DB
     end
 
-    Engines -->|HTTPS GET: api_key, query| SerpApiCloud[External System: SerpApi Cloud Gateway<br>Google Lens / Maps / News / Search]
-    AgentSwarm -.->|Optional HTTPS REST| VisionLLM[External System: Vision LLM<br>Gemini 1.5 / GPT-4o]
+    Engines -->|HTTPS GET/POST: api_key, image, query| SerpApiCloud[External System: SerpApi Cloud Gateway<br>Google Lens / Maps / News / Search / Image API]
+    AgentSwarm <-->|Dynamic LLM Arbitration & Spatial Vision| GeminiCloud[External Cloud API: Google AI Studio<br>Gemini 1.5 Flash Reasoning & Spatial Vision]
     UI -->|HTTPS Leaflet Tiles| TileCDNs[External CDNs: CartoDB / Esri Satellite]
 ```

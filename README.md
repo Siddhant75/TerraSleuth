@@ -1,12 +1,13 @@
 # 🌍 TerraSleuth — Level 5 Multi-Modal OSINT Detective Swarm
 
 > **Official Submission for the SerpApi India Hackathon 2026** — *AI Agents Track*  
-> Powered by **SerpApi Multi-Engine Cloud (Google Lens, Maps, News, Search)** & **LangGraph Dialectical Swarm**
+> Powered by **SerpApi Multi-Engine Cloud (Google Lens, Maps, News, Search)** & **LangGraph Dialectical Swarm + Antigravity-Style Dynamic LLM Decision Engine**
 
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Architecture](https://img.shields.io/badge/Architecture-C4%20Model%20Certified-orange.svg)](C4-Documentation/)
-[![Agent Level](https://img.shields.io/badge/Agent%20Level-Level%205%20Dialectical%20Swarm-purple.svg)](C4-Documentation/c4-component-osint-agent-swarm.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-149%2F149%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Agent Level](https://img.shields.io/badge/Agent%20Level-Level%205%20Dialectical%20Swarm%20%2B%20Dynamic%20LLM%20Engine-purple.svg)](C4-Documentation/c4-component-osint-agent-swarm.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-159%2F159%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Release](https://img.shields.io/badge/Release-v0.8.1%20Certified-blue.svg)](docs/terrasleuth-roadmap.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -17,98 +18,160 @@
 
 The hackathon challenge: *"Create agents that plan, search, compare, and act with current information. Research, RAG, Multi-agent, Automation."*
 
-While generic hackathon projects wrap basic Google Search text endpoints into a single prompt, **TerraSleuth** orchestrates a **Level 4 ReAct Tool-Calling** and **Level 5 Dialectical Swarm (Hunter vs Skeptic vs Arbiter)** across **4 distinct SerpApi engines**:
+While generic hackathon projects wrap basic Google Search text endpoints into a single prompt, **TerraSleuth** is an institutional-grade forensic investigation platform. It orchestrates **Level 4 ReAct Tool Execution** and a **Level 5 Dialectical Swarm (Hunter vs Skeptic vs Arbiter)** coupled with an **Antigravity-Style Dynamic LLM Decision Engine** across **4 distinct SerpApi engines**:
 
-| Hackathon Criterion | TerraSleuth Implementation & SerpApi Synergy |
-|---|---|
-| **Plan** | **Scene Deconstructor, Hybrid Vision Ensemble & HITL Directives:** Breaks mystery images into atomic visual clues (architecture, signage script, vegetation). Leverages a **Hybrid Vision Ensemble (Google AI Studio Gemini 1.5 Flash Spatial Vision + OpenCV)** to extract normalized 2D bounding boxes `[ymin, xmin, ymax, xmax]` for multi-object decomposition. Empowers detectives with **Human-in-the-Loop (HITL) Mission Directives** and label filtering checkpoints. Dynamically classifies intent (`GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`) via two-tier semantic LLM reasoning with <20ms zero-cost heuristic fallback. |
-| **Search** | **Autonomous Multi-Engine SerpApi Tools & Binary Image Upload API:** Dispatches `upload_image` via SerpApi Image API (`POST https://serpapi.com/image`) with Pillow iterative auto-resizing under 500 KB limit, `tool_lens_search` (reverse visual twins & regional bounding-box crops), `tool_maps_triangulate` (GPS coordinates & local place consensus), `tool_news_audit` (temporal historical archives), and `tool_google_dork` (municipal permits & open directories). |
-| **Compare** | **Dialectical Red-Team Swarm (Hunter vs. Skeptic):** The **Hunter** proposes candidate locations or multi-item wardrobe catalog hypotheses; the **Skeptic** actively attempts to falsify them by checking climate contradictions, architectural mismatches, and fraud signals via `AnomalyService`; the **Arbiter** computes an `AdversarialAuditScore` and certifies the final verdict. |
-| **Act** | **Geospatial Pinpoint & Court-Ready Dossier:** Resolves physical WGS84 coordinates on Esri satellite imagery, evaluates Geoguessr 5,000-point accuracy, unmasks rental fraud, renders an **Itemized Wardrobe & Product Forensic Ledger**, and generates a **1-click standalone offline HTML forensic dossier**. |
-| **Research & RAG** | **Zero-Hallucination Real-Time Web Grounding:** Eliminates LLM spatial hallucinations by grounding every evidentiary claim in authoritative SerpApi URLs with exact timestamps. |
-| **Multi-Agent & Automation** | **LangGraph State Machine with Adaptive Branching:** 100% autonomous execution from single mystery image to final case file with bounded refinement loops ($\le 2$ hops), adaptive routing bypassing Google Maps for fashion targets, and strict quota budget management (capping crop calls at max 5 items). |
+| Hackathon Criterion | TerraSleuth Implementation & SerpApi Synergy | Key Architecture Components |
+|---|---|---|
+| **Plan** | **Scene Deconstructor, Hybrid Vision Ensemble & Dynamic Intent Routing:** Deconstructs mystery targets into atomic visual clues (architecture, script, vegetation). Leverages a **Hybrid Vision Ensemble (Google AI Studio Gemini 1.5 Flash Spatial Vision + OpenCV)** to extract normalized 2D bounding boxes `[ymin, xmin, ymax, xmax]` for multi-object decomposition. Empowers detectives with **Human-in-the-Loop (HITL) Mission Directives**. Classifies intent (`GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`) via two-tier semantic reasoning with <20ms zero-cost heuristic fallback. | [`vision_service.py`](backend/app/services/vision_service.py)<br>[`object_separation_service.py`](backend/app/services/object_separation_service.py)<br>[`intent_service.py`](backend/app/services/intent_service.py) |
+| **Search** | **Autonomous Multi-Engine SerpApi Cloud & Binary Image Upload API:** Dispatches local binary uploads via SerpApi Image API (`POST https://serpapi.com/image`) with Pillow auto-resizing under 500 KB limit, `tool_lens_search` (reverse visual twins & regional bounding-box crops), `tool_maps_triangulate` (GPS coordinates & local place consensus), `tool_news_audit` (temporal historical archives), and `tool_google_dork` (municipal permits & open directories). | [`serpapi_service.py`](backend/app/services/serpapi_service.py)<br>[`tools.py`](backend/app/agent/tools.py)<br>[`cache_service.py`](backend/app/services/cache_service.py) |
+| **Compare** | **Dialectical Swarm & Antigravity Dynamic Decision Engine:** The **Hunter** proposes candidate locations; the **Skeptic** executes dynamic semantic cross-examination via Gemini 1.5 Flash comparing user captions against SerpApi ground truth (unmasking rental fraud, architectural discrepancies, or recycled disaster photos); the **Arbiter** weighs the debate to compute a continuous **Adversarial Audit Score** ($0.0 \le \text{score} \le 1.0$) and issue certified verdicts. | [`swarm_nodes.py`](backend/app/agent/nodes/swarm_nodes.py)<br>[`llm_agent_service.py`](backend/app/services/llm_agent_service.py)<br>[`anomaly_service.py`](backend/app/services/anomaly_service.py) |
+| **Act** | **Geospatial Pinpoint & Court-Ready Standalone Dossier:** Resolves physical WGS84 coordinates on Esri satellite imagery, evaluates Geoguessr 5,000-point accuracy, unmasks rental fraud, renders an **Itemized Wardrobe & Product Forensic Ledger**, and generates a **1-click standalone offline HTML forensic dossier** with embedded Base64 imagery. | [`tactical_command_deck.py`](frontend/components/tactical_command_deck.py)<br>[`dossier_exporter.py`](frontend/components/dossier_exporter.py)<br>[`geoguessr_service.py`](backend/app/services/geoguessr_service.py) |
+| **Research & RAG** | **Zero-Hallucination Epistemic Web Grounding:** Eliminates LLM spatial hallucinations by strictly grounding every evidentiary claim in authoritative SerpApi URLs with exact timestamps, Place IDs, and news excerpts (`Citation` ledger). | [`case.py`](backend/app/models/case.py)<br>[`case_synthesizer.py`](backend/app/agent/nodes/case_synthesizer.py) |
+| **Multi-Agent & Automation** | **LangGraph State Machine with Adaptive Branching:** 100% autonomous execution from a single mystery image to final dossier with bounded refinement loops ($\le 2$ hops), adaptive routing bypassing Google Maps for fashion targets, pre-commit verification hooks, and strict quota budget management (capping crop calls at max 5 items). | [`graph.py`](backend/app/agent/graph.py)<br>[`state.py`](backend/app/agent/state.py)<br>[`pre-commit`](.git/hooks/pre-commit) |
 
 ---
 
-## 🔍 Multi-Engine SerpApi Integration Depth
+## ⚡ Antigravity-Style Dynamic LLM Decision Engine (Task 8.14)
 
-TerraSleuth unlocks the full commercial power of SerpApi beyond basic keyword search:
+Just like Google Antigravity coordinates autonomous AI agents equipped with LLM reasoning and tools, **TerraSleuth** features an **Antigravity-Style Dynamic LLM Decision Engine** powered by **Google AI Studio (Gemini 1.5 Flash)**:
 
+```mermaid
+flowchart TD
+    UserTarget["Mystery Target Image + Claimed Caption\n(e.g. 'Luxury rental apartment in Miami, FL')"] --> Deconstructor["Scene Deconstructor Node\n(Visual Clues + Spatial Bounding Boxes)"]
+    Deconstructor --> SwarmLoop
+
+    subgraph SwarmLoop ["Level 5 Dialectical Swarm & Dynamic LLM Decision Engine"]
+        direction TB
+        Hunter["<b>Hunter Agent (Hypothesis Generator)</b>\nDispatches SerpApi Google Lens & Maps\nProposes Named Entities & Physical Coordinates"]
+        
+        Hunter -->|"Hypotheses + GPS Coordinates"| Skeptic["<b>Skeptic Agent (Adversarial Debunker)</b>\nDynamic Semantic Cross-Examination via Gemini\nCompares Claimed Caption vs SerpApi Ground Truth"]
+        
+        Skeptic -->|"Critique + Fraud Probability"| Arbiter["<b>Arbiter Agent (Impartial Judge)</b>\nContinuous Arbitration via Gemini 1.5 Flash\nComputes Adversarial Audit Score (0.0 to 1.0)"]
+        
+        Arbiter --> ScoreCheck{"Audit Score Check\nScore >= 0.70 OR\nFraud Unmasked?"}
+        
+        ScoreCheck -->|"No & Budget > 0"| Refine["Targeted Refinement Hop\n(Refine Query & Geo Bounding)"]
+        Refine --> Hunter
+    end
+
+    subgraph TwoTier ["Institutional Two-Tier Architecture"]
+        Tier1["<b>Tier 1: Google AI Studio (Gemini 1.5 Flash)</b>\n• Dynamic Semantic Cross-Examination\n• Continuous Dialectical Arbitration\n• Executive Narrative Briefing\n• Streamed Thought Tags"]
+        Tier2["<b>Tier 2: Zero-Credit Heuristic Safety Net</b>\n• 100% Reliable Offline Fallback\n• Active on Missing Keys / Timeouts\n• 0 Live Credits Burned in 159 Tests"]
+    end
+
+    Skeptic -.-> TwoTier
+    Arbiter -.-> TwoTier
+
+    ScoreCheck -->|"Yes (Certified Consensus)"| Synthesizer["<b>Case Synthesizer Node</b>\nGenerates Executive Intelligence Briefing\nCompiles Tamper-Evident Dossier"]
+    Synthesizer --> Output["<b>Tactical War Room 2.0 HUD</b>\n• Interactive Esri Satellite Pinpoint\n• Side-by-Side Visual Twin Matcher\n• Standalone Self-Contained HTML Dossier"]
+```
+
+### Key Capabilities of the Dynamic Decision Engine:
+1. **Dynamic Fraud Cross-Examination ([`SkepticAgent`](backend/app/agent/nodes/swarm_nodes.py#L417-L566)):**  
+   Replaces keyword heuristics with deep semantic reasoning. Skeptic asks Gemini to cross-examine the user's claimed caption (e.g. *"Luxury beachfront rental in Miami"*) against SerpApi Google Lens visual matches (e.g. *"Canaves Oia Suites, Santorini, Greece"*), Google Maps places, and Google News archives. Gemini autonomously deduces architectural, geographic, and temporal impossibilities.
+2. **Continuous Dialectical Arbitration ([`ArbiterAgent`](backend/app/agent/nodes/swarm_nodes.py#L568-L666)):**  
+   Replaces fixed scores with continuous arbitration. Arbiter evaluates Hunter's hypotheses against Skeptic's critiques to compute an **Adversarial Audit Score** ($0.0 \le \text{score} \le 1.0$), rendering an official verdict (`fraud_unmasked`, `debate_certified`, or `refining_debate`).
+3. **Executive Forensic Intelligence Briefing ([`CaseSynthesizer`](backend/app/agent/nodes/case_synthesizer.py#L250-L327)):**  
+   Synthesizes an executive-level summary narrative detailing physical ground truth, anomaly risk, and provenance chain.
+4. **Monospace Terminal Thought Streaming ([`swarm_telemetry_terminal.py`](frontend/components/swarm_telemetry_terminal.py)):**  
+   Real-time thought sequences stream directly into the UI cyber terminal with formatted tags:
+   - `[HUNTER THOUGHT]` — Visual twin provenance and coordinate hypotheses.
+   - `[SKEPTIC CRITIQUE]` — Semantic cross-examination exposing contradictions.
+   - `[ARBITER VERDICT]` — Arbitration score certification and final decision.
+5. **Institutional Two-Tier Architecture & Quota Defense:**  
+   - **Tier 1 (Live Gemini):** Active when `gemini_api_key` is supplied.
+   - **Tier 2 (Deterministic Heuristic Safety Net):** Zero-cost fallback active when offline, during network timeouts (8-second cap), or during automated test loops. Guarantees **159/159 tests pass 100% offline with zero live tokens or credits burned**.
+
+---
+
+## 🗺️ Multi-Engine SerpApi Synergy & Tool Architecture
+
+TerraSleuth unlocks the multi-modal depth of SerpApi by coupling specialized tools with a persistent caching layer:
+
+```mermaid
+graph LR
+    subgraph SwarmCore ["LangGraph Dialectical Swarm"]
+        HunterCore["Hunter Node"]
+        FashionCore["Fashion Hunter Node"]
+        SkepticCore["Skeptic Node"]
+        SynthesizerCore["Synthesizer Node"]
+    end
+
+    subgraph ToolRegistry ["LangChain Tool Registry (Level 4 ReAct)"]
+        TLens["tool_lens_search\n(Reverse Visual Twins & Crops)"]
+        TMaps["tool_maps_triangulate\n(GPS Coordinates & Places)"]
+        TNews["tool_news_audit\n(Timeline & Historical Provenance)"]
+        TDork["tool_google_dork\n(Targeted OSINT Municipal Search)"]
+        TCrop["tool_crop_region\n(Pillow Regional Image Bounding)"]
+    end
+
+    subgraph SerpApiCloud ["SerpApi Multi-Engine Cloud"]
+        EngLens["Google Lens Engine\n(+ Binary Image Upload API)"]
+        EngMaps["Google Maps / Local Engine\n(Place IDs & Reviews)"]
+        EngNews["Google News Engine\n(Chronological Archives)"]
+        EngGoogle["Google Organic Engine\n(Municipal Dorks & Knowledge Graph)"]
+    end
+
+    subgraph CacheLayer ["Zero-Credit Quota Defense"]
+        DiskCache[("SQLite WAL Cache\nterrasleuth.db\nSHA-256 Parameter Hash")]
+        QuotaMgr["Quota Budget Manager\n(Session Circuit Breakers)"]
+    end
+
+    HunterCore --> TLens
+    HunterCore --> TMaps
+    FashionCore --> TCrop
+    FashionCore --> TLens
+    SkepticCore --> TNews
+    SynthesizerCore --> TDork
+
+    TLens --> DiskCache
+    TMaps --> DiskCache
+    TNews --> DiskCache
+    TDork --> DiskCache
+
+    DiskCache -->|"Cache Miss"| QuotaMgr
+    QuotaMgr --> EngLens
+    QuotaMgr --> EngMaps
+    QuotaMgr --> EngNews
+    QuotaMgr --> EngGoogle
+    DiskCache -->|"Cache Hit (0 Credits)"| SwarmCore
+```
+
+### Detailed Engine Capabilities:
 1. **`google_lens` (Visual Provenance, Local Upload API & Bounding-Box Crops):**
-   - Direct binary image upload to SerpApi Image API (`POST https://serpapi.com/image`) with automatic iterative Pillow resizing/compression under 500 KB and SHA-256 caching.
-   - Reverse-image searching distinguishing between exact matches and visual matches.
-   - Authoritative source domain attribution and high-resolution thumbnail extraction.
-   - Bounding-box sub-region crop searching via Pillow and normalized coordinate clamps (`tool_crop_region`).
+   - Binary image upload to SerpApi Image API (`POST https://serpapi.com/image`) with automatic iterative Pillow resizing/compression under 500 KB and SHA-256 caching ([`upload_image`](backend/app/services/serpapi_service.py)).
+   - Reverse-image searching distinguishing between exact matches and visual twins.
+   - Bounding-box sub-region crop searching via Pillow and normalized coordinate clamps ([`tool_crop_region`](backend/app/agent/tools.py)).
 2. **`google_maps` (Geospatial Triangulation & Consensus):**
    - Resolves uncaptioned photos to exact physical street addresses, place IDs, user reviews, and ratings.
    - Direct WGS84 latitude and longitude GPS mapping (`ll`).
 3. **`google_news` (Chronological Provenance & Temporal Auditing):**
-   - Audits publication timelines across historical date filters (`tbs`) to isolate earliest discovery dates.
+   - Audits publication timelines across historical date filters (`tbs`) to isolate earliest discovery dates (`is_origin`).
    - Debunks recycled viral disinformation masquerading as current breaking events.
 4. **`google` (Organic OSINT Dorking):**
-   - Formulates targeted Google Search queries for municipal property records (`filetype:pdf`), government registries (`site:gov`), and exposed file trees (`intitle:"index of"`).
+   - Formulates targeted Google Search queries for municipal property records (`filetype:pdf`), government registries (`site:gov`), and open directories (`intitle:"index of"`).
 
 ---
 
 ## 🎯 4 Flagship Real-World Scenarios
 
-TerraSleuth addresses high-stakes open-source intelligence challenges:
+TerraSleuth addresses high-stakes open-source intelligence challenges out of the box:
 
 ### 1. 🚨 Bellingcat-Style Conflict & Disaster Verification
-- **Problem:** Viral social media claims a photo represents a breaking crisis or human rights violation.
-- **TerraSleuth Action:** SerpApi Google News timeline unmasks that the photograph was published years prior in a different geographic region, instantly debunking viral disinformation.
+- **Problem:** Viral social media claims an uncaptioned photo depicts a current breaking crisis or disaster.
+- **TerraSleuth Action:** SerpApi Google News timeline unmasks that the photograph was published years prior in an unrelated event, instantly debunking viral disinformation.
 
 ### 2. 🏖️ Vacation Rental & Marketplace Fraud Detection
-- **Problem:** Scammer advertises an uncaptioned luxury apartment on Airbnb/Craigslist claiming it is a local residential rental.
-- **TerraSleuth Action:** SerpApi Google Lens unmasks the listing as a copyrighted promotional photograph stolen from a boutique cliffside resort in Oia, Santorini, Greece, triggering a **CRITICAL FRAUD ALERT** banner.
+- **Problem:** Scammer advertises a luxury apartment on Airbnb/Craigslist claiming it is a local rental in Miami, FL.
+- **TerraSleuth Action:** SerpApi Google Lens proves the listing photo was stolen from a luxury resort in Oia, Santorini, Greece. The Skeptic LLM unmasks the contradiction and the Arbiter issues a **CRITICAL FRAUD ALERT** banner with an Adversarial Audit Score of 15%.
 
 ### 3. 🎯 Autonomous Geoguessr Champion
 - **Problem:** Uncaptioned mystery photo with no metadata.
 - **TerraSleuth Action:** Progressively narrows spatial search radius from Continental (2,500km) to Street scale (<50m), achieving a **5,000-point competitive Geoguessr score** via Google Maps consensus.
 
 ### 4. 👗 Multi-Item Fashion & Wardrobe Visual Decomposition
-- **Problem:** Cluttered flat-lay or moodboard image contains multiple touching items (dress, luxury bag, earrings, watch, bracelet, shoes). Standard reverse-image searches anchor on the dominant central dress and miss all accessories.
+- **Problem:** Cluttered flat-lay or moodboard image contains multiple touching items (dress, luxury bag, earrings, watch, shoes). Standard reverse-image searches anchor on the central dress and miss all accessories.
 - **TerraSleuth Action:** Native OpenCV contour detection with chromatic/spatial sub-segmentation isolates each discrete item into normalized bounding boxes. The swarm adaptively routes to `fashion_hunter_node` (bypassing Google Maps), executes regional crop searches capped at max 5 items to defend quota, and generates an **Itemized Wardrobe & Product Forensic Ledger** with retailer sources and direct shopping links.
-
----
-
-## 🧠 Enterprise Agentic Architecture
-
-TerraSleuth is engineered using a LangGraph state machine featuring Level 4 ReAct tool dispatch and Level 5 Dialectical tension:
-
-```mermaid
-graph TD
-    Input[Mystery Target Image / Upload] --> Deconstruct[Scene Deconstructor<br>Pillow + Vision Clues]
-    Deconstruct --> Hunter[Hunter Agent<br>Proposes Initial Hypothesis]
-    
-    Hunter --> IntentCheck{"Dynamic Intent Router<br>&lt;20ms Zero-LLM"}
-    IntentCheck -->|FASHION_PRODUCT| FashionHunter[Fashion Hunter Node<br>OpenCV Decomposition<br>Max 5 Crops Quota Cap]
-    IntentCheck -->|GEOSPATIAL_LANDMARK| GeoTriangulator[Geo Triangulator<br>Google Maps Places & WGS84]
-    IntentCheck -->|FRAUD_DISINFORMATION| Skeptic
-    
-    FashionHunter --> Skeptic[Skeptic Debunker Agent<br>Audits Contradictions & Fraud]
-    GeoTriangulator --> Skeptic
-    
-    subgraph SwarmDebate [Level 5 Dialectical Swarm Debate]
-        Skeptic -->|Critique & Fraud Flags| Arbiter[Arbiter Judge<br>Computes Adversarial Audit Score]
-        Arbiter -->|"Score < 0.70 & Budget > 0"| Refine[Targeted Refinement Hop]
-        Refine --> Hunter
-    end
-    
-    Hunter -->|Tool Dispatch| ToolReg[LangChain Tool Registry<br>Lens, Maps, News, Dorks]
-    FashionHunter -->|Crop Search| ToolReg
-    ToolReg --> SerpApiGW[SerpApi Multi-Engine Cloud]
-    
-    Arbiter -->|Certified Consensus or Fraud Unmasked| Compiler[Case Dossier Compiler]
-    Compiler --> Deck[Tactical War Room 2.0 Command Deck]
-```
-
-> 📚 **Complete Architectural Blueprints:** Explore our full [C4 Architecture Documentation](C4-Documentation/) covering:
-> - [Level 1: System Context & Personas](C4-Documentation/c4-context.md)
-> - [Level 2: Container Deployment & Docker Architecture](C4-Documentation/c4-container.md)
-> - [Level 3: Master Component Index & Relationships](C4-Documentation/c4-component.md)
-> - [OpenAPI 3.1 Contract Specification](C4-Documentation/apis/terrasleuth-warroom-api.yaml)
-> - [Level 4: Code-Level Subsystem Specifications](C4-Documentation/)
 
 ---
 
@@ -132,7 +195,7 @@ Agentic loops can quickly drain API quotas. TerraSleuth features a production-ha
 - **SQLite WAL Disk Cache (`terrasleuth.db`):** All SerpApi queries are cached using deterministic SHA-256 parameter hashing (stripping API keys and transient flags).
 - **Zero Credits Burned in Demos:** Pre-seeded golden benchmark targets (Gateway of India, Neuschwanstein Castle, Santorini Rental Scam) run **100% offline with zero live credit consumption**.
 - **Circuit Breaker Quota Manager:** Session budget manager tracks live network queries and terminates runaway loops immediately.
-- **127/127 Automated Tests Passing:** Validated across 19 backend unit suites, 6 frontend UI suites, and end-to-end browser workflows.
+- **159/159 Automated Tests Passing:** Validated across 23 backend unit suites, 6 frontend UI suites, and end-to-end browser workflows in ~25 seconds.
 
 ---
 
@@ -162,7 +225,7 @@ cp .env.example .env
 streamlit run frontend/app.py
 ```
 
-### 3. Run the Full Automated Test Suite (140/140 Tests)
+### 3. Run the Full Automated Test Suite (159/159 Tests)
 Run unit, integration, and E2E regression tests with zero API credit consumption:
 ```bash
 # Linux / macOS
@@ -184,11 +247,20 @@ python scripts/test_live_serpapi.py --image-path "tests/live-test/clothing/downl
 
 ---
 
-## 📜 Key Project Documentation
+## 📜 Architectural Blueprints & Key Documentation
 
 - **[docs/hackathon-submission.md](docs/hackathon-submission.md):** Official Hackathon submission writeup and judging guide.
-- **[C4-Documentation/](C4-Documentation/):** Full C4 Architecture Model (Context, Container, Component, Code + OpenAPI 3.1).
-- **[docs/terrasleuth-roadmap.md](docs/terrasleuth-roadmap.md):** Living roadmap, sprint milestones (v0.1 through v0.8), and commit log.
+- **[C4-Documentation/](C4-Documentation/):** Full C4 Architecture Model Suite:
+  - [Level 1: System Context & Personas](C4-Documentation/c4-context.md)
+  - [Level 2: Container Deployment & Docker Architecture](C4-Documentation/c4-container.md)
+  - [Level 3: Master Component Index & Relationships](C4-Documentation/c4-component.md)
+  - [Level 3: OSINT Agent Swarm & ReAct Supervisor](C4-Documentation/c4-component-osint-agent-swarm.md)
+  - [Level 4: Backend Domain Services](C4-Documentation/c4-code-backend-app-services.md)
+  - [Level 4: Investigation & Swarm Nodes](C4-Documentation/c4-code-backend-app-agent-nodes.md)
+  - [Level 4: Forensic Evidence Schemas](C4-Documentation/c4-code-backend-app-models.md)
+  - [Level 4: Backend Verification Suites](C4-Documentation/c4-code-backend-tests.md)
+  - [OpenAPI 3.1.0 Contract Specification](C4-Documentation/apis/terrasleuth-warroom-api.yaml)
+- **[docs/terrasleuth-roadmap.md](docs/terrasleuth-roadmap.md):** Living roadmap, sprint milestones (v0.1 through v0.8.1), and commit log.
 - **[docs/terrasleuth-regression-audit.md](docs/terrasleuth-regression-audit.md):** Subsystem health scorecard and multi-point regression verification report.
 - **[AGENTS.md](AGENTS.md):** Master architecture navigation guide for AI coding agents.
 

@@ -2,7 +2,7 @@
 
 ## 1. Overview
 - **Name:** TerraSleuth Backend Automated Verification & Unit Test Suite
-- **Description:** 20 comprehensive test modules (127 automated tests passing project-wide) verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic debate loops, local image uploads, OpenCV object separation, dynamic intent routing, and anomaly detection.
+- **Description:** 23 comprehensive test modules (159 automated tests passing project-wide, 100% pass rate) verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic/Arbiter debate loops, local image uploads, OpenCV object separation, dynamic intent routing, Antigravity-style dynamic LLM reasoning, and anomaly detection.
 - **Location:** [`backend/tests`](file:///d:/SerpAPI_hackathon/backend/tests)
 - **Language:** Python 3.11+
 - **Purpose:** Regression prevention and multi-gate verification ensuring 100% deterministic test execution, 0 live SerpApi credits burned during CI/CD, and robust schema compliance.
@@ -99,9 +99,26 @@
 - Validates `fashion_hunter_node` hard quota cap at max 5 items (`min(5, len(detected_objects))`).
 - Validates end-to-end dialectical graph execution, ensuring Google Maps place triangulation is bypassed for fashion targets.
 
+### 2.21 `test_llm_reasoning.py` (LLM Semantic Disambiguation Tests)
+- Verifies `LLMSemanticReasoningService` Gemini and OpenAI REST adapters with mocked JSON responses.
+- Tests markdown code fence sanitization, timeouts, HTTP 500 error catches, and graceful fallback to Tier-2 heuristics.
+- Validates `hunter_node` adoption of disambiguated query for Google Maps triangulation.
+
+### 2.22 `test_vision_llm_separation.py` (Multi-Modal Vision LLM Spatial Detection Tests)
+- Tests `ObjectSeparationService` with Google AI Studio Gemini 1.5 Flash Vision REST endpoint.
+- Validates coordinate normalization from 0-1000 scale to `[ymin, xmin, ymax, xmax]` floats in `[0.0, 1.0]`.
+- Tests Human-in-the-Loop (HITL) mission directives and label filtering with zero-quota leak protection.
+- Validates offline OpenCV fallback when API key is missing or request times out.
+
+### 2.23 `test_llm_agent_service.py` (Antigravity-Style Dynamic LLM Decision Engine Tests)
+- Verifies `LLMDetectiveAgentService` Skeptic dynamic fraud cross-examination, Arbiter continuous scoring (0.0 to 1.0), and Synthesizer executive briefing generation.
+- Validates empty `lens_matches` edge case safety (`test_skeptic_node_with_fraud_and_empty_lens_matches_does_not_crash`).
+- Tests HTTP 500 and timeout handling with zero network calls and complete offline fallback execution.
+
 ---
 
 ## 3. Dependencies
 - **Test Runner:** `pytest`
 - **Internal:** All modules in `backend.app.services`, `backend.app.agent`, `backend.app.models`, and `backend.app.db`.
-- **External:** `pytest`, `httpx`, `unittest.mock`, `tempfile`, `PIL`, `cv2`, `numpy`
+- **External:** `pytest`, `httpx`, `unittest.mock`, `tempfile`, `PIL`, `cv2`, `numpy`, `pydantic`
+

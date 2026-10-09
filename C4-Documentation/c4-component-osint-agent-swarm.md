@@ -19,8 +19,10 @@ Solves the challenge of autonomous multi-modal geolocation and image provenance 
 
 ## 3. Software Features
 - **Level 4 ReAct Supervision:** Observe-Orient-Decide-Act (OODA) loops utilizing structured `AgentThought` streaming logs.
-- **Dynamic Intent Routing:** Rapid (<20ms) zero-LLM intent classification evaluating Google Lens knowledge graph types, domain authority (`zara`, `shein`, `vogue` vs `wikipedia`, `tripadvisor`), and user hints into `GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, or `GENERAL_OBJECT`.
-- **Multi-Object Visual Decomposition:** Native OpenCV contour detection with chromatic/spatial sub-segmentation (`_split_cluster`) decomposing touching flat-lay items into discrete normalized bounding boxes.
+- **Antigravity-Style Dynamic LLM Decision Engine:** Powers genuine non-deterministic semantic reasoning using Google AI Studio (Gemini 1.5 Flash) across Skeptic (adversarial fraud cross-examination), Arbiter (continuous 0.0-1.0 scoring and verdict certification), and Case Synthesizer (bespoke executive forensic intelligence briefing).
+- **Two-Tier Architecture & Quota Defense Invariant:** Tier 1 dispatches live Gemini LLM calls when credentials are provided; Tier 2 engages an automatic, 100% deterministic heuristic fallback on missing keys, timeouts, or network failures—guaranteeing complete offline execution with zero API credit burn during test suites.
+- **Dynamic Intent Routing & Entity Disambiguation:** Semantic LLM reasoning (`LLMSemanticReasoningService`) coupled with rapid (<20ms) zero-LLM heuristic classification evaluating Google Lens knowledge graph types, domain authority, and user hints into `GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, or `GENERAL_OBJECT`.
+- **Multi-Object Visual Decomposition:** Hybrid vision ensemble fusing Gemini 1.5 Flash Vision 2D bounding-box spatial reasoning with native OpenCV contour detection and chromatic/spatial sub-segmentation (`_split_cluster`) decomposing touching flat-lay items into discrete normalized bounding boxes.
 - **Adaptive Graph Branching & Quota Defense:** Bypasses Google Maps Local API for fashion queries; executes `fashion_hunter_node` with a hard cap (max 5 items) to strictly defend SerpApi quotas.
 - **Level 5 Dialectical Tension:** Adversarial debate where the Skeptic tests climate, temporal recycling, and rental scam signals to invalidate Hunter claims.
 - **Circuit Breaker Termination:** Strictly bounded refinement hops ($\le 2$) and search budgets preventing infinite recursion.
@@ -32,7 +34,8 @@ Solves the challenge of autonomous multi-modal geolocation and image provenance 
 Synthesizes and integrates the following code documentation files:
 - [`c4-code-backend-app-agent-nodes.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent-nodes.md): Investigation nodes (`scene_deconstructor`, `lens_hunter`, `geo_triangulator`, `chrono_auditor`, `case_synthesizer`, `hunter_node`, `fashion_hunter_node`, `skeptic_node`, `arbiter_node`, `react_supervisor`).
 - [`c4-code-backend-app-agent.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-agent.md): State schema (`state.py`), tool decorators (`tools.py`), and graph topologies with adaptive branching (`graph.py`).
-- [`c4-code-backend-app-services.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-services.md): Supporting services (`intent_service.py`, `object_separation_service.py`, `serpapi_service.py`).
+- [`c4-code-backend-app-services.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-services.md): Supporting services (`llm_agent_service.py`, `llm_reasoning_service.py`, `intent_service.py`, `object_separation_service.py`, `serpapi_service.py`).
+- [`c4-code-backend-app-models.md`](file:///d:/SerpAPI_hackathon/C4-Documentation/c4-code-backend-app-models.md): Pydantic data schemas (`llm_agent.py`, `llm.py`, `case.py`, `react.py`, `anomaly.py`).
 
 ---
 
@@ -58,6 +61,7 @@ Synthesizes and integrates the following code documentation files:
 ## 6. Dependencies
 - **Components Used:**
   - **SerpApi Multi-Modal Engine:** Queries Google Lens, Maps, and News through cached service proxies and SerpApi Image Upload API.
+  - **Google AI Studio Cloud:** Gemini 1.5 Flash endpoint (`generativelanguage.googleapis.com`) powering dynamic fraud reasoning, dialectical arbitration, and spatial vision.
   - **Anomaly & Fraud Engine:** Skeptic node calls `AnomalyService` to uncover fraud flags.
   - **Evidence Schema Ledger:** Consumes and emits typed `OsintGraphState`, `DetectedObject`, `GeoCandidate`, and `CaseFile` models.
 - **External Systems:**
