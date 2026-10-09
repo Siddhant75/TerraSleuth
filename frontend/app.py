@@ -244,6 +244,45 @@ def render_sidebar():
         live_mode = False
         st.session_state["live_network_mode"] = False
 
+    # Optional Google AI Studio (Gemini) Key for Semantic Intent & Entity Disambiguation
+    env_gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    session_gemini_key = st.session_state.get("gemini_api_key", env_gemini_key)
+
+    gemini_key_input = st.sidebar.text_input(
+        "Google AI Studio Key (Optional):",
+        value=session_gemini_key,
+        type="password",
+        placeholder="Enter Gemini API key for semantic reasoning...",
+        help="Enables Level 4/5 semantic intent & entity reasoning across open-world imagery.",
+    )
+    if gemini_key_input:
+        st.session_state["gemini_api_key"] = gemini_key_input.strip()
+
+    has_valid_gemini = bool(
+        st.session_state.get("gemini_api_key")
+        and str(st.session_state.get("gemini_api_key")).strip() != ""
+        and "your_gemini" not in str(st.session_state.get("gemini_api_key")).lower()
+    )
+
+    if has_valid_gemini:
+        st.sidebar.markdown(
+            """
+            <div style="background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px;">
+                <span style="color: #c084fc; font-weight: 600; font-size: 12px;">🟣 Gemini AI Reasoner Active</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        st.sidebar.markdown(
+            """
+            <div style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 6px; padding: 6px 10px; margin-bottom: 8px;">
+                <span style="color: #fbbf24; font-weight: 600; font-size: 12px;">⚡ Deterministic Heuristics Active</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     st.sidebar.markdown("---")
     st.sidebar.markdown("### ⚙️ Swarm Parameters")
     max_budget = st.sidebar.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
@@ -261,6 +300,7 @@ def render_sidebar():
         "truth_lon": truth_lon,
         "api_key": st.session_state.get("serpapi_api_key") if has_valid_key else None,
         "live_mode": live_mode,
+        "gemini_api_key": st.session_state.get("gemini_api_key") if has_valid_gemini else None,
     }
 
 
@@ -340,6 +380,7 @@ def main():
                 max_refinement_hops=config["max_hops"],
                 api_key=config.get("api_key"),
                 force_refresh=config.get("live_mode", False),
+                gemini_api_key=config.get("gemini_api_key"),
             ):
                 node_name = list(event.keys())[0]
                 node_output = event[node_name]

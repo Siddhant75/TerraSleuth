@@ -83,6 +83,7 @@ class OsintGraphState(TypedDict):
 
     # Session Credentials & Network Mode (Isolated per run)
     api_key: Optional[str]
+    gemini_api_key: Optional[str]
     force_refresh: bool
 
     # Final Dossier Synthesis
@@ -97,6 +98,7 @@ def create_initial_osint_state(
     max_refinement_hops: int = 2,
     api_key: Optional[str] = None,
     force_refresh: bool = False,
+    gemini_api_key: Optional[str] = None,
 ) -> OsintGraphState:
     """Create a pristine initial OsintGraphState for an investigative run."""
     return {
@@ -107,6 +109,7 @@ def create_initial_osint_state(
         "detected_objects": [],
         "itemized_dossier": [],
         "api_key": api_key,
+        "gemini_api_key": gemini_api_key,
         "force_refresh": force_refresh,
         "visual_clues": [],
         "geo_candidates": [],

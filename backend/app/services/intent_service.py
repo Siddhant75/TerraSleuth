@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from backend.app.agent.state import InvestigationIntent
@@ -196,3 +196,63 @@ class IntentClassificationService:
             return InvestigationIntent.GEOSPATIAL_LANDMARK
 
         return InvestigationIntent.GENERAL_OBJECT
+
+    @classmethod
+    def classify_and_disambiguate(
+        cls,
+        lens_data: Dict[str, Any],
+        context_hint: Optional[str] = None,
+        image_path: Optional[str] = None,
+        gemini_api_key: Optional[str] = None,
+        openai_api_key: Optional[str] = None,
+    ) -> Tuple[InvestigationIntent, Optional[str], Optional[str], Optional[str]]:
+        """Perform dynamic intent classification and entity disambiguation.
+
+        Tier 1: Attempts semantic LLM disambiguation if API keys are configured.
+        Tier 2: Gracefully falls back to deterministic heuristic classification.
+
+        Returns:
+            Tuple of:
+            - intent: InvestigationIntent
+            - primary_entity: Optional[str] (deduced by LLM)
+            - target_query: Optional[str] (deduced by LLM)
+            - reasoning: Optional[str] (deduced by LLM rationale)
+        """
+        # Tier 1: Try LLM Reasoning if credentials exist
+        try:
+            from backend.app.services.llm_reasoning_service import LLMReasoningService
+
+            llm_result = LLMReasoningService.disambiguate(
+                lens_data=lens_data,
+                context_hint=context_hint,
+                gemini_api_key=gemini_api_key,
+                openai_api_key=openai_api_key,
+            )
+            if llm_result and llm_result.confidence >= 0.5:
+                logger.info(
+                    "Dynamic LLM Intent Disambiguation succeeded: intent=%s, entity='%s', query='%s' (conf=%.2f)",
+                    llm_result.intent.value,
+                    llm_result.primary_entity,
+                    llm_result.target_query,
+                    llm_result.confidence,
+                )
+                return (
+                    llm_result.intent,
+                    llm_result.primary_entity,
+                    llm_result.target_query,
+                    llm_result.reasoning,
+                )
+        except Exception as e:
+            logger.warning(
+                "LLM semantic disambiguation encountered exception: %s. Falling back to heuristics.",
+                str(e),
+            )
+
+        # Tier 2: Deterministic Heuristic Fallback
+        intent = cls.classify_intent(
+            lens_data=lens_data,
+            context_hint=context_hint,
+            image_path=image_path,
+        )
+        return intent, None, None, None
+

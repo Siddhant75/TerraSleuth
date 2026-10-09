@@ -289,6 +289,7 @@ def stream_osint_investigation_sync(
     dialectical: bool = False,
     api_key: Optional[str] = None,
     force_refresh: bool = False,
+    gemini_api_key: Optional[str] = None,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding node execution updates for UI streaming."""
     configure_serpapi_client(api_key=api_key, force_refresh=force_refresh)
@@ -302,6 +303,7 @@ def stream_osint_investigation_sync(
             max_refinement_hops=max_refinement_hops,
             api_key=api_key,
             force_refresh=force_refresh,
+            gemini_api_key=gemini_api_key,
         )
         for event in graph.stream(initial_state):
             yield event
@@ -317,6 +319,7 @@ def stream_dialectical_investigation_sync(
     max_refinement_hops: int = 2,
     api_key: Optional[str] = None,
     force_refresh: bool = False,
+    gemini_api_key: Optional[str] = None,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding dialectical swarm updates for the UI."""
     return stream_osint_investigation_sync(
@@ -328,6 +331,7 @@ def stream_dialectical_investigation_sync(
         dialectical=True,
         api_key=api_key,
         force_refresh=force_refresh,
+        gemini_api_key=gemini_api_key,
     )
 
 

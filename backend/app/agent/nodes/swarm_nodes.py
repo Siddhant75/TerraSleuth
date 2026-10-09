@@ -75,14 +75,34 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
     )
     debate_history.append({"role": "hunter", "content": t1.to_terminal_str(), **t1.model_dump()})
 
-    # Dynamic Intent Classification & Multi-Object Visual Decomposition
+    gemini_key = state.get("gemini_api_key")
+
+    # Dynamic Intent Classification & Multi-Object Visual Decomposition (Hybrid LLM + Heuristic)
     intent = state.get("intent")
+    llm_primary_entity: Optional[str] = None
+    llm_target_query: Optional[str] = None
+    llm_reasoning: Optional[str] = None
+
     if not intent:
-        intent = IntentClassificationService.classify_intent(
-            lens_data=lens_res,
-            context_hint=context_hint,
-            image_path=image_path,
+        intent, llm_primary_entity, llm_target_query, llm_reasoning = (
+            IntentClassificationService.classify_and_disambiguate(
+                lens_data=lens_res,
+                context_hint=context_hint,
+                image_path=image_path,
+                gemini_api_key=gemini_key,
+            )
         )
+        if llm_reasoning:
+            t_llm = create_agent_thought(
+                agent_role="hunter",
+                thought=f"Semantic LLM Reasoning: {llm_reasoning}",
+                decision=f"Identified primary entity as '{llm_primary_entity}' (intent: {intent.value}).",
+                tool_call=None,
+                tool_args=None,
+                observation=f"Optimal search query resolved to '{llm_target_query}'.",
+                step_type=ReActStepType.THOUGHT,
+            )
+            debate_history.append({"role": "hunter", "content": t_llm.to_terminal_str(), **t_llm.model_dump()})
 
     detected_objects = list(state.get("detected_objects", []))
     if not detected_objects and image_path and os.path.exists(image_path):
@@ -116,8 +136,8 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
         }
 
     # 2. Autonomous Dynamic Entity Extraction from Tool Outputs / Visual Clues (Landmarks / Physical Targets)
-    target_query = ""
-    if lens_matches:
+    target_query = llm_target_query or ""
+    if not target_query and lens_matches:
         GENERIC_PHOTO_TERMS = {
             "free photo", "stock photo", "stock photography", "free image", "wallpapers",
             "hd wallpaper", "free download", "getty images", "shutterstock", "alamy",
