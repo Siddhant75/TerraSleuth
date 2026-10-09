@@ -50,6 +50,7 @@ def generate_case_summary_markdown(
     state: OsintGraphState,
     anomalies: Optional[List[Dict[str, Any]]] = None,
     dorks: Optional[List[Dict[str, Any]]] = None,
+    gemini_api_key: Optional[str] = None,
 ) -> str:
     """Generate structured forensic investigation summary in Markdown format."""
     lines: List[str] = [
@@ -60,6 +61,31 @@ def generate_case_summary_markdown(
         f"**Refinement Cycles:** {state.get('refinement_hops', 0)}  ",
         "",
     ]
+
+    # Dynamic Lead Detective Executive Intelligence Briefing (Antigravity Mode)
+    if gemini_api_key:
+        try:
+            from backend.app.services.llm_agent_service import LLMDetectiveAgentService
+            briefing = LLMDetectiveAgentService.synthesize_summary(
+                case_title=case_title,
+                confidence_score=confidence_score,
+                resolved_location=resolved_location,
+                audit_score=state.get("audit_score"),
+                is_fraud=bool(anomalies or state.get("status") == "fraud_unmasked"),
+                anomalies=anomalies,
+                gemini_api_key=gemini_api_key,
+            )
+            if briefing:
+                lines.extend([
+                    "---",
+                    "",
+                    "## 🕵️ Lead Detective Executive Intelligence Briefing",
+                    "",
+                    briefing,
+                    "",
+                ])
+        except Exception as exc:
+            logger.warning("LLM case summary generation fallback: %s", exc)
 
     # Insert prominent anomaly & fraud warnings if detected
     if anomalies:
@@ -259,6 +285,7 @@ def case_synthesizer_node(state: OsintGraphState) -> Dict[str, Any]:
         state=state,
         anomalies=anomalies_dicts,
         dorks=dorks_dicts,
+        gemini_api_key=state.get("gemini_api_key"),
     )
 
     # 7. Compile final CaseFile

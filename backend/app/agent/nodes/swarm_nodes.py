@@ -403,24 +403,27 @@ def fashion_hunter_node(state: OsintGraphState) -> Dict[str, Any]:
     }
 
 
+
 def skeptic_node(state: OsintGraphState) -> Dict[str, Any]:
     """Skeptic Agent (Adversarial Red-Team Auditor / Debunker).
     
     Actively attempts to disprove the Hunter's hypothesis by checking temporal provenance,
-    flora/climate compatibility, and fraud indicators using News and AnomalyService.
+    flora/climate compatibility, and fraud indicators using dynamic LLM reasoning or AnomalyService.
     """
     hypotheses = state.get("hunter_hypotheses", [])
     image_path = state.get("image_path", "")
     context_hint = state.get("context_hint") or ""
     cands = state.get("geo_candidates", [])
     candidate = cands[0] if cands else None
+    gemini_key = state.get("gemini_api_key")
 
-    logger.info("Executing skeptic_node evaluating hypotheses: %s", hypotheses)
+    logger.info("Executing skeptic_node evaluating hypotheses: %s (gemini_active=%s)", hypotheses, bool(gemini_key))
 
     skeptic_critiques: List[str] = []
     timeline_events: List[TimelineEvent] = []
     citations: List[Citation] = []
     debate_history: List[Dict[str, Any]] = []
+    anomalies: List[Any] = []
 
     intent = state.get("intent")
     if intent == InvestigationIntent.FASHION_PRODUCT:
@@ -444,89 +447,145 @@ def skeptic_node(state: OsintGraphState) -> Dict[str, Any]:
             "status": "critique_completed",
         }
 
-    # 1. Run dynamic AnomalyService detection against Hunter's candidate and Lens matches
-    anomalies_detected = AnomalyService.detect_anomalies(
-        context_hint=context_hint,
-        image_path=image_path,
-        resolved_location=candidate,
-        lens_matches=state.get("lens_matches", []),
-        timeline_events=state.get("timeline_events", []),
-    )
+    # Dynamic Tier-1 LLM Evaluation (Antigravity Mode)
+    from backend.app.services.llm_agent_service import LLMDetectiveAgentService
+    llm_skeptic_res = None
+    if gemini_key:
+        llm_skeptic_res = LLMDetectiveAgentService.evaluate_skeptic(
+            claimed_context=context_hint,
+            visual_clues=state.get("visual_clues", []),
+            lens_matches=state.get("lens_matches", []),
+            geo_candidate=candidate,
+            timeline_events=state.get("timeline_events", []),
+            gemini_api_key=gemini_key,
+        )
 
-    if anomalies_detected:
-        top_anomaly = anomalies_detected[0]
-        critique = f"CRITICAL CONTRADICTION: {top_anomaly.description}"
+    if llm_skeptic_res:
+        critique_prefix = "CRITICAL CONTRADICTION: " if llm_skeptic_res.is_fraud else "RED-TEAM AUDIT PASSED: "
+        critique = f"{critique_prefix}{llm_skeptic_res.critique}"
         skeptic_critiques.append(critique)
+
+        if llm_skeptic_res.is_fraud:
+            from backend.app.models.anomaly import AnomalyReport, AnomalySeverity, AnomalyType
+            cand_name = candidate.name if candidate else "Identified Location"
+            raw_matches = state.get("lens_matches") or []
+            evidence_url = None
+            if raw_matches:
+                first_match = raw_matches[0]
+                evidence_url = first_match.get("link") if isinstance(first_match, dict) else getattr(first_match, "link", None)
+            fraud_anom = AnomalyReport(
+                anomaly_type=AnomalyType.FRAUDULENT_LISTING,
+                severity=AnomalySeverity.CRITICAL,
+                confidence=llm_skeptic_res.fraud_probability,
+                title="LLM Adversarial Fraud Detection",
+                description=llm_skeptic_res.critique,
+                claimed_context=context_hint,
+                authoritative_truth=f"Real Entity: {cand_name}",
+                evidence_url=evidence_url,
+            )
+            anomalies.append(fraud_anom)
+
         t_skeptic = create_agent_thought(
             agent_role="skeptic",
-            thought=f"Discovered critical discrepancy: {top_anomaly.description}",
-            decision="Flag rental scam anomaly and formulate municipal verification query.",
+            thought=llm_skeptic_res.reasoning or llm_skeptic_res.critique,
+            decision="Execute dynamic semantic cross-examination against SerpApi evidence.",
             tool_call="tool_news_audit",
-            tool_args={"query": candidate.name if candidate else "scam listing"},
-            observation=f"Anomaly verified: {top_anomaly.anomaly_type.value} ({top_anomaly.severity.value})",
+            tool_args={"context_hint": context_hint},
+            observation=f"Fraud probability: {int(llm_skeptic_res.fraud_probability * 100)}% (Is Fraud: {llm_skeptic_res.is_fraud})",
             step_type=ReActStepType.ACTION,
         )
         debate_history.append({"role": "skeptic", "content": t_skeptic.to_terminal_str(), **t_skeptic.model_dump()})
+
     else:
-        # 2. Audit news timeline for legitimate landmark
-        query = candidate.name if candidate else (state.get("visual_clues", [None])[0].suggested_query if state.get("visual_clues") else "Visual Target")
-        try:
-            news_res = tool_news_audit.invoke({"query": query})
-            for art in (news_res.get("events") or news_res.get("articles") or [])[:3]:
-                ev = TimelineEvent(
-                    date=art.get("date") or "Archived",
-                    title=art.get("title") or f"Historical Record: {query}",
-                    source=art.get("source") or "Google News",
-                    url=art.get("link") or "https://news.google.com",
-                    snippet=art.get("snippet") or f"Archival verification for {query}",
-                    is_origin=False,
-                )
-                timeline_events.append(ev)
-                citations.append(
-                    Citation(
-                        title=ev.title,
-                        url=ev.url or "https://news.google.com",
-                        engine="google_news",
-                        snippet=f"Archival verification via {ev.source}",
-                    )
-                )
-        except Exception as e:
-            logger.warning("skeptic_node news search fallback: %s", e)
-
-        critique = f"RED-TEAM AUDIT PASSED: Evaluated archival records and provenance for '{query}'. No temporal or geographical contradiction identified."
-        skeptic_critiques.append(critique)
-        t_skeptic = create_agent_thought(
-            agent_role="skeptic",
-            thought=f"Audited environmental cues and archival news records for '{query}'.",
-            decision="Verify absence of conflicting geographical or flora markers.",
-            tool_call="tool_news_audit",
-            tool_args={"query": query},
-            observation=f"Archival records confirm authentic location for '{query}'.",
-            step_type=ReActStepType.ACTION,
+        # Tier-2 Deterministic Heuristic Fallback
+        anomalies_detected = AnomalyService.detect_anomalies(
+            context_hint=context_hint,
+            image_path=image_path,
+            resolved_location=candidate,
+            lens_matches=state.get("lens_matches", []),
+            timeline_events=state.get("timeline_events", []),
         )
-        debate_history.append({"role": "skeptic", "content": t_skeptic.to_terminal_str(), **t_skeptic.model_dump()})
 
-    return {
+        if anomalies_detected:
+            anomalies.extend(anomalies_detected)
+            top_anomaly = anomalies_detected[0]
+            critique = f"CRITICAL CONTRADICTION: {top_anomaly.description}"
+            skeptic_critiques.append(critique)
+            t_skeptic = create_agent_thought(
+                agent_role="skeptic",
+                thought=f"Discovered critical discrepancy: {top_anomaly.description}",
+                decision="Flag rental scam anomaly and formulate municipal verification query.",
+                tool_call="tool_news_audit",
+                tool_args={"query": candidate.name if candidate else "scam listing"},
+                observation=f"Anomaly verified: {top_anomaly.anomaly_type.value} ({top_anomaly.severity.value})",
+                step_type=ReActStepType.ACTION,
+            )
+            debate_history.append({"role": "skeptic", "content": t_skeptic.to_terminal_str(), **t_skeptic.model_dump()})
+        else:
+            query = candidate.name if candidate else (state.get("visual_clues", [None])[0].suggested_query if state.get("visual_clues") else "Visual Target")
+            try:
+                news_res = tool_news_audit.invoke({"query": query})
+                for art in (news_res.get("events") or news_res.get("articles") or [])[:3]:
+                    ev = TimelineEvent(
+                        date=art.get("date") or "Archived",
+                        title=art.get("title") or f"Historical Record: {query}",
+                        source=art.get("source") or "Google News",
+                        url=art.get("link") or "https://news.google.com",
+                        snippet=art.get("snippet") or f"Archival verification for {query}",
+                        is_origin=False,
+                    )
+                    timeline_events.append(ev)
+                    citations.append(
+                        Citation(
+                            title=ev.title,
+                            url=ev.url or "https://news.google.com",
+                            engine="google_news",
+                            snippet=f"Archival verification via {ev.source}",
+                        )
+                    )
+            except Exception as e:
+                logger.warning("skeptic_node news search fallback: %s", e)
+
+            critique = f"RED-TEAM AUDIT PASSED: Evaluated archival records and provenance for '{query}'. No temporal or geographical contradiction identified."
+            skeptic_critiques.append(critique)
+            t_skeptic = create_agent_thought(
+                agent_role="skeptic",
+                thought=f"Audited environmental cues and archival news records for '{query}'.",
+                decision="Verify absence of conflicting geographical or flora markers.",
+                tool_call="tool_news_audit",
+                tool_args={"query": query},
+                observation=f"Archival records confirm authentic location for '{query}'.",
+                step_type=ReActStepType.ACTION,
+            )
+            debate_history.append({"role": "skeptic", "content": t_skeptic.to_terminal_str(), **t_skeptic.model_dump()})
+
+    result_dict: Dict[str, Any] = {
         "skeptic_critiques": skeptic_critiques,
         "timeline_events": timeline_events,
         "citations": citations,
         "debate_history": debate_history,
         "status": "critique_completed",
     }
+    if anomalies:
+        result_dict["anomalies"] = anomalies
+
+    return result_dict
 
 
 def arbiter_node(state: OsintGraphState) -> Dict[str, Any]:
     """Arbiter Agent (Synthesis & Dialectical Verdict).
     
     Evaluates Hunter's evidence against Skeptic's counter-arguments, calculates the
-    Adversarial Audit Score, and determines whether to certify the verdict or refine.
+    Adversarial Audit Score (dynamically via LLM or heuristic), and determines whether to certify or refine.
     """
     hypotheses = state.get("hunter_hypotheses", [])
     critiques = state.get("skeptic_critiques", [])
     image_path = state.get("image_path", "")
     context_hint = state.get("context_hint") or ""
+    cands = state.get("geo_candidates", [])
+    gemini_key = state.get("gemini_api_key")
 
-    logger.info("Executing arbiter_node")
+    logger.info("Executing arbiter_node (gemini_active=%s)", bool(gemini_key))
 
     debate_history: List[Dict[str, Any]] = []
 
@@ -549,36 +608,64 @@ def arbiter_node(state: OsintGraphState) -> Dict[str, Any]:
             "status": verdict_status,
         }
 
-    has_fraud = (
-        any("CRITICAL CONTRADICTION" in c or "fraud" in c.lower() for c in critiques)
-        or "scam" in (image_path + " " + context_hint).lower()
-    )
+    # Dynamic Tier-1 LLM Arbitration (Antigravity Mode)
+    from backend.app.services.llm_agent_service import LLMDetectiveAgentService
+    llm_arbiter_res = None
+    if gemini_key:
+        fraud_prob = 0.95 if any("fraud" in c.lower() or "contradiction" in c.lower() for c in critiques) else 0.05
+        llm_arbiter_res = LLMDetectiveAgentService.arbitrate_case(
+            hunter_hypotheses=hypotheses,
+            skeptic_critique=critiques[0] if critiques else "No critiques recorded.",
+            fraud_probability=fraud_prob,
+            geo_candidate=cands[0] if cands else None,
+            lens_matches=state.get("lens_matches", []),
+            gemini_api_key=gemini_key,
+        )
 
-    if has_fraud:
-        audit_score = 0.35
-        verdict_status = "fraud_unmasked"
+    if llm_arbiter_res:
+        audit_score = llm_arbiter_res.adversarial_audit_score
+        verdict_status = llm_arbiter_res.verdict
         t_arbiter = create_agent_thought(
             agent_role="arbiter",
-            thought="Skeptic proved fatal contradiction: photo stolen from luxury resort.",
-            decision="Issue certified FRAUD EXPOSED verdict and generate anomaly dossier.",
-            observation="Audit Score: 35% (Fraudulent Listing Detected)",
+            thought=llm_arbiter_res.reasoning,
+            decision=f"Arbitration verdict: {verdict_status.upper()}.",
+            observation=f"Adversarial Audit Score: {int(audit_score * 100)}% ({verdict_status})",
             step_type=ReActStepType.SYNTHESIS,
         )
+        debate_history.append({"role": "arbiter", "content": t_arbiter.to_terminal_str(), **t_arbiter.model_dump()})
     else:
-        audit_score = 0.94
-        verdict_status = "debate_certified"
-        t_arbiter = create_agent_thought(
-            agent_role="arbiter",
-            thought="Hunter hypotheses withstood Skeptic red-team audit without contradiction.",
-            decision="Certify ground-truth coordinates and conclude dialectical investigation.",
-            observation=f"Audit Score: {int(audit_score * 100)}% (Adversarial Red-Team Passed)",
-            step_type=ReActStepType.SYNTHESIS,
+        # Tier-2 Deterministic Heuristic Fallback
+        has_fraud = (
+            any("CRITICAL CONTRADICTION" in c or "fraud" in c.lower() for c in critiques)
+            or "scam" in (image_path + " " + context_hint).lower()
         )
 
-    debate_history.append({"role": "arbiter", "content": t_arbiter.to_terminal_str(), **t_arbiter.model_dump()})
+        if has_fraud:
+            audit_score = 0.35
+            verdict_status = "fraud_unmasked"
+            t_arbiter = create_agent_thought(
+                agent_role="arbiter",
+                thought="Skeptic proved fatal contradiction: photo stolen from luxury resort.",
+                decision="Issue certified FRAUD EXPOSED verdict and generate anomaly dossier.",
+                observation="Audit Score: 35% (Fraudulent Listing Detected)",
+                step_type=ReActStepType.SYNTHESIS,
+            )
+        else:
+            audit_score = 0.94
+            verdict_status = "debate_certified"
+            t_arbiter = create_agent_thought(
+                agent_role="arbiter",
+                thought="Hunter hypotheses withstood Skeptic red-team audit without contradiction.",
+                decision="Certify ground-truth coordinates and conclude dialectical investigation.",
+                observation=f"Audit Score: {int(audit_score * 100)}% (Adversarial Red-Team Passed)",
+                step_type=ReActStepType.SYNTHESIS,
+            )
+
+        debate_history.append({"role": "arbiter", "content": t_arbiter.to_terminal_str(), **t_arbiter.model_dump()})
 
     return {
         "audit_score": audit_score,
         "debate_history": debate_history,
         "status": verdict_status,
     }
+
