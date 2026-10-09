@@ -104,9 +104,40 @@ def hunter_node(state: OsintGraphState) -> Dict[str, Any]:
             )
             debate_history.append({"role": "hunter", "content": t_llm.to_terminal_str(), **t_llm.model_dump()})
 
+    user_directive = state.get("user_directive")
+    selected_labels = state.get("selected_object_labels")
+
     detected_objects = list(state.get("detected_objects", []))
     if not detected_objects and image_path and os.path.exists(image_path):
-        detected_objects = ObjectSeparationService.segment_image(image_path)
+        detected_objects = ObjectSeparationService.segment_image(
+            image_path=image_path,
+            user_directive=user_directive,
+            gemini_api_key=gemini_key,
+        )
+
+    # Filter by user-selected labels if provided via HITL
+    if selected_labels is not None and detected_objects:
+        selected_set = {lbl.strip().lower() for lbl in selected_labels if lbl.strip()}
+        if selected_set:
+            detected_objects = [
+                obj for obj in detected_objects
+                if obj.label.strip().lower() in selected_set
+                or any(target in obj.label.strip().lower() for target in selected_set)
+            ]
+        else:
+            detected_objects = []
+
+    if user_directive:
+        t_hitl = create_agent_thought(
+            agent_role="hunter",
+            thought=f"Incorporating User Directive: '{user_directive}'.",
+            decision="Focusing target separation on requested objects.",
+            tool_call=None,
+            tool_args=None,
+            observation=f"Active targets: {len(detected_objects)} visual objects.",
+            step_type=ReActStepType.THOUGHT,
+        )
+        debate_history.append({"role": "hunter", "content": t_hitl.to_terminal_str(), **t_hitl.model_dump()})
 
     # Adaptive Branching: If fashion/apparel, bypass physical Google Maps triangulation
     if intent == InvestigationIntent.FASHION_PRODUCT:
@@ -284,10 +315,30 @@ def fashion_hunter_node(state: OsintGraphState) -> Dict[str, Any]:
     citations: List[Citation] = []
     itemized_dossier: List[Dict[str, Any]] = []
 
+    user_directive = state.get("user_directive")
+    gemini_key = state.get("gemini_api_key")
+    selected_labels = state.get("selected_object_labels")
+
     logger.info("Executing fashion_hunter_node: %d objects detected, budget=%d", len(detected_objects), budget)
 
     if not detected_objects and image_path and os.path.exists(image_path):
-        detected_objects = ObjectSeparationService.segment_image(image_path)
+        detected_objects = ObjectSeparationService.segment_image(
+            image_path=image_path,
+            user_directive=user_directive,
+            gemini_api_key=gemini_key,
+        )
+
+    # Filter by user-selected labels if provided via HITL
+    if selected_labels is not None and detected_objects:
+        selected_set = {lbl.strip().lower() for lbl in selected_labels if lbl.strip()}
+        if selected_set:
+            detected_objects = [
+                obj for obj in detected_objects
+                if obj.label.strip().lower() in selected_set
+                or any(target in obj.label.strip().lower() for target in selected_set)
+            ]
+        else:
+            detected_objects = []
 
     # Hard cap at max 5 items to strictly protect SerpApi quota
     max_items = min(5, len(detected_objects))

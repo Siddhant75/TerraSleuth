@@ -289,6 +289,15 @@ def render_sidebar():
     max_hops = st.sidebar.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
     context_hint_input = st.sidebar.text_input("Claimed Context Hint / Metadata:", value=context_hint or "", placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
 
+    user_directive_input = st.sidebar.text_input(
+        "🎯 Mission Directive (HITL Prompt):",
+        value=st.session_state.get("user_directive", ""),
+        placeholder="e.g. Focus on handbag & watch, check Kyoto temple...",
+        help="Natural language directive guiding Vision LLM detection and crop prioritization.",
+    )
+    if user_directive_input:
+        st.session_state["user_directive"] = user_directive_input.strip()
+
     return {
         "image_path": image_path,
         "image_url": image_url,
@@ -301,6 +310,8 @@ def render_sidebar():
         "api_key": st.session_state.get("serpapi_api_key") if has_valid_key else None,
         "live_mode": live_mode,
         "gemini_api_key": st.session_state.get("gemini_api_key") if has_valid_gemini else None,
+        "user_directive": st.session_state.get("user_directive"),
+        "selected_object_labels": st.session_state.get("selected_object_labels"),
     }
 
 
@@ -381,6 +392,8 @@ def main():
                 api_key=config.get("api_key"),
                 force_refresh=config.get("live_mode", False),
                 gemini_api_key=config.get("gemini_api_key"),
+                user_directive=config.get("user_directive"),
+                selected_object_labels=config.get("selected_object_labels"),
             ):
                 node_name = list(event.keys())[0]
                 node_output = event[node_name]
@@ -407,6 +420,10 @@ def main():
                     top_cand_name = cands[0].name if cands else "Target"
                     log_msg = f"Hypothesis generated: '{top_hyp[:55]}' | Resolved: {top_cand_name} ({len(matches)} matches)."
                     swarm_logs.append(format_terminal_log_entry("HUNTER", log_msg))
+                elif node_name == "fashion_hunter":
+                    dossier = node_output.get("itemized_dossier", [])
+                    log_msg = f"Forensic decomposition: {len(dossier)} items isolated & searched via regional crops."
+                    swarm_logs.append(format_terminal_log_entry("FASHION", log_msg))
                 elif node_name == "skeptic":
                     critiques = node_output.get("skeptic_critiques", [])
                     top_critique = critiques[0] if critiques else "Audit completed."

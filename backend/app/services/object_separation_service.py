@@ -1,6 +1,10 @@
+import base64
+import json
 import logging
 import os
-from typing import List, Optional, Tuple
+import re
+from typing import Any, Dict, List, Optional, Tuple
+import httpx
 import numpy as np
 from PIL import Image
 
@@ -10,19 +14,29 @@ try:
 except ImportError:
     OPENCV_AVAILABLE = False
 
+from backend.app.config import settings
 from backend.app.agent.state import DetectedObject
+from backend.app.services.llm_reasoning_service import _clean_json_markdown, _mask_key
 
 logger = logging.getLogger(__name__)
 
 
 class ObjectSeparationService:
-    """Computer vision service for local, zero-LLM multi-object segmentation and bounding-box extraction.
+    """Computer vision service for multi-object segmentation and bounding-box extraction.
     
-    Specialized for flat-lays, moodboards, catalog layouts, and multi-item forensic imagery.
+    Tier 1: Multi-Modal Vision LLM (Gemini 1.5/2.0 Flash) spatial reasoning for fine-grained
+    semantic object detection (garments, accessories, jewelry, landmarks) guided by HITL directives.
+    Tier 2: Fast deterministic OpenCV contour and chromatic segmentation fallback for offline zero-cost execution.
     """
 
     @staticmethod
-    def segment_image(image_path: str, max_objects: int = 6) -> List[DetectedObject]:
+    def segment_image(
+        image_path: str,
+        max_objects: int = 6,
+        user_directive: Optional[str] = None,
+        gemini_api_key: Optional[str] = None,
+        timeout_seconds: float = 8.0,
+    ) -> List[DetectedObject]:
         """Detect and segment discrete salient visual items from an image.
 
         Returns normalized bounding boxes [ymin, xmin, ymax, xmax] for each detected item.
@@ -31,6 +45,188 @@ class ObjectSeparationService:
             logger.warning("Image path does not exist for segmentation: %s", image_path)
             return []
 
+        resolved_gemini_key = (
+            gemini_api_key
+            or os.environ.get("GEMINI_API_KEY")
+            or settings.GEMINI_API_KEY
+        )
+
+        # 1. Tier 1: Multi-Modal Vision LLM (if key provided)
+        if (
+            resolved_gemini_key
+            and resolved_gemini_key.strip()
+            and "your_gemini" not in resolved_gemini_key.lower()
+        ):
+            try:
+                llm_objects = ObjectSeparationService._detect_objects_gemini_vision(
+                    image_path=image_path,
+                    user_directive=user_directive,
+                    api_key=resolved_gemini_key.strip(),
+                    timeout_seconds=timeout_seconds,
+                )
+                if llm_objects:
+                    logger.info(
+                        "Multi-Modal Vision LLM successfully detected %d objects (directive: %s)",
+                        len(llm_objects),
+                        user_directive or "None",
+                    )
+                    return llm_objects[:max_objects]
+            except Exception as e:
+                logger.warning(
+                    "Gemini Vision object detection failed: %s. Falling back to OpenCV.",
+                    str(e),
+                )
+
+        # 2. Tier 2: Deterministic OpenCV computer vision fallback
+        return ObjectSeparationService._segment_opencv(image_path=image_path, max_objects=max_objects)
+
+    @staticmethod
+    def _detect_objects_gemini_vision(
+        image_path: str,
+        user_directive: Optional[str] = None,
+        api_key: Optional[str] = None,
+        timeout_seconds: float = 8.0,
+    ) -> Optional[List[DetectedObject]]:
+        """Call Gemini 1.5 Flash Vision API with base64 image and spatial coordinate prompt."""
+        if not api_key:
+            return None
+
+        ext = os.path.splitext(image_path)[1].lower()
+        mime_map = {
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".webp": "image/webp",
+        }
+        mime_type = mime_map.get(ext, "image/jpeg")
+
+        try:
+            with open(image_path, "rb") as f:
+                img_bytes = f.read()
+            b64_data = base64.b64encode(img_bytes).decode("utf-8")
+        except Exception as e:
+            logger.warning("Failed to read image for Gemini Vision: %s", str(e))
+            return None
+
+        system_instruction = (
+            "You are an expert multi-modal visual forensic investigator.\n"
+            "Analyze this image and identify all discrete, salient visual objects, items, clothing garments, accessories, jewelry, or architectural landmarks."
+        )
+        if user_directive and user_directive.strip():
+            system_instruction += (
+                f"\n\nCRITICAL USER MISSION DIRECTIVE: {user_directive.strip()}\n"
+                "Prioritize and specifically focus on detecting objects requested in this directive."
+            )
+
+        system_instruction += (
+            "\n\nFor each detected object, output a JSON object with:\n"
+            '- "label": Clear descriptive title (e.g. "Dior Saddle Bag", "Denim Shirt Dress", "Gold Drop Earrings", "Chronograph Wristwatch", "Arched Wooden Bridge")\n'
+            '- "category": One of ["apparel", "accessory", "footwear", "jewelry", "landmark", "infrastructure", "general"]\n'
+            '- "box_2d": [ymin, xmin, ymax, xmax] coordinates normalized between 0.0 and 1.0 (floats)\n'
+            '- "confidence": Float between 0.0 and 1.0\n\n'
+            "Return strictly a JSON array of objects, e.g.:\n"
+            '[{"label": "Dior Saddle Bag", "category": "accessory", "box_2d": [0.25, 0.65, 0.45, 0.90], "confidence": 0.95}]'
+        )
+
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": api_key,
+        }
+        logger.debug("Dispatching Gemini Vision object separation with key %s", _mask_key(api_key))
+
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": system_instruction},
+                        {
+                            "inline_data": {
+                                "mime_type": mime_type,
+                                "data": b64_data,
+                            }
+                        },
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.1,
+                "responseMimeType": "application/json",
+            },
+        }
+
+        try:
+            with httpx.Client(timeout=timeout_seconds) as client:
+                resp = client.post(url, headers=headers, json=payload)
+                if resp.status_code != 200:
+                    logger.warning("Gemini Vision API returned status %d: %s", resp.status_code, resp.text[:200])
+                    return None
+
+                data = resp.json()
+                candidates = data.get("candidates") or []
+                if not candidates:
+                    return None
+
+                text_content = (
+                    candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                )
+                cleaned_json = _clean_json_markdown(text_content)
+                parsed = json.loads(cleaned_json)
+
+                if isinstance(parsed, dict):
+                    parsed = parsed.get("objects") or parsed.get("items") or [parsed]
+                if not isinstance(parsed, list):
+                    return None
+
+                detected_objects: List[DetectedObject] = []
+                for item in parsed:
+                    if not isinstance(item, dict):
+                        continue
+                    label = str(item.get("label") or "Focal Object").strip()
+                    category = str(item.get("category") or "general").strip().lower()
+                    raw_box = item.get("box_2d") or item.get("bounding_box") or [0.1, 0.1, 0.9, 0.9]
+
+                    if not isinstance(raw_box, (list, tuple)) or len(raw_box) != 4:
+                        continue
+
+                    coords = []
+                    for c in raw_box:
+                        try:
+                            val = float(c)
+                            if val > 1.0:
+                                val /= 1000.0
+                            coords.append(max(0.0, min(1.0, val)))
+                        except (ValueError, TypeError):
+                            coords.append(0.5)
+
+                    ymin, xmin, ymax, xmax = coords
+                    if ymax <= ymin or xmax <= xmin:
+                        continue
+
+                    confidence = float(item.get("confidence") or 0.92)
+                    confidence = max(0.0, min(1.0, confidence))
+
+                    detected_objects.append(
+                        DetectedObject(
+                            label=label,
+                            category=category,
+                            bounding_box=[ymin, xmin, ymax, xmax],
+                            confidence=confidence,
+                        )
+                    )
+
+                return detected_objects if detected_objects else None
+
+        except httpx.TimeoutException:
+            logger.warning("Gemini Vision object detection timed out after %.1fs", timeout_seconds)
+            return None
+        except Exception as e:
+            logger.warning("Gemini Vision object detection request error: %s", str(e))
+            return None
+
+    @staticmethod
+    def _segment_opencv(image_path: str, max_objects: int = 6) -> List[DetectedObject]:
+        """OpenCV contour and chromatic segmentation fallback for offline / zero-cost operation."""
         if not OPENCV_AVAILABLE:
             logger.warning("OpenCV not available; falling back to default focal object")
             return ObjectSeparationService._default_fallback(image_path)

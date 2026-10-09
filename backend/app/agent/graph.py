@@ -1,5 +1,5 @@
 import logging
-from typing import Any, AsyncGenerator, Dict, Generator, Optional
+from typing import Any, AsyncGenerator, Dict, Generator, List, Optional
 
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
@@ -290,6 +290,8 @@ def stream_osint_investigation_sync(
     api_key: Optional[str] = None,
     force_refresh: bool = False,
     gemini_api_key: Optional[str] = None,
+    user_directive: Optional[str] = None,
+    selected_object_labels: Optional[List[str]] = None,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding node execution updates for UI streaming."""
     configure_serpapi_client(api_key=api_key, force_refresh=force_refresh)
@@ -304,6 +306,8 @@ def stream_osint_investigation_sync(
             api_key=api_key,
             force_refresh=force_refresh,
             gemini_api_key=gemini_api_key,
+            user_directive=user_directive,
+            selected_object_labels=selected_object_labels,
         )
         for event in graph.stream(initial_state):
             yield event
@@ -320,6 +324,8 @@ def stream_dialectical_investigation_sync(
     api_key: Optional[str] = None,
     force_refresh: bool = False,
     gemini_api_key: Optional[str] = None,
+    user_directive: Optional[str] = None,
+    selected_object_labels: Optional[List[str]] = None,
 ) -> Generator[Dict[str, Any], None, None]:
     """Synchronous generator yielding dialectical swarm updates for the UI."""
     return stream_osint_investigation_sync(
@@ -332,6 +338,8 @@ def stream_dialectical_investigation_sync(
         api_key=api_key,
         force_refresh=force_refresh,
         gemini_api_key=gemini_api_key,
+        user_directive=user_directive,
+        selected_object_labels=selected_object_labels,
     )
 
 

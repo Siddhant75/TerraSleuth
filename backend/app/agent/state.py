@@ -53,6 +53,10 @@ class OsintGraphState(TypedDict):
     image_url: Optional[str]
     context_hint: Optional[str]
 
+    # Human-In-The-Loop (HITL) Directives & Object Filters
+    user_directive: Optional[str]
+    selected_object_labels: Optional[List[str]]
+
     # Dynamic Intent & Multi-Object Decomposition
     intent: Optional[InvestigationIntent]
     detected_objects: Annotated[List[DetectedObject], merge_lists]
@@ -99,12 +103,16 @@ def create_initial_osint_state(
     api_key: Optional[str] = None,
     force_refresh: bool = False,
     gemini_api_key: Optional[str] = None,
+    user_directive: Optional[str] = None,
+    selected_object_labels: Optional[List[str]] = None,
 ) -> OsintGraphState:
     """Create a pristine initial OsintGraphState for an investigative run."""
     return {
         "image_path": image_path,
         "image_url": image_url,
         "context_hint": context_hint,
+        "user_directive": user_directive,
+        "selected_object_labels": selected_object_labels,
         "intent": None,
         "detected_objects": [],
         "itemized_dossier": [],

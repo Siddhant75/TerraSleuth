@@ -6,7 +6,7 @@
 [![Hackathon Track](https://img.shields.io/badge/SerpApi%20Hackathon-AI%20Agents%20Track-blue.svg)](https://serpapi.github.io/serpapi-india-hackathon-2026/#tracks)
 [![Architecture](https://img.shields.io/badge/Architecture-C4%20Model%20Certified-orange.svg)](C4-Documentation/)
 [![Agent Level](https://img.shields.io/badge/Agent%20Level-Level%205%20Dialectical%20Swarm-purple.svg)](C4-Documentation/c4-component-osint-agent-swarm.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-140%2F140%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-149%2F149%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -21,7 +21,7 @@ While generic hackathon projects wrap basic Google Search text endpoints into a 
 
 | Hackathon Criterion | TerraSleuth Implementation & SerpApi Synergy |
 |---|---|
-| **Plan** | **Scene Deconstructor, Intent Classifier & ReAct Supervisor:** Breaks mystery images into atomic visual clues (architecture, signage script, vegetation) and runs Observe-Orient-Decide-Act (OODA) planning loops emitting structured `AgentThought` records. Dynamically classifies investigative intent (`GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`) in <20ms without external LLM dependencies. |
+| **Plan** | **Scene Deconstructor, Hybrid Vision Ensemble & HITL Directives:** Breaks mystery images into atomic visual clues (architecture, signage script, vegetation). Leverages a **Hybrid Vision Ensemble (Google AI Studio Gemini 1.5 Flash Spatial Vision + OpenCV)** to extract normalized 2D bounding boxes `[ymin, xmin, ymax, xmax]` for multi-object decomposition. Empowers detectives with **Human-in-the-Loop (HITL) Mission Directives** and label filtering checkpoints. Dynamically classifies intent (`GEOSPATIAL_LANDMARK`, `FASHION_PRODUCT`, `FRAUD_DISINFORMATION`, `GENERAL_OBJECT`) via two-tier semantic LLM reasoning with <20ms zero-cost heuristic fallback. |
 | **Search** | **Autonomous Multi-Engine SerpApi Tools & Binary Image Upload API:** Dispatches `upload_image` via SerpApi Image API (`POST https://serpapi.com/image`) with Pillow iterative auto-resizing under 500 KB limit, `tool_lens_search` (reverse visual twins & regional bounding-box crops), `tool_maps_triangulate` (GPS coordinates & local place consensus), `tool_news_audit` (temporal historical archives), and `tool_google_dork` (municipal permits & open directories). |
 | **Compare** | **Dialectical Red-Team Swarm (Hunter vs. Skeptic):** The **Hunter** proposes candidate locations or multi-item wardrobe catalog hypotheses; the **Skeptic** actively attempts to falsify them by checking climate contradictions, architectural mismatches, and fraud signals via `AnomalyService`; the **Arbiter** computes an `AdversarialAuditScore` and certifies the final verdict. |
 | **Act** | **Geospatial Pinpoint & Court-Ready Dossier:** Resolves physical WGS84 coordinates on Esri satellite imagery, evaluates Geoguessr 5,000-point accuracy, unmasks rental fraud, renders an **Itemized Wardrobe & Product Forensic Ledger**, and generates a **1-click standalone offline HTML forensic dossier**. |
