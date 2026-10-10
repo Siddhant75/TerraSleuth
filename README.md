@@ -12,7 +12,10 @@
 [![Release](https://img.shields.io/badge/Release-v0.8.1%20Certified-blue.svg)](docs/terrasleuth-roadmap.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)
+[![Demo Video](https://img.shields.io/badge/Demo%20Video-YouTube%20(2m%2016s)-FF0000.svg?logo=youtube&logoColor=white)](https://youtu.be/OuB36Ju8StM)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
+
+> 📺 **Watch the Official 2-Minute Demo Video:** [https://youtu.be/OuB36Ju8StM](https://youtu.be/OuB36Ju8StM)
 
 ---
 
@@ -342,7 +345,7 @@ Follow these steps to evaluate TerraSleuth with **zero configuration and zero AP
 
 TerraSleuth enforces strict regression testing to guarantee enterprise-level stability:
 
-- **159 passing / 159 total automated tests (100% pass rate in ~25 seconds)**.
+- **163 passing / 163 total automated tests (100% pass rate in ~25 seconds)**.
 - **0 live SerpApi credits burned during automated test execution** via SQLite cache mock isolation.
 - Scheme-level XSS neutralization on all clickable citations (`http://`, `https://`, `mailto:` allowlist).
 

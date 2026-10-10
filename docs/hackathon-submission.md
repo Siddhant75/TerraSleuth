@@ -136,7 +136,7 @@ SerpApi free tiers provide 250 searches. TerraSleuth guarantees that developers,
 - **Transparent SQLite WAL Disk Cache (`terrasleuth.db`):** Pre-seeded with golden investigative scenarios for lag-free, zero-credit demos.
 - **Parameter Normalization:** Canonical hashing strips transient query parameters and API keys.
 - **Circuit Breakers:** Strictly decrements query budgets, skipping remote execution if the quota ceiling is reached.
-- **100% Offline Test Suite:** All 158 tests run completely offline with 0 live API credit burn.
+- **100% Offline Test Suite:** All 163 tests run completely offline with 0 live API credit burn.
 
 ---
 
@@ -146,7 +146,7 @@ TerraSleuth was engineered under strict **Subagent-Driven Development (SDD)** wi
 
 | Metric | Measurement |
 |---|---|
-| **Total Automated Tests** | **159 passing / 159 total (100% pass rate)** |
+| **Total Automated Tests** | **163 passing / 163 total (100% pass rate)** |
 | **Unit & Integration Test Time** | ~28.0 seconds |
 | **Live SerpApi Credits Burned in Tests** | **0 credits** |
 | **Security & XSS Protection** | Strict scheme allowlist (`http`, `https`, `mailto`) neutralizing `javascript:` injection |
@@ -160,8 +160,8 @@ TerraSleuth was engineered under strict **Subagent-Driven Development (SDD)** wi
 ### Option 1: Docker (Recommended for Judges)
 ```bash
 # 1. Clone repository
-git clone https://github.com/example/terrasleuth.git
-cd terrasleuth
+git clone https://github.com/Siddhant75/TerraSleuth.git
+cd TerraSleuth
 
 # 2. Launch container (Zero-credit pre-cached demo works immediately without API key)
 docker-compose up --build
@@ -191,18 +191,24 @@ echo "GEMINI_API_KEY=your_gemini_key" >> .env
 streamlit run frontend/app.py
 ```
 
-### Option 3: Run Full Automated Test Suite (159 Tests)
+### Option 3: Run Full Automated Test Suite (163 Tests)
 ```bash
-# Set PYTHONPATH and run all 159 automated tests
+# Set PYTHONPATH and run all 163 automated tests
 $env:PYTHONPATH="." ; pytest -v
 ```
 
 ---
 
-## 🎬 3-Minute Demonstration Guide
+## 🎬 Official Demonstration Video (< 3 Minutes)
 
-1. **0:00 – 0:30 (Mission Briefing):** Review the 4 investigative scenarios in the Forensic Command Deck.
-2. **0:30 – 1:15 (Landmark Pinpoint):** Select "The Waterfront Monument & Heritage Hotel", click **Launch Autonomous Investigation**, watch the LangGraph swarm extract clues, and pinpoint Gateway of India on satellite tiles with 96% confidence.
-3. **1:15 – 1:55 (Visual Twin Comparator):** Switch to the Side-by-Side Visual Twin Matcher, inspecting exact visual alignment against authoritative Wikipedia images.
-4. **1:55 – 2:30 (Fraud Unmasking):** Select "Vacation Rental Listing Fraud", launch investigation, and watch the red Anomaly Banner and dynamic LLM Skeptic critique unmask the stolen Santorini luxury hotel photo.
-5. **2:30 – 3:00 (Export & Offline Dossier):** Click "Download Standalone HTML Forensic Dossier" to inspect the self-contained intelligence report with base64 embedded imagery.
+> **YouTube Walkthrough:** [https://youtu.be/OuB36Ju8StM](https://youtu.be/OuB36Ju8StM)  
+> **Runtime:** 2 minutes 16 seconds (Full 1080p 60fps with AI Documentary Narration)
+
+### Video Narrative Breakdown:
+1. **0:00 – 0:18 (The Challenge & Swarm Intake):** Introduction to TerraSleuth's Level 5 multi-agent swarm, featuring live connection status indicators (`🟢 SERPAPI ONLINE` and `🟣 GEMINI 1.5 FLASH ACTIVE`).
+2. **0:18 – 0:43 (Uncaptioned Image Decomposition):** User uploads an uncaptioned street photograph (`test1..jpeg`). The Scene Deconstructor and Gemini Vision extract structural landmarks into normalized bounding boxes.
+3. **0:43 – 1:11 (SerpApi Grounding & Landmark Triangulation):** Hunter searches SerpApi Google Lens to discover visual twins and Google Maps to resolve the physical street address (*The Columbia at the Waterfront in Vancouver, Washington*). The Gemini Forensic Intelligence Briefing certifies the case with a **94% Adversarial Audit Score**.
+4. **1:11 – 1:38 (Act II: Adversarial Rental Scam Injection):** Second case tests active deception: a suspect claims an uncaptioned luxury apartment is in Miami, Florida for $250/night. The Dialectical Swarm activates: Hunter unmasks a 79% visual twin, while the Skeptic debunker proves the architecture is whitewashed masonry from *Canaves Oia Suites* in Santorini, Greece.
+5. **1:38 – 1:49 (Arbiter Penalty & Fraud Unmasking):** The Chief Arbiter penalizes confidence to **35%** and issues a certified **FRAUD UNMASKED** verdict.
+6. **1:49 – 2:02 (Autonomous Geoguessr Mode):** Demonstrates 4-phase progressive spatial radius tightening, scoring **4,975 / 5,000 points** on Esri satellite imagery.
+7. **2:02 – 2:16 (Verifiable Provenance Finale):** Showcases the Verifiable Citation Ledger anchoring all claims across Google Lens and Google Maps, and highlights the exportable, standalone offline HTML forensic dossier.

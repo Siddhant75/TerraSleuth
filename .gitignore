@@ -103,8 +103,10 @@ recordings/
 *.mov
 *.mkv
 
-# OS / Editor junk
+# OS / Editor junk & Scratch
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+scratch/
+
