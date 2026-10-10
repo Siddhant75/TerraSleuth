@@ -108,5 +108,6 @@ recordings/
 Thumbs.db
 .idea/
 .vscode/
+.claude/
 scratch/
 
