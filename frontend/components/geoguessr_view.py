@@ -1,4 +1,4 @@
-"""Geoguessr Mode Visual Component for TerraSleuth War Room.
+"""Geoguessr Mode Visual Component for TerraSleuth Forensic Command Deck.
 
 Renders interactive 5,000-point competitive Geoguessr score, distance error metrics,
 and the 4-phase progressive spatial radius tightening cards.

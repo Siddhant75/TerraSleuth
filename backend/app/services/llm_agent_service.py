@@ -1,6 +1,6 @@
 """LLM Detective Agent Service for dynamic fraud analysis, dialectical arbitration, and narrative synthesis.
 
-Provides Antigravity-style autonomous LLM reasoning across Skeptic, Arbiter, and Synthesizer
+Provides autonomous multi-agent LLM reasoning across Skeptic, Arbiter, and Synthesizer
 nodes using Google AI Studio (Gemini 1.5 Flash), while strictly preserving a zero-credit
 deterministic fallback when credentials are absent or network requests time out.
 """

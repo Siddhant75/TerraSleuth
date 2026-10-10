@@ -19,14 +19,14 @@ def run_ui_audit():
         )
         page = context.new_page()
 
-        # Step 1: Initial load on http://localhost:8501 (Direct War Room HUD & Mission Briefings)
+        # Step 1: Initial load on http://localhost:8501 (Direct Command Deck & Mission Briefings)
         print("Navigating to http://localhost:8501...")
         page.goto("http://localhost:8501", wait_until="networkidle", timeout=45000)
         time.sleep(3)
 
         p1 = os.path.join(SCREENSHOT_DIR, "01_initial_hero_command_deck.png")
         page.screenshot(path=p1, full_page=True)
-        print("Captured: 01_initial_hero_command_deck.png (Pure Product Heroic Landing)")
+        print("Captured: 01_initial_hero_command_deck.png (Pure Product Primary Mission View)")
 
         # Step 2: Sidebar Target Selection View
         print("Capturing sidebar target selection view...")

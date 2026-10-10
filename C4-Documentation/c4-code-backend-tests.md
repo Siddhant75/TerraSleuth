@@ -2,7 +2,7 @@
 
 ## 1. Overview
 - **Name:** TerraSleuth Backend Automated Verification & Unit Test Suite
-- **Description:** 23 comprehensive test modules (159 automated tests passing project-wide, 100% pass rate) verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic/Arbiter debate loops, local image uploads, OpenCV object separation, dynamic intent routing, Antigravity-style dynamic LLM reasoning, and anomaly detection.
+- **Description:** 23 comprehensive test modules (159 automated tests passing project-wide, 100% pass rate) verifying SerpApi client mechanics, SQLite disk caching, state machine transitions, vision deconstruction, quota budget enforcement, Level 4 ReAct tool execution, Level 5 Hunter/Skeptic/Arbiter debate loops, local image uploads, OpenCV object separation, dynamic intent routing, autonomous dynamic LLM reasoning, and anomaly detection.
 - **Location:** [`backend/tests`](file:///d:/SerpAPI_hackathon/backend/tests)
 - **Language:** Python 3.11+
 - **Purpose:** Regression prevention and multi-gate verification ensuring 100% deterministic test execution, 0 live SerpApi credits burned during CI/CD, and robust schema compliance.
@@ -110,7 +110,7 @@
 - Tests Human-in-the-Loop (HITL) mission directives and label filtering with zero-quota leak protection.
 - Validates offline OpenCV fallback when API key is missing or request times out.
 
-### 2.23 `test_llm_agent_service.py` (Antigravity-Style Dynamic LLM Decision Engine Tests)
+### 2.23 `test_llm_agent_service.py` (Dynamic LLM Decision Engine Tests)
 - Verifies `LLMDetectiveAgentService` Skeptic dynamic fraud cross-examination, Arbiter continuous scoring (0.0 to 1.0), and Synthesizer executive briefing generation.
 - Validates empty `lens_matches` edge case safety (`test_skeptic_node_with_fraud_and_empty_lens_matches_does_not_crash`).
 - Tests HTTP 500 and timeout handling with zero network calls and complete offline fallback execution.

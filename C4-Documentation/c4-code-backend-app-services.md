@@ -148,8 +148,8 @@ Hybrid semantic reasoning service providing Tier-1 semantic agentic deduction ov
   - **`classify_and_disambiguate(visual_matches: List[Dict[str, Any]], knowledge_graph: Optional[Dict[str, Any]] = None, context_hint: Optional[str] = None, image_path: Optional[str] = None, gemini_api_key: Optional[str] = None, openai_api_key: Optional[str] = None) -> SemanticDisambiguationResult`**:
     Master hybrid entry point trying Tier-1 Gemini, then Tier-1 OpenAI, and seamlessly degrading to Tier-2 `IntentClassificationService` heuristics on network timeout or missing credentials.
 
-### 2.11 `llm_agent_service.py` (Antigravity-Style Dynamic LLM Decision Engine)
-Institutional-grade dynamic decision engine powering Antigravity-style autonomous agentic reasoning across Skeptic, Arbiter, and Synthesizer nodes using Google AI Studio (Gemini 1.5 Flash), strictly preserving a zero-credit deterministic fallback.
+### 2.11 `llm_agent_service.py` (Two-Tier Dynamic LLM Decision Engine)
+Institutional-grade dynamic decision engine powering autonomous multi-agent reasoning across Skeptic, Arbiter, and Synthesizer nodes using Google AI Studio (Gemini 1.5 Flash), strictly preserving a zero-credit deterministic fallback.
 
 - **Class:** `LLMDetectiveAgentService`
   - **`evaluate_skeptic(claimed_context: Optional[str], visual_clues: List[Any], lens_matches: List[Any], geo_candidate: Optional[Any], timeline_events: List[Any], gemini_api_key: Optional[str] = None, timeout_seconds: float = 8.0) -> Optional[SkepticEvaluationResult]`**:

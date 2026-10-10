@@ -36,7 +36,7 @@ cache_service.seed_golden_cases()
 
 # Streamlit Page Setup
 st.set_page_config(
-    page_title="TerraSleuth // OSINT War Room 2.0",
+    page_title="TerraSleuth // OSINT Forensic Command Deck",
     page_icon="🕵️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -318,7 +318,7 @@ def render_sidebar():
 def main():
     config = render_sidebar()
 
-    # Render War Room 2.0 HUD Header Banner
+    # Render Forensic Command Deck Header Banner
     render_war_room_header()
 
     # Session State Persistence
@@ -329,7 +329,7 @@ def main():
     if "swarm_telemetry_logs" not in st.session_state:
         st.session_state["swarm_telemetry_logs"] = []
 
-    # Pure Product Experience: Tactical Command Deck is the Heroic Landing View
+    # Pure Product Experience: Tactical Command Deck is the Primary Mission View
     if not st.session_state.get("case_file"):
         render_mission_briefing()
 

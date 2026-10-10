@@ -17,7 +17,7 @@ In-memory Streamlit headless integration testing suite verifying complete reacti
 - **Fixtures:**
   - `prime_database()`: Automatically initializes SQLite database schema and pre-populates golden benchmark cases before test execution.
 - **Tests:**
-  - `test_app_loads_without_exceptions()`: Verifies that `frontend/app.py` compiles, hydrates session state, and mounts the War Room HUD header without throwing exceptions.
+  - `test_app_loads_without_exceptions()`: Verifies that `frontend/app.py` compiles, hydrates session state, and mounts the Forensic Command Deck header without throwing exceptions.
   - `test_app_sidebar_configuration()`: Verifies radio selectors, pre-seeded case selectors, and parameter sliders in the sidebar.
   - `test_app_investigation_button_click()`: Simulates clicking the primary "⚡ Launch Autonomous Investigation" button, asserting that the investigation pipeline streams to completion and updates session state with a valid `CaseFile`.
   - `test_app_resolved_state_renders_command_deck()`: Verifies that after investigation completes, the 45/55 Split-Screen Command Deck, Folium map, and sub-tabs mount correctly.

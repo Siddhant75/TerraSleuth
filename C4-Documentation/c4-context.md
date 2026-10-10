@@ -12,7 +12,7 @@ TerraSleuth transforms this manual investigative process into an autonomous, gla
 - Deconstructs scenes into architectural, vegetation, signage, and landmark clues.
 - Pitches an aggressive hypothesis generator (**Hunter**) against a cynical red-team auditor (**Skeptic**) to eliminate false positives and hallucinated landmarks.
 - Cross-references visual matches against spatial consensus and historical publication timestamps to unmask stolen rental photos and recirculated viral media.
-- Delivers an immersive War Room 2.0 tactical dashboard featuring a 45/55 split-screen command deck, Leaflet/Esri satellite recon pinpointing, interactive Geoguessr 5,000-point scoring, and 1-click exportable offline HTML intelligence dossiers.
+- Delivers an interactive OSINT forensic dashboard featuring a 45/55 split-screen command deck, Leaflet/Esri satellite recon pinpointing, interactive Geoguessr 5,000-point scoring, and 1-click exportable offline HTML intelligence dossiers.
 - Defends developer quotas through an integrated SQLite disk cache, ensuring that golden benchmarks run 100% offline with zero live API credit consumption.
 
 ---
@@ -70,21 +70,21 @@ TerraSleuth transforms this manual investigative process into an autonomous, gla
 sequenceDiagram
     autonumber
     actor Journalist as Investigative Journalist
-    participant WarRoom as TerraSleuth War Room
+    participant CommandDeck as Forensic Command Deck
     participant Swarm as OSINT Agent Swarm
     participant SerpApi as SerpApi Multi-Engine
     
-    Journalist->>WarRoom: Uploads suspect viral protest photo with context hint
-    Journalist->>WarRoom: Sets query budget (8) and clicks "Launch Autonomous Investigation"
-    WarRoom->>Swarm: Initiates dialectical investigation stream
+    Journalist->>CommandDeck: Uploads suspect viral protest photo with context hint
+    Journalist->>CommandDeck: Sets query budget (8) and clicks "Launch Autonomous Investigation"
+    CommandDeck->>Swarm: Initiates dialectical investigation stream
     Swarm->>SerpApi: Google Lens visual match query
     SerpApi-->>Swarm: Returns historical image syndication URLs
     Swarm->>SerpApi: Google News query for earliest publication date
     SerpApi-->>Swarm: Returns 2019 news report (Disinformation Detected!)
-    Swarm->>WarRoom: Streams [SKEPTIC] contradiction alerts in real-time terminal
-    WarRoom-->>Journalist: Displays Anomaly Banner: "🚨 RECIRCULATED MEDIA DETECTED"
-    Journalist->>WarRoom: Clicks "📥 Export Offline HTML Dossier"
-    WarRoom-->>Journalist: Downloads self-contained verifiable forensic dossier
+    Swarm->>CommandDeck: Streams [SKEPTIC] contradiction alerts in real-time terminal
+    CommandDeck-->>Journalist: Displays Anomaly Banner: "🚨 RECIRCULATED MEDIA DETECTED"
+    Journalist->>CommandDeck: Clicks "📥 Export Offline HTML Dossier"
+    CommandDeck-->>Journalist: Downloads self-contained verifiable forensic dossier
 ```
 
 ### 4.2 Real Estate Fraud Investigator Journey
@@ -92,20 +92,20 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     actor Investigator as Fraud Investigator
-    participant WarRoom as TerraSleuth War Room
+    participant CommandDeck as Forensic Command Deck
     participant Hunter as Hunter Agent
     participant Skeptic as Skeptic Debunker
     participant Arbiter as Arbiter Node
     
-    Investigator->>WarRoom: Selects rental listing image (Santorini scenario)
-    Investigator->>WarRoom: Clicks "Launch Autonomous Investigation"
-    WarRoom->>Hunter: Analyzes interior cliffside luxury suite photo
+    Investigator->>CommandDeck: Selects rental listing image (Santorini scenario)
+    Investigator->>CommandDeck: Clicks "Launch Autonomous Investigation"
+    CommandDeck->>Hunter: Analyzes interior cliffside luxury suite photo
     Hunter->>Hunter: Proposes Oia, Santorini boutique resort match
     Hunter->>Skeptic: Hands off hypothesis with Google Maps coordinates
     Skeptic->>Skeptic: Cross-references claimed "Miami luxury rental" vs Greek resort truth
     Skeptic->>Arbiter: Emits CRITICAL anomaly: Stolen hospitality asset
-    Arbiter->>WarRoom: Compiles CaseFile with 0.98 fraud confidence
-    WarRoom-->>Investigator: Displays Side-by-Side Visual Twin & Fraud Banner
+    Arbiter->>CommandDeck: Compiles CaseFile with 0.98 fraud confidence
+    CommandDeck-->>Investigator: Displays Side-by-Side Visual Twin & Fraud Banner
 ```
 
 ---
@@ -115,7 +115,7 @@ sequenceDiagram
 | External System | Type | Protocol | Role in TerraSleuth |
 |---|---|---|---|
 | **SerpApi Cloud Gateway** | External SaaS API | HTTPS / REST / JSON | Authoritative search proxy providing access to Google Lens (visual provenance, image upload API, crops), Google Maps (places, coordinates), Google News (historical timeline), and Google Search (OSINT dorks). |
-| **Google AI Studio (Gemini 1.5 Flash)** | External AI Cloud API | HTTPS / REST / JSON (`x-goog-api-key`) | Antigravity-Style Dynamic LLM Decision Engine powering semantic fraud cross-examination, continuous dialectical arbitration, executive synthesis, and 2D spatial vision bounding boxes (with 100% offline zero-credit fallback). |
+| **Google AI Studio (Gemini 1.5 Flash)** | External AI Cloud API | HTTPS / REST / JSON (`x-goog-api-key`) | Two-tier dynamic LLM decision engine powering semantic fraud cross-examination, continuous dialectical arbitration, executive synthesis, and 2D spatial vision bounding boxes (with 100% offline zero-credit fallback). |
 | **Esri & CartoDB Tile CDNs** | Geospatial CDN | HTTPS / Tile Images | Delivers tactical Dark Matter and high-resolution Satellite Recon map tiles to the Leaflet UI. |
 | **SQLite Persistent Database** | Local Database Storage | POSIX File I/O / WAL | Embedded relational storage managing the zero-quota query cache (`serp_cache`) and golden cases (`golden_cases`). |
 

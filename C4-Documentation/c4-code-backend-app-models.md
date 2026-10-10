@@ -77,7 +77,7 @@
 ### 2.7 `llm.py` (LLM Semantic Disambiguation Schemas)
 - **Class:** `SemanticDisambiguationResult(BaseModel)`: `intent: InvestigationIntent`, `primary_entity: str`, `target_query: str`, `reasoning: str`, `confidence: float = 0.9`
 
-### 2.8 `llm_agent.py` (Antigravity-Style Dynamic Agent Decision Schemas)
+### 2.8 `llm_agent.py` (Dynamic Agent Decision Schemas)
 - **Class:** `SkepticEvaluationResult(BaseModel)`: `critique: str`, `fraud_probability: float = 0.0`, `is_fraud: bool = False`, `reasoning: Optional[str] = None`
 - **Class:** `ArbiterEvaluationResult(BaseModel)`: `adversarial_audit_score: float`, `verdict: str`, `reasoning: str`
 

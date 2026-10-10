@@ -59,7 +59,7 @@
   - **Description:** Decomposes moodboards/collages into itemized garments and accessories. Enforces strict quota defense (hard cap of max 5 items), calls `tool_lens_search` with normalized `crop_bbox`, and populates `itemized_dossier` and citations.
 - **Function:** `skeptic_node(state: OsintGraphState) -> Dict[str, Any]`
   - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L417-L566`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L417-L566)
-  - **Description:** Adversarial red-team auditor. Implements two-tier Antigravity dynamic fraud evaluation: Tier-1 dispatches semantic cross-examination via `LLMDetectiveAgentService.evaluate_skeptic` comparing user caption against SerpApi ground truth; Tier-2 engages deterministic `AnomalyService.detect_anomalies` fallback when offline.
+  - **Description:** Adversarial red-team auditor. Implements two-tier dynamic fraud evaluation: Tier-1 dispatches semantic cross-examination via `LLMDetectiveAgentService.evaluate_skeptic` comparing user caption against SerpApi ground truth; Tier-2 engages deterministic `AnomalyService.detect_anomalies` fallback when offline.
 - **Function:** `arbiter_node(state: OsintGraphState) -> Dict[str, Any]`
   - **Location:** [`backend/app/agent/nodes/swarm_nodes.py#L568-L666`](file:///d:/SerpAPI_hackathon/backend/app/agent/nodes/swarm_nodes.py#L568-L666)
   - **Description:** Dialectical judge weighing Hunter hypotheses vs Skeptic critiques. Tier-1 dynamically calls `LLMDetectiveAgentService.arbitrate_case` computing continuous `adversarial_audit_score` (0.0 to 1.0) and official verdict (`fraud_unmasked`, `debate_certified`, `refining_debate`); Tier-2 engages deterministic heuristic fallback.

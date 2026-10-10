@@ -62,7 +62,7 @@ def generate_case_summary_markdown(
         "",
     ]
 
-    # Dynamic Lead Detective Executive Intelligence Briefing (Antigravity Mode)
+    # Dynamic Lead Detective Executive Intelligence Briefing (Autonomous LLM Mode)
     if gemini_api_key:
         try:
             from backend.app.services.llm_agent_service import LLMDetectiveAgentService

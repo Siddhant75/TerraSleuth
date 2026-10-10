@@ -9,12 +9,12 @@
 ---
 
 ## 2. Purpose
-Delivers a pure, distraction-free product experience for investigators and hackathon evaluators. Replaces clunky tab navigation and raw JSON outputs with an immersive OSINT War Room interface that highlights multi-modal evidence with zero text truncation.
+Delivers a pure, distraction-free product experience for investigators and hackathon evaluators. Replaces clunky tab navigation and raw JSON outputs with an immersive OSINT Forensic Command Deck interface that highlights multi-modal evidence with zero text truncation.
 
 ---
 
 ## 3. Software Features
-- **Heroic Landing & Mission Briefings:** High-tech HUD banner and 1-click briefing cards for instant benchmark selection.
+- **Mission Briefings Deck:** High-tech HUD banner and 1-click briefing cards for instant benchmark selection.
 - **45/55 Split-Screen Command Deck:**
   - Left: Visual Forensic Inspector with bounding box clue cards and side-by-side Google Lens visual twin matcher.
   - Right: Tactical Dark Matter / Esri Satellite map with glowing cyan pinpoint crosshair and consensus address banner.
@@ -63,7 +63,7 @@ graph TD
     User[Investigator / Judge] -->|Interacts| App[Streamlit App Entrypoint]
     
     subgraph UI[Tactical Command Deck & Evidence UI]
-        App --> Header[War Room HUD Header]
+        App --> Header[Forensic Command Deck Header]
         App --> Briefing[Mission Briefings & Sidebar]
         App --> Deck[Tactical Command Deck Container]
         

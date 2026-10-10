@@ -447,7 +447,7 @@ def skeptic_node(state: OsintGraphState) -> Dict[str, Any]:
             "status": "critique_completed",
         }
 
-    # Dynamic Tier-1 LLM Evaluation (Antigravity Mode)
+    # Dynamic Tier-1 LLM Evaluation (Gemini Semantic Reasoner)
     from backend.app.services.llm_agent_service import LLMDetectiveAgentService
     llm_skeptic_res = None
     if gemini_key:
@@ -608,7 +608,7 @@ def arbiter_node(state: OsintGraphState) -> Dict[str, Any]:
             "status": verdict_status,
         }
 
-    # Dynamic Tier-1 LLM Arbitration (Antigravity Mode)
+    # Dynamic Tier-1 LLM Arbitration (Gemini Continuous Arbitration)
     from backend.app.services.llm_agent_service import LLMDetectiveAgentService
     llm_arbiter_res = None
     if gemini_key:

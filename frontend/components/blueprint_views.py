@@ -1,4 +1,4 @@
-"""Interactive Showcase Views for TerraSleuth War Room 2.0.
+"""Interactive Showcase Views for TerraSleuth Forensic Command Deck.
 
 Renders:
 1. Screenshot Audit & Critique (4 visual flaw cards with red/amber badges and fixes).
@@ -18,7 +18,7 @@ def render_screenshot_critique_view() -> None:
         '<p style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">'
         'Baseline test cases used synthetic tan/brown geometric blocks (<code style="color: #fbbf24;">target.jpg</code>). While computationally valid, it looked like an engineer\'s wireframe unit test, breaking forensic credibility for judges.</p>'
         '<div style="background: rgba(127, 29, 29, 0.3); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fecaca;">'
-        '<b>War Room 2.0 Fix:</b> Embedded high-resolution photographic library (Apollo Bunder maritime arch, Bavarian alpine fortress, Santorini luxury rental) with verified metadata.</div>'
+        '<b>Command Deck Fix:</b> Embedded high-resolution photographic library (Apollo Bunder maritime arch, Bavarian alpine fortress, Santorini luxury rental) with verified metadata.</div>'
         '</div>'
     )
 
@@ -29,7 +29,7 @@ def render_screenshot_critique_view() -> None:
         '<p style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">'
         'Standard Streamlit <code style="color: #fbbf24;">st.metric</code> cards truncated essential coordinate strings and landmark titles with ellipses on multi-column layouts, hiding crucial geospatial intelligence.</p>'
         '<div style="background: rgba(127, 29, 29, 0.3); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fecaca;">'
-        '<b>War Room 2.0 Fix:</b> Custom flexbox telemetry ribbon with auto-wrapping, monospace font, zero-truncation WGS84 precision, and zero-quota status indicators.</div>'
+        '<b>Command Deck Fix:</b> Custom flexbox telemetry ribbon with auto-wrapping, monospace font, zero-truncation WGS84 precision, and zero-quota status indicators.</div>'
         '</div>'
     )
 
@@ -40,7 +40,7 @@ def render_screenshot_critique_view() -> None:
         '<p style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">'
         'When switching between "Geospatial Pinpoint" and "Visual Evidence", investigators lost sight of the target image. An investigator needs a unified, synchronized split-screen view.</p>'
         '<div style="background: rgba(120, 53, 15, 0.3); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fef3c7;">'
-        '<b>War Room 2.0 Fix:</b> Unified 45/55 Split-Screen Command Deck: Left 45% = Visual Forensic Inspector & Visual Twin Comparator; Right 55% = Satellite Recon Map & Intelligence Feed.</div>'
+        '<b>Command Deck Fix:</b> Unified 45/55 Split-Screen Command Deck: Left 45% = Visual Forensic Inspector & Visual Twin Comparator; Right 55% = Satellite Recon Map & Intelligence Feed.</div>'
         '</div>'
     )
 
@@ -51,7 +51,7 @@ def render_screenshot_critique_view() -> None:
         '<p style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">'
         'Agent progression appeared as plain stacked green boxes (<code style="color: #34d399;">Scene Deconstructor — complete</code>). It lacked the dynamic feel of an autonomous multi-agent swarm coordinating live searches.</p>'
         '<div style="background: rgba(120, 53, 15, 0.3); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fef3c7;">'
-        '<b>War Room 2.0 Fix:</b> Live Cyber Swarm Radar with active node indicators, deduction logs, and an obsidian monospace telemetry terminal (<code style="color: #38bdf8;">#090d16</code>).</div>'
+        '<b>Command Deck Fix:</b> Live Execution Telemetry with active node indicators, deduction logs, and an obsidian monospace telemetry terminal (<code style="color: #38bdf8;">#090d16</code>).</div>'
         '</div>'
     )
 
@@ -59,7 +59,7 @@ def render_screenshot_critique_view() -> None:
         '<div style="background: #0d121d; border: 1px solid rgba(0, 242, 254, 0.25); border-radius: 12px; padding: 20px; margin-bottom: 20px;">'
         '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">'
         '<div><h3 style="color: #38bdf8; margin: 0; font-size: 18px; font-weight: 700;">1. Playwright Visual Audit & Forensic UI Critique</h3>'
-        '<p style="color: #94a3b8; margin: 4px 0 0 0; font-size: 12px;">Comparative analysis of baseline prototype visual flaws vs War Room 2.0 engineered fixes.</p></div>'
+        '<p style="color: #94a3b8; margin: 4px 0 0 0; font-size: 12px;">Comparative analysis of baseline prototype visual flaws vs Command Deck engineered fixes.</p></div>'
         '<span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: ui-monospace, monospace;">4 CRITICAL FLAWS RESOLVED</span>'
         '</div>'
         '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px;">'
@@ -136,9 +136,9 @@ def render_implementation_roadmap_view() -> None:
         ("Sprint 1 — Foundation & SerpApi Multi-Engine Service", "v0.1.0 CERTIFIED", "#10b981", "#34d399", "SerpApi clients (Lens, Maps, News, Search), SQLite WAL caching layer, budget defense manager."),
         ("Sprint 2 — LangGraph Multi-Agent OSINT Swarm", "v0.2.0 CERTIFIED", "#10b981", "#34d399", "Scene Deconstructor, Lens Hunter, Geo Triangulator, Chrono Auditor, Case Synthesizer, conditional router."),
         ("Sprint 3 — Interactive Visual OSINT Dashboard", "v0.3.0 CERTIFIED", "#10b981", "#34d399", "Bounding box overlays, Leaflet/Folium map pinpoint, timeline, citation ledger, golden demo walk-through."),
-        ("Sprint 4 — Tactical Command Deck & High-Res Target Library", "v0.4.0 CERTIFIED", "#10b981", "#34d399", "45/55 Split-Screen Command Deck, authentic photography, visual twin matcher, satellite recon, cyber radar."),
-        ("Sprint 5 — War Room 2.0 HUD, Fraud Engine & Standalone Dossier", "v0.5.0 CERTIFIED", "#10b981", "#34d399", "Rental fraud exposer, Bellingcat temporal debunker, standalone offline HTML dossier exporter, Docker container."),
-        ("Sprint 6 — UI/UX High-Fidelity War Room Alignment & Autonomous Geoguessr Mode", "v0.6.0 CERTIFIED", "#38bdf8", "#38bdf8", "Top-level 4-tab blueprint navigation, glowing neon container, side-by-side twin always-visible integration, Autonomous Geoguessr Mode (5,000 pts), SDD git pre-commit hook."),
+        ("Sprint 4 — Tactical Command Deck & High-Res Target Library", "v0.4.0 CERTIFIED", "#10b981", "#34d399", "45/55 Split-Screen Command Deck, authentic photography, visual twin matcher, satellite recon, execution telemetry terminal."),
+        ("Sprint 5 — Forensic Command Deck, Fraud Engine & Standalone Dossier", "v0.5.0 CERTIFIED", "#10b981", "#34d399", "Rental fraud exposer, Bellingcat temporal debunker, standalone offline HTML dossier exporter, Docker container."),
+        ("Sprint 6 — UI/UX Forensic Command Deck Alignment & Autonomous Geoguessr Mode", "v0.6.0 CERTIFIED", "#38bdf8", "#38bdf8", "Top-level 4-tab blueprint navigation, glowing neon container, side-by-side twin always-visible integration, Autonomous Geoguessr Mode (5,000 pts), SDD git pre-commit hook."),
     ]
 
     sprint_cards = "".join(

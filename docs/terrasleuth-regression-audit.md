@@ -28,7 +28,7 @@
 | **Task 5.1: Anomaly & Fraud Engine** | `backend/app/models/anomaly.py`<br>`backend/app/services/anomaly_service.py` | `backend/tests/test_anomaly_service.py` (3 tests) | 3/3 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 5.2: Advanced OSINT Google Dorks** | `backend/app/models/dork.py`<br>`backend/app/services/dork_service.py` | `backend/tests/test_dork_service.py` (1 test) | 1/1 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 5.3: Standalone Offline HTML Dossier Exporter** | `frontend/components/dossier_exporter.py` | `frontend/tests/test_dossier_exporter.py` (3 tests) | 3/3 (100%) | `PASS (APPROVED)` | 🟢 Certified |
-| **Task 5.4: War Room 2.0 HUD & Full Playwright Re-Certification** | `frontend/components/war_room_hud.py`<br>`frontend/app.py`<br>`tests/e2e/run_playwright_audit.py` | All test suites & Playwright re-certification | 84/84 (100%) | `PASS (APPROVED)` | 🟢 Certified |
+| **Task 5.4: Forensic Command Deck & Full Playwright Re-Certification** | `frontend/components/war_room_hud.py`<br>`frontend/app.py`<br>`tests/e2e/run_playwright_audit.py` | All test suites & Playwright re-certification | 84/84 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.1: Master 4-Tab Blueprint Navigation** | `frontend/components/blueprint_views.py`<br>`frontend/app.py` | `frontend/tests/test_geoguessr_and_blueprint_ui.py` (1 test) | 1/1 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.2: Command Deck Refinement & Visual Twin** | `frontend/components/tactical_command_deck.py` | `frontend/tests/test_command_deck_ui.py` (4 tests) | 4/4 (100%) | `PASS (APPROVED)` | 🟢 Certified |
 | **Task 6.3: Autonomous Geoguessr Mode** | `backend/app/models/geoguessr.py`<br>`backend/app/services/geoguessr_service.py`<br>`frontend/components/geoguessr_view.py` | `backend/tests/test_geoguessr_service.py` (4 tests)<br>`frontend/tests/test_geoguessr_and_blueprint_ui.py` (2 tests) | 6/6 (100%) | `PASS (APPROVED)` | 🟢 Certified |
@@ -120,7 +120,7 @@ tests/e2e/test_dashboard_e2e.py ................ [100%] (4 passed)
 In addition to headless unit and AppTest suites, the live running application was certified via browser automation (`tests/e2e/run_playwright_audit.py`) using Playwright with system Google Chrome across the entire pure product workflow.
 
 ### Visual Audit Checkpoints & Captured Screenshots (`tests/e2e/screenshots/`):
-1. **`01_initial_hero_command_deck.png`**: Heroic Pure Product Landing — High-contrast War Room 2.0 HUD header, interactive Mission Briefing card deck, and prominent primary launch trigger on main canvas.
+1. **`01_initial_hero_command_deck.png`**: Pure Product Command Deck Landing — High-contrast Forensic Command Deck header, interactive Mission Briefing card deck, and prominent primary launch trigger on main canvas.
 2. **`02_sidebar_target_and_tech_expander.png`**: Sidebar Investigation Drawer — Target selection, compact image preview, and expanded "ℹ️ Technical Architecture & SerpApi Coverage" drawer for judges.
 3. **`03_command_deck_overview_with_twin.png`**: 45/55 Split-Screen Command Deck — Top 5-badge telemetry ribbon, 1-Click "📥 Export HTML Dossier" action bar, suspect image + bounding boxes, and Side-by-Side Visual Twin Matcher directly below.
 4. **`04_deck_geoguessr_mode.png`**: Autonomous Geoguessr Mode — 5,000-point competitive Geoguessr scorecard and 4-phase progressive radius tightening cards.

@@ -12,7 +12,7 @@
 
 The Internet is inundated with uncaptioned viral photographs, recycled crisis imagery, and deceptive marketplace listings. Identifying the true origin of a photo usually demands hours of tedious manual cross-referencing across reverse image databases, mapping platforms, and historical archives.
 
-**TerraSleuth** is an autonomous multi-modal OSINT investigator powered by **LangGraph**, **SerpApi Multi-Engine Cloud**, and **Google Gemini 1.5 Flash**. Inspired by autonomous agent architectures (like Google Antigravity), TerraSleuth accepts any suspect image or URL, autonomously extracts architectural, botanical, and linguistic visual clues, triangulates geographic coordinates across Google Lens and Google Maps, verifies timeline provenance across Google News, exposes fraudulent listings through adversarial cross-examination, and compiles a forensically verifiable, standalone offline intelligence dossier — all while strictly defending API quotas through a zero-cost local SQLite cache.
+**TerraSleuth** is an autonomous multi-modal OSINT investigator powered by **LangGraph**, **SerpApi Multi-Engine Cloud**, and **Google Gemini 1.5 Flash**. Engineered as an autonomous multi-agent investigative swarm, TerraSleuth accepts any suspect image or URL, autonomously extracts architectural, botanical, and linguistic visual clues, triangulates geographic coordinates across Google Lens and Google Maps, verifies timeline provenance across Google News, exposes fraudulent listings through adversarial cross-examination, and compiles a forensically verifiable, standalone offline intelligence dossier — all while strictly defending API quotas through a zero-cost local SQLite cache.
 
 ---
 
@@ -80,7 +80,7 @@ TerraSleuth deeply integrates **4 distinct SerpApi engines** plus the binary **I
 
 ---
 
-## 🧠 Antigravity-Style Dynamic LLM Decision Engine
+## 🧠 Two-Tier Dynamic Multi-Agent Reasoning Engine
 
 In addition to deterministic heuristics, TerraSleuth integrates **Google Gemini 1.5 Flash** for dynamic, non-deterministic agentic reasoning:
 
@@ -118,9 +118,9 @@ TerraSleuth addresses high-stakes open-source intelligence challenges:
 
 ---
 
-## ⚡ Live War Room 2.0 User Interface
+## ⚡ Interactive OSINT Forensic Dashboard
 
-TerraSleuth features a tactical **45/55 Split-Screen Command Deck** inspired by forensic war rooms:
+TerraSleuth features an interactive **45/55 Split-Screen Command Deck Workstation**:
 
 | Left Column (Visual Forensic Inspector) | Right Column (Tactical Intelligence Deck) |
 |---|---|
@@ -146,7 +146,7 @@ TerraSleuth was engineered under strict **Subagent-Driven Development (SDD)** wi
 
 | Metric | Measurement |
 |---|---|
-| **Total Automated Tests** | **158 passing / 158 total (100% pass rate)** |
+| **Total Automated Tests** | **159 passing / 159 total (100% pass rate)** |
 | **Unit & Integration Test Time** | ~28.0 seconds |
 | **Live SerpApi Credits Burned in Tests** | **0 credits** |
 | **Security & XSS Protection** | Strict scheme allowlist (`http`, `https`, `mailto`) neutralizing `javascript:` injection |
@@ -187,13 +187,13 @@ echo "SERPAPI_API_KEY=your_key_here" > .env
 # (Optional) Provide Gemini API key for dynamic LLM reasoning
 echo "GEMINI_API_KEY=your_gemini_key" >> .env
 
-# 4. Launch the War Room 2.0 Dashboard
+# 4. Launch the Interactive OSINT Forensic Dashboard
 streamlit run frontend/app.py
 ```
 
-### Option 3: Run Full Automated Test Suite (158 Tests)
+### Option 3: Run Full Automated Test Suite (159 Tests)
 ```bash
-# Set PYTHONPATH and run all 158 automated tests
+# Set PYTHONPATH and run all 159 automated tests
 $env:PYTHONPATH="." ; pytest -v
 ```
 
@@ -201,7 +201,7 @@ $env:PYTHONPATH="." ; pytest -v
 
 ## 🎬 3-Minute Demonstration Guide
 
-1. **0:00 – 0:30 (Mission Briefing):** Review the 4 investigative scenarios in the War Room 2.0 HUD.
+1. **0:00 – 0:30 (Mission Briefing):** Review the 4 investigative scenarios in the Forensic Command Deck.
 2. **0:30 – 1:15 (Landmark Pinpoint):** Select "The Waterfront Monument & Heritage Hotel", click **Launch Autonomous Investigation**, watch the LangGraph swarm extract clues, and pinpoint Gateway of India on satellite tiles with 96% confidence.
 3. **1:15 – 1:55 (Visual Twin Comparator):** Switch to the Side-by-Side Visual Twin Matcher, inspecting exact visual alignment against authoritative Wikipedia images.
 4. **1:55 – 2:30 (Fraud Unmasking):** Select "Vacation Rental Listing Fraud", launch investigation, and watch the red Anomaly Banner and dynamic LLM Skeptic critique unmask the stolen Santorini luxury hotel photo.

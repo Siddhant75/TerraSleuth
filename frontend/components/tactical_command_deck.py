@@ -1,4 +1,4 @@
-"""Tactical Command Deck component for TerraSleuth War Room 2.0.
+"""Tactical Command Deck component for TerraSleuth Forensic Command Deck.
 
 Implements the high-tech 45/55 Split-Screen Command Deck matching
 docs/interactive-redesign-blueprint.html 1:1:

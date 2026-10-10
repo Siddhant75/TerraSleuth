@@ -5,7 +5,7 @@
 - **Description:** Modular UI components built for Streamlit, Folium, and custom HTML/CSS, providing tactical split-screen surveillance, Leaflet/Esri satellite pinpointing, side-by-side visual twin comparison, live monospace swarm telemetry, Geoguessr gamification, and standalone offline HTML dossier exporting.
 - **Location:** [`frontend/components`](file:///d:/SerpAPI_hackathon/frontend/components)
 - **Language:** Python 3.11+, HTML5, CSS3, JavaScript (Folium/Leaflet)
-- **Purpose:** Renders the heroic OSINT War Room 2.0 interface with rich visual evidence overlays and zero XSS vulnerabilities.
+- **Purpose:** Renders the interactive OSINT Forensic Command Deck interface with rich visual evidence overlays and zero XSS vulnerabilities.
 
 ---
 
@@ -24,7 +24,7 @@ The primary operational container coordinating all evidence sub-views.
 - **Function:** `render_itemized_wardrobe_ledger(dossier_items: List[Dict[str, Any]]) -> None`
   - Renders multi-item wardrobe catalog cards with category badges, match titles, retailer sources, confidence percentages, and retail URLs.
 
-### 2.2 `war_room_hud.py` (War Room Header, Mission Briefings & Alert Banners)
+### 2.2 `war_room_hud.py` (Forensic Command Deck Header, Mission Briefings & Alert Banners)
 Provides tactical headers, mission briefing selector cards, and glowing alert banners.
 
 - **Functions:**

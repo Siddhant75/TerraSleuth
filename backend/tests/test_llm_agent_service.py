@@ -1,4 +1,4 @@
-"""Unit tests for LLM Detective Agent Service (Antigravity-Style Dynamic Fraud & Arbitration).
+"""Unit tests for LLM Detective Agent Service (Dynamic Fraud & Continuous Arbitration).
 
 Verifies Tier-1 Gemini LLM reasoning for Skeptic, Arbiter, and Synthesizer nodes
 with 100% mocked network calls (zero live tokens/credits burned), and verifies seamless

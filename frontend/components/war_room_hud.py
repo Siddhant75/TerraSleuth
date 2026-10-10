@@ -14,7 +14,7 @@ def sanitize_url(url: Optional[str]) -> str:
 
 
 def render_war_room_header():
-    """Render the high-tech War Room 2.0 HUD Banner matching the design blueprint."""
+    """Render the high-tech Forensic Command Deck Header matching the design blueprint."""
     st.markdown(
         """
         <div style="background: #0d121d; border: 1px solid rgba(0, 242, 254, 0.35); border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.12); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
@@ -23,7 +23,7 @@ def render_war_room_header():
             <div>
               <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                  TERRASLEUTH // OSINT WAR ROOM 2.0
+                  TERRASLEUTH // FORENSIC COMMAND DECK
                 </h1>
                 <span style="background: rgba(8, 51, 68, 0.8); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 9999px; border: 1px solid rgba(14, 165, 233, 0.4); font-family: ui-monospace, monospace;">
                   AI AGENTS TRACK

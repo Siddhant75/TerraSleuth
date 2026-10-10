@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Elevate TerraSleuth from a generic tabbed prototype to a tier-1, Palantir/Bellingcat-grade Tactical OSINT Command Deck featuring real photographic intelligence assets, CartoDB Dark Matter tactical mapping, side-by-side Visual Twin comparison via Google Lens, and live monospace cyber radar streaming.
+**Goal:** Elevate TerraSleuth from a generic tabbed prototype to a tier-1, Palantir/Bellingcat-grade Tactical OSINT Command Deck featuring real photographic intelligence assets, CartoDB Dark Matter tactical mapping, side-by-side Visual Twin comparison via Google Lens, and live monospace execution telemetry streaming.
 
 **Architecture:** A unified 45/55 split-screen operational command deck replaces fragmented Streamlit tabs. The left deck houses the Visual Forensic Inspector (authentic photos, bounding box overlays) and a Side-by-Side Visual Twin Matcher (Input vs. SerpApi Google Lens Top Match). The right deck features a CartoDB Dark Matter Leaflet map with pulsing crosshair markers and an active Monospace Telemetry Terminal streaming real-time agent deductions and SerpApi engine queries.
 
@@ -76,7 +76,7 @@
 - **Step 3: Implement comparator component and monospace terminal.**
 - **Step 4: Run test to verify pass.**
 - **Step 5: Code Review Gate via `code-reviewer` subagent.**
-- **Step 6: Commit:** `feat(ui): add visual twin comparator and monospace cyber radar terminal (Task 4.3)`
+- **Step 6: Commit:** `feat(ui): add visual twin comparator and monospace telemetry terminal (Task 4.3)`
 
 ### Task 4.4: Full Regression Audit, Playwright Browser Re-Certification & Submission Packaging
 - **Files to Modify:**

@@ -6,10 +6,10 @@ The TerraSleuth system is structured into containerized deployment units separat
 
 | Container Name | Type | Technology | Deployment | Description |
 |---|---|---|---|---|
-| **TerraSleuth War Room Container** (`terrasleuth-warroom`) | Web Application & Agent Runtime | Python 3.11, Streamlit, LangGraph, LangChain, Pillow, Folium | Docker Container (`python:3.11-slim`), Port 8501 | Runs the interactive Command Deck UI, hosts the LangGraph Dialectical Swarm, and coordinates domain services. |
+| **TerraSleuth Application Container** (`terrasleuth-warroom`) | Web Application & Agent Runtime | Python 3.11, Streamlit, LangGraph, LangChain, Pillow, Folium | Docker Container (`python:3.11-slim`), Port 8501 | Runs the interactive Command Deck UI, hosts the LangGraph Dialectical Swarm, and coordinates domain services. |
 | **Persistent SQLite Storage** (`terrasleuth-data`) | Relational Database & Volume | SQLite3 (WAL Mode), POSIX File System | Docker Named Volume mounted at `/app/data` & `/app/terrasleuth.db` | Persists pre-seeded golden benchmark cases, cached SerpApi query payloads, and cache statistics. |
 | **SerpApi Cloud Gateway** (External) | Third-Party REST API | SerpApi JSON Endpoints | Multi-Region Cloud (`https://serpapi.com/search`) | Provides external search retrieval across Google Lens, Google Maps, Google News, and Google Search. |
-| **Google AI Studio Cloud** (External) | Multi-Modal & LLM API | Google Gemini 1.5 Flash REST API (`x-goog-api-key`) | HTTPS REST Cloud | Powers the Antigravity-Style Dynamic LLM Decision Engine (fraud debunker, continuous arbitration, executive synthesis) and 2D spatial vision decomposition (with zero-credit offline heuristic fallback). |
+| **Google AI Studio Cloud** (External) | Multi-Modal & LLM API | Google Gemini 1.5 Flash REST API (`x-goog-api-key`) | HTTPS REST Cloud | Powers the two-tier dynamic LLM decision engine (fraud debunker, continuous arbitration, executive synthesis) and 2D spatial vision decomposition (with zero-credit offline heuristic fallback). |
 
 ---
 

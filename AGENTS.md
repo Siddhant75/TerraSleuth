@@ -14,10 +14,10 @@
   - `v0.1-dev` — **Sprint 1 (Complete):** Foundation, SQLite Disk Cache & SerpApi Visual/Spatial Service.
   - `v0.2-dev` — **Sprint 2 (Complete):** LangGraph Multi-Agent OSINT Engine (Scene Deconstructor, Lens Hunter, Geo Triangulator, Chrono Auditor, Case Synthesizer).
   - `v0.3-dev` — **Sprint 3 (Complete):** Interactive Visual OSINT Dashboard (Bounding box visualizer, Leaflet Map Pinpoint, Evidence Chain & Golden Demo Walkthrough).
-  - `v0.4-dev` — **Sprint 4 (Complete):** Tactical OSINT Command Deck & Feature Pack (45/55 Split-Screen, Visual Twin Matcher, Satellite Recon, Swarm Cyber Radar).
-  - `v0.5-dev` — **Sprint 5 (Complete):** War Room 2.0 HUD, Anomaly & Fraud Engine, Standalone HTML Dossier Exporter, Docker Suite, and Submission Packaging.
+  - `v0.4-dev` — **Sprint 4 (Complete):** Tactical OSINT Command Deck & Feature Pack (45/55 Split-Screen, Visual Twin Matcher, Satellite Recon, Execution Telemetry Terminal).
+  - `v0.5-dev` — **Sprint 5 (Complete):** Forensic Command Deck, Anomaly & Fraud Engine, Standalone HTML Dossier Exporter, Docker Suite, and Submission Packaging.
   - `v0.6-dev` — **Sprint 6 (Complete):** 1:1 Blueprint Alignment, 4-Tab Navigation, Autonomous Geoguessr Mode, Pre-Commit & Quota Hooks.
-  - `v0.7-dev` — **Sprint 7 (Complete):** Pure Product Immersion, Heroic Tactical Command Deck, Quick-Export Action Bar & Judge Tech Drawer.
+  - `v0.7-dev` — **Sprint 7 (Complete):** Pure Product Immersion, Forensic Tactical Command Deck, Quick-Export Action Bar & Judge Tech Drawer.
   - `v0.8-dev` — **Sprint 8 (Complete):** Level 4 ReAct Autonomous Tool Calling & Level 5 Dialectical Swarm (Hunter vs Skeptic vs Arbiter).
 - **Commit Policy:** Strict commit per task on the active development branch using `<type>(<scope>): <description> (Task <X.Y>)`.
 - **Active Single Source of Truth:**
