@@ -56,7 +56,7 @@ class SerpApiService:
         budget_manager: Optional[QuotaBudgetManager] = None,
         force_refresh: bool = False,
     ):
-        self._api_key = api_key or settings.SERPAPI_API_KEY
+        self._api_key = api_key
         self.base_url = settings.SERPAPI_BASE_URL
         self.timeout = timeout_seconds or settings.SERPAPI_TIMEOUT_SECONDS
         self._client = client or httpx.Client(timeout=self.timeout)
@@ -475,6 +475,10 @@ class SerpApiService:
                 photos = [item["thumbnail"]]
 
             place_type = item.get("type") or item.get("place_type")
+            if isinstance(place_type, list):
+                place_type = ", ".join(str(x) for x in place_type if x)
+            elif place_type is not None:
+                place_type = str(place_type)
             phone = item.get("phone")
             website = item.get("website")
 

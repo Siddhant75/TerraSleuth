@@ -1,5 +1,5 @@
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional, Union
+from pydantic import BaseModel, Field, field_validator
 
 
 class LensMatch(BaseModel):
@@ -34,9 +34,18 @@ class MapsCandidate(BaseModel):
     rating: Optional[float] = Field(None, description="Average review rating out of 5")
     reviews_count: Optional[int] = Field(None, description="Total number of reviews")
     photos: List[str] = Field(default_factory=list, description="URLs of user-submitted photos")
-    place_type: Optional[str] = Field(None, description="Category of place (e.g. 'Historical Landmark')")
+    place_type: Optional[Union[str, List[str]]] = Field(None, description="Category of place (e.g. 'Historical Landmark')")
     phone: Optional[str] = Field(None, description="Contact phone number if available")
     website: Optional[str] = Field(None, description="Official website if available")
+
+    @field_validator("place_type", mode="before")
+    @classmethod
+    def normalize_place_type(cls, v: Any) -> Optional[str]:
+        if isinstance(v, list):
+            return ", ".join(str(item) for item in v if item)
+        if v is not None:
+            return str(v)
+        return None
 
 
 class MapsSearchResult(BaseModel):

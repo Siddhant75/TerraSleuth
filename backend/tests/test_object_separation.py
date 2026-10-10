@@ -37,8 +37,12 @@ def test_segment_synthetic_flatlay_image():
             os.remove(temp_path)
 
 
-def test_segment_download_clothing_moodboard():
+def test_segment_download_clothing_moodboard(monkeypatch):
     """Verify segmentation against real-world test moodboard download (1).jpeg if present."""
+    from backend.app.config import settings
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", None)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
     target_path = "tests/live-test/clothing/download (1).jpeg"
     if not os.path.exists(target_path):
         pytest.skip(f"Test moodboard image not found at {target_path}")

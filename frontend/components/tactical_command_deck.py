@@ -31,7 +31,11 @@ from frontend.components.swarm_telemetry_terminal import (
 )
 from frontend.components.visual_evidence_board import render_visual_evidence_board
 from frontend.components.visual_twin_comparator import render_visual_twin_comparator
-from frontend.components.war_room_hud import render_anomaly_alert, render_osint_dorks
+from frontend.components.war_room_hud import (
+    render_anomaly_alert,
+    render_gemini_forensic_intelligence_briefing,
+    render_osint_dorks,
+)
 
 
 def render_itemized_wardrobe_ledger(itemized_dossier: List[Dict[str, Any]]) -> None:
@@ -95,6 +99,7 @@ def render_tactical_command_deck(
     config: Dict[str, Any],
     ground_truth_lat: Optional[float] = None,
     ground_truth_lon: Optional[float] = None,
+    last_state: Optional[Dict[str, Any]] = None,
 ) -> None:
     """Render the high-fidelity Tactical Command Deck matching the blueprint 1:1."""
     # 1. Anomaly & Fraud Warnings Banner (if detected)
@@ -113,6 +118,14 @@ def render_tactical_command_deck(
     coords_str = f"{len(case_file.itemized_dossier)} ITEMS DECOMPOSED" if is_fashion else (f"{lat:.5f}°N, {lon:.5f}°E" if lat is not None and lon is not None else "N/A")
     conf_pct = int(case_file.confidence_score * 100)
 
+    # Resolve Continuous Adversarial Audit Score and Reasoner
+    audit_score_val = getattr(case_file, "adversarial_audit_score", None)
+    if audit_score_val is None and last_state:
+        audit_score_val = last_state.get("audit_score")
+    score_display = f"{int(audit_score_val * 100)}%" if audit_score_val is not None else f"{conf_pct}%"
+    reasoner_label = "🟣 GEMINI 1.5 FLASH" if config.get("gemini_api_key") else "⚡ HEURISTIC SWARM"
+    cache_badge_label = "🌐 LIVE NETWORK" if config.get("live_mode") else "⚡ ZERO CREDIT BURN"
+
     # Wrap Command Deck in a High-Tech Neon-Pulse HUD Card
     st.markdown(
         f"""
@@ -128,16 +141,16 @@ def render_tactical_command_deck(
                     <span style="color: #e2e8f0; font-size: 13px; font-weight: 700; font-family: ui-monospace, monospace; display: block;">{html.escape(coords_str)}</span>
                 </div>
                 <div style="background: #121826; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center;">
-                    <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">CONFIDENCE</span>
-                    <b style="color: {'#ef4444' if case_file.anomalies else '#34d399'}; font-size: 13px; display: block;">{conf_pct}% [{'🚨 FRAUD DETECTED' if case_file.anomalies else '🛡️ RED-TEAM VERIFIED'}]</b>
+                    <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">AUDIT SCORE</span>
+                    <b style="color: {'#ef4444' if case_file.anomalies else '#34d399'}; font-size: 13px; display: block;">{score_display} [{'🚨 FRAUD UNMASKED' if case_file.anomalies else '🛡️ ARBITER VERIFIED'}]</b>
                 </div>
                 <div style="background: #121826; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center;">
                     <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">SERPAPI QUERIES</span>
                     <span style="color: #60a5fa; font-size: 13px; font-weight: 700; font-family: ui-monospace, monospace; display: block;">{case_file.serp_queries_executed} / {config.get('max_budget', 8)} BUDGET</span>
                 </div>
                 <div style="background: #121826; border: 1px solid #1e293b; border-radius: 8px; padding: 10px; text-align: center;">
-                    <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">CACHE STATUS</span>
-                    <span style="color: #34d399; font-size: 13px; font-weight: 700; font-family: ui-monospace, monospace; display: block;">⚡ ZERO CREDIT BURN</span>
+                    <span style="color: #94a3b8; display: block; font-size: 10px; text-transform: uppercase; font-family: ui-monospace, monospace;">AI REASONER</span>
+                    <span style="color: #c084fc; font-size: 12px; font-weight: 700; font-family: ui-monospace, monospace; display: block;">{reasoner_label}</span>
                 </div>
             </div>
             <!-- Quick Action Bar: 1-Click Export Dossier -->
@@ -146,7 +159,7 @@ def render_tactical_command_deck(
                     ● INVESTIGATION COMPLETE — ALL SERPAPI EVIDENCE VERIFIED & TRIANGULATED
                 </span>
                 <span style="color: #38bdf8; font-size: 12px; font-family: ui-monospace, monospace; font-weight: 600;">
-                    STANDALONE DOSSIER READY
+                    {cache_badge_label}
                 </span>
             </div>
         </div>
@@ -191,6 +204,9 @@ def render_tactical_command_deck(
             key="quick_export_html_btn",
             help="Download complete, self-contained offline intelligence dossier with embedded evidence imagery.",
         )
+
+    # 2. Dedicated Prominent Gemini Forensic Intelligence Briefing & Adjudication Deck
+    render_gemini_forensic_intelligence_briefing(case_file, last_state)
 
     # 45/55 Split Screen Layout
     deck_left, deck_right = st.columns([9, 11])

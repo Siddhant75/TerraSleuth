@@ -201,8 +201,10 @@ def test_gemini_vision_invalid_json_falls_back_to_opencv(sample_image_path):
         assert len(objects) >= 1
 
 
-def test_no_gemini_key_executes_opencv_instantly_with_zero_network_calls(sample_image_path):
+def test_no_gemini_key_executes_opencv_instantly_with_zero_network_calls(monkeypatch, sample_image_path):
     """With no key, OpenCV executes instantly with zero network calls."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.object_separation_service.settings.GEMINI_API_KEY", None)
     with patch.object(httpx.Client, "post") as mock_post:
         objects = ObjectSeparationService.segment_image(
             image_path=sample_image_path,

@@ -44,8 +44,12 @@ def sample_lens_data():
     }
 
 
-def test_no_api_key_returns_none_immediately_with_zero_network_calls(sample_lens_data):
+def test_no_api_key_returns_none_immediately_with_zero_network_calls(monkeypatch, sample_lens_data):
     """When no LLM keys are configured, disambiguate returns None immediately without HTTP requests."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.llm_reasoning_service.settings.GEMINI_API_KEY", None)
+    monkeypatch.setattr("backend.app.services.llm_reasoning_service.settings.OPENAI_API_KEY", None)
     with patch("httpx.Client.post") as mock_post:
         result = LLMReasoningService.disambiguate(
             lens_data=sample_lens_data,

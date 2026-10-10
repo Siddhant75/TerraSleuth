@@ -14,6 +14,7 @@ from backend.app.agent.graph import (
     stream_dialectical_investigation_sync,
     stream_osint_investigation_sync,
 )
+from backend.app.config import settings
 from backend.app.db import get_golden_cases, init_db
 from backend.app.models.case import CaseFile
 from backend.app.services.cache_service import CacheService
@@ -24,6 +25,7 @@ from frontend.components.swarm_telemetry_terminal import (
 from frontend.components.tactical_command_deck import render_tactical_command_deck
 from frontend.components.war_room_hud import (
     render_mission_briefing,
+    render_prompt_directive_card,
     render_war_room_header,
 )
 
@@ -197,7 +199,7 @@ def render_sidebar():
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 🔑 SerpApi Credentials & Mode")
-    env_api_key = os.environ.get("SERPAPI_API_KEY", "")
+    env_api_key = os.environ.get("SERPAPI_API_KEY") or (settings.SERPAPI_API_KEY or "")
     session_key = st.session_state.get("serpapi_api_key", env_api_key)
 
     api_key_input = st.sidebar.text_input(
@@ -245,7 +247,7 @@ def render_sidebar():
         st.session_state["live_network_mode"] = False
 
     # Optional Google AI Studio (Gemini) Key for Semantic Intent & Entity Disambiguation
-    env_gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    env_gemini_key = os.environ.get("GEMINI_API_KEY") or (settings.GEMINI_API_KEY or "")
     session_gemini_key = st.session_state.get("gemini_api_key", env_gemini_key)
 
     gemini_key_input = st.sidebar.text_input(
@@ -287,21 +289,25 @@ def render_sidebar():
     st.sidebar.markdown("### ⚙️ Swarm Parameters")
     max_budget = st.sidebar.slider("SerpApi Query Budget:", min_value=1, max_value=12, value=8, help="Strict credit limit per OSINT investigation.")
     max_hops = st.sidebar.slider("Max Disambiguation Refinements:", min_value=1, max_value=3, value=2, help="Disambiguation iterations on ambiguous candidates.")
-    context_hint_input = st.sidebar.text_input("Claimed Context Hint / Metadata:", value=context_hint or "", placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
+    context_hint_val = st.session_state.get("context_hint") if st.session_state.get("context_hint") is not None else (context_hint or "")
+    context_hint_input = st.sidebar.text_input("Claimed Context Hint / Metadata:", value=context_hint_val, placeholder="e.g. Miami rental listing, Breaking 2026 disaster...")
+    if context_hint_input != st.session_state.get("context_hint"):
+        st.session_state["context_hint"] = context_hint_input
 
+    user_directive_val = st.session_state.get("user_directive", "")
     user_directive_input = st.sidebar.text_input(
         "🎯 Mission Directive (HITL Prompt):",
-        value=st.session_state.get("user_directive", ""),
+        value=user_directive_val,
         placeholder="e.g. Focus on handbag & watch, check Kyoto temple...",
         help="Natural language directive guiding Vision LLM detection and crop prioritization.",
     )
-    if user_directive_input:
-        st.session_state["user_directive"] = user_directive_input.strip()
+    if user_directive_input != st.session_state.get("user_directive"):
+        st.session_state["user_directive"] = user_directive_input
 
     return {
         "image_path": image_path,
         "image_url": image_url,
-        "context_hint": context_hint_input,
+        "context_hint": st.session_state.get("context_hint", ""),
         "max_budget": max_budget,
         "max_hops": max_hops,
         "active_image": active_image,
@@ -310,7 +316,7 @@ def render_sidebar():
         "api_key": st.session_state.get("serpapi_api_key") if has_valid_key else None,
         "live_mode": live_mode,
         "gemini_api_key": st.session_state.get("gemini_api_key") if has_valid_gemini else None,
-        "user_directive": st.session_state.get("user_directive"),
+        "user_directive": st.session_state.get("user_directive", ""),
         "selected_object_labels": st.session_state.get("selected_object_labels"),
     }
 
@@ -318,8 +324,11 @@ def render_sidebar():
 def main():
     config = render_sidebar()
 
-    # Render Forensic Command Deck Header Banner
-    render_war_room_header()
+    # Render Forensic Command Deck Header Banner with Live Credential Status
+    render_war_room_header(
+        has_valid_serpapi=bool(config.get("api_key")),
+        has_valid_gemini=bool(config.get("gemini_api_key")),
+    )
 
     # Session State Persistence
     if "case_file" not in st.session_state:
@@ -332,6 +341,9 @@ def main():
     # Pure Product Experience: Tactical Command Deck is the Primary Mission View
     if not st.session_state.get("case_file"):
         render_mission_briefing()
+
+        # Interactive Detective Directives & Suspect Story Card on Main Canvas
+        render_prompt_directive_card()
 
         # Primary Launch Trigger Button centered on Main Canvas
         launch_col1, launch_col2, launch_col3 = st.columns([1, 4, 1])
@@ -493,6 +505,7 @@ def main():
             config=config,
             ground_truth_lat=config.get("truth_lat"),
             ground_truth_lon=config.get("truth_lon"),
+            last_state=st.session_state.get("last_state"),
         )
 
 

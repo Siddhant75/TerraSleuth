@@ -28,6 +28,7 @@ def test_serpapi_get_api_key_precedence(monkeypatch):
 
     # Case 3: Empty / placeholder key raises SerpApiConfigError
     monkeypatch.delenv("SERPAPI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.serpapi_service.settings.SERPAPI_API_KEY", None)
     service_empty = SerpApiService(api_key="", use_cache=False)
     with pytest.raises(SerpApiConfigError) as exc_info:
         service_empty._get_api_key()

@@ -18,7 +18,7 @@ from backend.app.models.llm_agent import ArbiterEvaluationResult, SkepticEvaluat
 
 logger = logging.getLogger(__name__)
 
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
 
 SKEPTIC_SYSTEM_PROMPT = """You are an elite forensic OSINT debunker and adversarial investigator (Skeptic Agent).
 Your mission is to cross-examine suspect evidence and identify any fraud, misinformation, geographic impossibilities, architectural contradictions, or media recycling.

@@ -208,12 +208,12 @@ def test_google_search_parsing_success(mock_service):
 # Error & Edge Case Tests
 # ---------------------------------------------------------------------------
 
-def test_missing_api_key_raises_config_error():
+def test_missing_api_key_raises_config_error(monkeypatch):
+    monkeypatch.delenv("SERPAPI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.serpapi_service.settings.SERPAPI_API_KEY", None)
     service = SerpApiService(api_key=None)
-    # Temporarily patch settings so no env key exists
-    with patch("backend.app.services.serpapi_service.settings.SERPAPI_API_KEY", None):
-        with pytest.raises(SerpApiConfigError, match="SERPAPI_API_KEY is not configured"):
-            service.search_maps("Test query")
+    with pytest.raises(SerpApiConfigError, match="SERPAPI_API_KEY is not configured"):
+        service.search_maps("Test query")
 
 
 def test_timeout_raises_serpapi_timeout_error(mock_service):

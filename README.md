@@ -8,7 +8,7 @@
 [![LLM Reasoning](https://img.shields.io/badge/LLM%20Reasoning-Google%20Gemini%201.5%20Flash-4285F4.svg?logo=google&logoColor=white)](backend/app/services/llm_agent_service.py)
 [![Architecture](https://img.shields.io/badge/Architecture-C4%20Model%20Certified-orange.svg)](C4-Documentation/)
 [![Agent Level](https://img.shields.io/badge/Agent%20Level-Level%205%20Dialectical%20Swarm-purple.svg)](C4-Documentation/c4-component-osint-agent-swarm.md)
-[![Tests Passing](https://img.shields.io/badge/Tests-159%2F159%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
+[![Tests Passing](https://img.shields.io/badge/Tests-163%2F163%20Passing%20(100%25)-brightgreen.svg)](docs/terrasleuth-regression-audit.md)
 [![Release](https://img.shields.io/badge/Release-v0.8.1%20Certified-blue.svg)](docs/terrasleuth-roadmap.md)
 [![Quota Defense](https://img.shields.io/badge/Quota%20Defense-Zero--Credit%20Testing-success.svg)](backend/app/services/cache_service.py)
 [![Docker Ready](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)](docker-compose.yml)

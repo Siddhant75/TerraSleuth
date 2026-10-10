@@ -153,7 +153,7 @@ class LLMReasoningService:
         timeout_seconds: float = 8.0,
     ) -> Optional[SemanticDisambiguationResult]:
         """Call Google AI Studio Gemini API via REST with structured JSON response."""
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
         headers = {
             "Content-Type": "application/json",
             "x-goog-api-key": api_key,

@@ -17,8 +17,10 @@ from backend.app.models.llm_agent import ArbiterEvaluationResult, SkepticEvaluat
 from backend.app.services.llm_agent_service import LLMDetectiveAgentService
 
 
-def test_skeptic_no_key_returns_none_instantly():
+def test_skeptic_no_key_returns_none_instantly(monkeypatch):
     """When no Gemini key is provided, Skeptic evaluation returns None with zero network requests."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.llm_agent_service.settings.GEMINI_API_KEY", None)
     with patch("httpx.Client.post") as mock_post:
         res = LLMDetectiveAgentService.evaluate_skeptic(
             claimed_context="Beachfront apartment in Miami",
@@ -32,8 +34,10 @@ def test_skeptic_no_key_returns_none_instantly():
         mock_post.assert_not_called()
 
 
-def test_arbiter_no_key_returns_none_instantly():
+def test_arbiter_no_key_returns_none_instantly(monkeypatch):
     """When no Gemini key is provided, Arbiter evaluation returns None with zero network requests."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.llm_agent_service.settings.GEMINI_API_KEY", None)
     with patch("httpx.Client.post") as mock_post:
         res = LLMDetectiveAgentService.arbitrate_case(
             hunter_hypotheses=["Gateway of India Mumbai"],
@@ -47,8 +51,10 @@ def test_arbiter_no_key_returns_none_instantly():
         mock_post.assert_not_called()
 
 
-def test_synthesizer_no_key_returns_none_instantly():
+def test_synthesizer_no_key_returns_none_instantly(monkeypatch):
     """When no Gemini key is provided, Synthesizer returns None with zero network requests."""
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr("backend.app.services.llm_agent_service.settings.GEMINI_API_KEY", None)
     with patch("httpx.Client.post") as mock_post:
         res = LLMDetectiveAgentService.synthesize_summary(
             case_title="Mystery Target",

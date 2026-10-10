@@ -128,7 +128,7 @@ class ObjectSeparationService:
             '[{"label": "Dior Saddle Bag", "category": "accessory", "box_2d": [0.25, 0.65, 0.45, 0.90], "confidence": 0.95}]'
         )
 
-        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+        url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
         headers = {
             "Content-Type": "application/json",
             "x-goog-api-key": api_key,
